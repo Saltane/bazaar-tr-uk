@@ -393,7 +393,7 @@ msgstr "Розмір завантаження"
 
 #: src/bz-full-view.blp:383
 msgid "License"
-msgstr ""
+msgstr "Ліцензія"
 
 #: src/bz-full-view.blp:413 src/bz-full-view.blp:421
 #, fuzzy
@@ -403,11 +403,11 @@ msgstr "URL проєкту"
 #: src/bz-full-view.blp:429
 #, fuzzy
 msgid "Open in browser"
-msgstr "Відкрити в переглядачі зображень"
+msgstr "Відкрити в оглядачі"
 
 #: src/bz-full-view.blp:435
 msgid "Repositories"
-msgstr ""
+msgstr "Віддалені сховища"
 
 #: src/bz-full-view.blp:441
 msgid "Remote repo name"
