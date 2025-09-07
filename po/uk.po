@@ -926,22 +926,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#, c-format
-#~ msgid "Received %'d entries out of %'d (%0.1f seconds elapsed)"
-#~ msgstr "%'d надходжень із %'d (за %0.1f сек)"
-
-#~ msgid "Open in Image Viewer"
-#~ msgstr "Відкрити в переглядачі зображень"
-
-#~ msgid "Copy to clipboard"
-#~ msgstr "Копіювати до буфера обміну"
-
-#~ msgid "Installing"
-#~ msgstr "Встановлюємо"
-
-#~ msgid "Updating"
-#~ msgstr "Оновлюємо"
-
-#~ msgid "Removing"
-#~ msgstr "Видаляємо"
