@@ -735,11 +735,6 @@ msgstr "_Налаштування"
 
 #: src/bz-window.blp:457
 #, fuzzy
-msgid "_Preferences"
-msgstr "_Налаштування"
-
-#: src/bz-window.blp:447
-#, fuzzy
 msgid "_Refresh"
 msgstr "_Оновити"
 
