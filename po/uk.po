@@ -948,6 +948,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "_Refresh"
-#~ msgstr "_Оновити"
