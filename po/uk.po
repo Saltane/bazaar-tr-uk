@@ -1089,33 +1089,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "App Details"
-#~ msgstr "Докладніше"
-
-#~ msgid "License"
-#~ msgstr "Ліцензія"
-
-#~ msgid "Download Statistics"
-#~ msgstr "Статистика завантажень"
-
-#~ msgid "Show Downloads Over Time"
-#~ msgstr "Завантажень протягом часу"
-
-#~ msgid "Remote repo name"
-#~ msgstr "Назва віддаленого сховища"
-
-#~ msgid "Transactions Will Appear Here"
-#~ msgstr "Дії над застосунками зʼявлятимуться тут"
-
-#~ msgid "Halt the execution of transactions"
-#~ msgstr "Зупинити виконання дій"
-
-#~ msgid "Clear all finished transactions"
-#~ msgstr "Очистити всі завершені дії"
-
-#~ msgid "Resume the execution of transactions"
-#~ msgstr "Відновити виконання"
-
-#~ msgid "Pause the execution of transactions"
-#~ msgstr "Призупинити виконання"
