@@ -26,7 +26,6 @@
 #include "bz-installed-page.h"
 #include "bz-section-view.h"
 #include "bz-state-info.h"
-#include "bz-url.h"
 
 struct _BzInstalledPage
 {
@@ -172,10 +171,15 @@ static void
 run_cb (GtkListItem *list_item,
         GtkButton   *button)
 {
-  BzEntry         *entry = NULL;
-  BzInstalledPage *self  = NULL;
+  BzEntry         *entry    = NULL;
+  BzInstalledPage *self     = NULL;
+  GtkWidget       *menu_btn = NULL;
 
   entry = gtk_list_item_get_item (list_item);
+
+  menu_btn = gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_MENU_BUTTON);
+  if (menu_btn != NULL)
+    gtk_menu_button_set_active (GTK_MENU_BUTTON (menu_btn), FALSE);
 
   self = BZ_INSTALLED_PAGE (gtk_widget_get_ancestor (GTK_WIDGET (button), BZ_TYPE_INSTALLED_PAGE));
   g_assert (self != NULL);
@@ -211,62 +215,6 @@ support_cb (GtkListItem *list_item,
 
   url = bz_entry_get_donation_url (entry);
   g_app_info_launch_default_for_uri (url, NULL, NULL);
-}
-
-static void
-no_support_cb (GtkListItem *list_item,
-               GtkButton   *button)
-{
-  BzEntry         *entry  = NULL;
-  GListModel      *urls   = NULL;
-  guint            n_urls = 0;
-  GtkWidget       *window = NULL;
-  g_autofree char *body   = NULL;
-
-  entry = gtk_list_item_get_item (list_item);
-  urls  = bz_entry_get_share_urls (entry);
-  if (urls != NULL)
-    n_urls = g_list_model_get_n_items (urls);
-
-  if (urls != NULL && n_urls > 0)
-    {
-      g_autoptr (BzUrl) select = NULL;
-
-      for (guint i = 0; i < n_urls; i++)
-        {
-          g_autoptr (BzUrl) url = NULL;
-          const char *name      = NULL;
-
-          url  = g_list_model_get_item (urls, i);
-          name = bz_url_get_name (url);
-          if (name != NULL && g_strcmp0 (name, "Homepage") == 0)
-            {
-              select = g_steal_pointer (&url);
-              break;
-            }
-        }
-      if (select == NULL)
-        select = g_list_model_get_item (urls, 0);
-
-      body = g_strdup_printf (
-          _ ("\"%s\" does not provide a donations link. "
-             "This does not mean you cannot support them! "
-             "Try looking at their "
-             "<a href=\"%s\">project page</a> "
-             "for more information."),
-          bz_entry_get_title (entry),
-          bz_url_get_url (select));
-    }
-  else
-    body = g_strdup_printf (
-        _ ("\"%s\" does not provide a donations link. "
-           "This does not mean you cannot support them! "
-           "Try finding their project page for more information."),
-        bz_entry_get_title (entry));
-
-  window = gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW);
-  if (window != NULL)
-    bz_show_alert_for_widget (window, _ ("No Donations Link"), body, TRUE);
 }
 
 static void
@@ -437,7 +385,6 @@ bz_installed_page_class_init (BzInstalledPageClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, is_null);
   gtk_widget_class_bind_template_callback (widget_class, run_cb);
   gtk_widget_class_bind_template_callback (widget_class, support_cb);
-  gtk_widget_class_bind_template_callback (widget_class, no_support_cb);
   gtk_widget_class_bind_template_callback (widget_class, view_store_page_cb);
   gtk_widget_class_bind_template_callback (widget_class, remove_cb);
   gtk_widget_class_bind_template_callback (widget_class, install_addons_cb);

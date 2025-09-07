@@ -13,6 +13,8 @@ src/bz-async-texture.c
 src/bz-backend.c
 src/bz-browse-widget.blp
 src/bz-browse-widget.c
+src/bz-category-dialog.blp
+src/bz-category-dialog.c
 src/bz-comet-overlay.c
 src/bz-comet.c
 src/bz-content-provider.c
@@ -21,6 +23,8 @@ src/bz-data-graph.c
 src/bz-data-point.c
 src/bz-decorated-screenshot.blp
 src/bz-decorated-screenshot.c
+src/bz-detailed-app-tile.blp
+src/bz-detailed-app-tile.c
 src/bz-download-worker.c
 src/bz-dynamic-list-view.c
 src/bz-entry-cache-manager.c
@@ -41,6 +45,7 @@ src/bz-full-view.c
 src/bz-global-progress.c
 src/bz-global-state.c
 src/bz-gnome-shell-search-provider.c
+src/bz-group-tile-css-watcher.c
 src/bz-inhibited-scrollable.c
 src/bz-inspector.blp
 src/bz-inspector.c
@@ -49,6 +54,7 @@ src/bz-installed-page.c
 src/bz-io.c
 src/bz-issue.c
 src/bz-lazy-async-texture-model.c
+src/bz-patterned-background.c
 src/bz-preferences-dialog.blp
 src/bz-preferences-dialog.c
 src/bz-progress-bar.blp

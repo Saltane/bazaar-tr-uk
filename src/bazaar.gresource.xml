@@ -2,7 +2,8 @@
 <gresources>
   <gresource prefix="/io/github/kolunmi/Bazaar/">
     
-    <file>gtk/styles.css</file>
+    <file alias="style.css">gtk/style.css</file>
+    <file alias="style-dark.css">gtk/style-dark.css</file>
 
     <file preprocess="xml-stripblanks">main-config-schema.xml</file>
     <file preprocess="xml-stripblanks">bz-content-provider-config-schema.xml</file>
@@ -11,6 +12,7 @@
     <file preprocess="xml-stripblanks">bz-app-tile.ui</file>
     <file preprocess="xml-stripblanks">bz-browse-widget.ui</file>
     <file preprocess="xml-stripblanks">bz-category-dialog.ui</file>
+    <file preprocess="xml-stripblanks">bz-curated-app-tile.ui</file>
     <file preprocess="xml-stripblanks">bz-decorated-screenshot.ui</file>
     <file preprocess="xml-stripblanks">bz-detailed-app-tile.ui</file>
     <file preprocess="xml-stripblanks">bz-entry-inspector.ui</file>
@@ -38,7 +40,7 @@
     <file preprocess="xml-stripblanks">icons/scalable/actions/edit-clear-all-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/external-link-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/eye-outline-filled-symbolic.svg</file>
-    <file preprocess="xml-stripblanks">icons/scalable/actions/flathub-favicon.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/flathub-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/flatpak-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/folder-download-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/globe-symbolic.svg</file>

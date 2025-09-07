@@ -23,6 +23,7 @@
 
 #include "config.h"
 
+#include <glib/gi18n.h>
 #include <xmlb.h>
 
 #include "bz-async-texture.h"
@@ -557,35 +558,35 @@ bz_flatpak_entry_new_for_ref (BzFlatpakInstance *instance,
               switch (e)
                 {
                 case AS_URL_KIND_HOMEPAGE:
-                  enum_string = "Homepage";
+                  enum_string = C_ ("Project URL Type", "Homepage");
                   break;
                 case AS_URL_KIND_BUGTRACKER:
-                  enum_string = "Bugtracker";
+                  enum_string = C_ ("Project URL Type", "Bugtracker");
                   break;
                 case AS_URL_KIND_FAQ:
-                  enum_string = "FAQ";
+                  enum_string = C_ ("Project URL Type", "FAQ");
                   break;
                 case AS_URL_KIND_HELP:
-                  enum_string = "Help";
+                  enum_string = C_ ("Project URL Type", "Help");
                   break;
                 case AS_URL_KIND_DONATION:
-                  enum_string = "Donation";
+                  enum_string = C_ ("Project URL Type", "Donation");
                   g_clear_pointer (&donation_url, g_free);
                   donation_url = g_strdup (url);
                   break;
                 case AS_URL_KIND_TRANSLATE:
-                  enum_string = "Translate";
+                  enum_string = C_ ("Project URL Type", "Translate");
                   break;
                 case AS_URL_KIND_CONTACT:
-                  enum_string = "Contact";
+                  enum_string = C_ ("Project URL Type", "Contact");
                   break;
                 case AS_URL_KIND_VCS_BROWSER:
-                  enum_string = "VCS Browser";
+                  enum_string = C_ ("Project URL Type", "VCS Browser");
                   g_clear_pointer (&forge_url, g_free);
                   forge_url = g_strdup (url);
                   break;
                 case AS_URL_KIND_CONTRIBUTE:
-                  enum_string = "Contribute";
+                  enum_string = C_ ("Project URL Type", "Contribute");
                   break;
                 default:
                   break;

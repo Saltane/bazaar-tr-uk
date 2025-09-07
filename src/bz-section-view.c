@@ -19,8 +19,8 @@
  */
 
 #include "bz-section-view.h"
-#include "bz-app-tile.h"
 #include "bz-async-texture.h"
+#include "bz-curated-app-tile.h"
 #include "bz-dynamic-list-view.h"
 #include "bz-entry-group.h"
 
@@ -137,7 +137,7 @@ is_null (gpointer object,
 
 static void
 bind_widget_cb (BzSectionView     *self,
-                BzAppTile         *tile,
+                BzCuratedAppTile  *tile,
                 BzEntryGroup      *group,
                 BzDynamicListView *view)
 {
@@ -146,7 +146,7 @@ bind_widget_cb (BzSectionView     *self,
 
 static void
 unbind_widget_cb (BzSectionView     *self,
-                  BzAppTile         *tile,
+                  BzCuratedAppTile  *tile,
                   BzEntryGroup      *group,
                   BzDynamicListView *view)
 {
@@ -188,7 +188,7 @@ bz_section_view_class_init (BzSectionViewClass *klass)
       g_cclosure_marshal_VOID__OBJECTv);
 
   g_type_ensure (BZ_TYPE_ASYNC_TEXTURE);
-  g_type_ensure (BZ_TYPE_APP_TILE);
+  g_type_ensure (BZ_TYPE_CURATED_APP_TILE);
   g_type_ensure (BZ_TYPE_DYNAMIC_LIST_VIEW);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/io/github/kolunmi/Bazaar/bz-section-view.ui");

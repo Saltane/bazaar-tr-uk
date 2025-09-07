@@ -133,9 +133,9 @@ template $BzFullView: Adw.Bin {
                           Button {
                             visible: bind $invert_boolean($is_null(template.ui-entry as <$BzResult>.object as <$BzEntry>.donation-url) as <bool>) as <bool>;
                             styles [
-                              "pill",
+                              "small-pill",
                               "suggested-action",
-                              "support-button"
+                              "support"
                             ]
                             margin-top:8;
                             valign: start;
@@ -153,9 +153,9 @@ template $BzFullView: Adw.Bin {
                             reveal-child: false;
                             child: Button {
                               styles [
-                                "pill",
+                                "small-pill",
                                 "suggested-action",
-                                "star-button"
+                                "star"
                               ]
 
                               margin-top:8;
@@ -309,7 +309,7 @@ template $BzFullView: Adw.Bin {
 
                   Adw.PreferencesGroup {
                     hexpand: false;
-                    title: "App Details";
+                    title: _("App Details");
 
                     Adw.ActionRow {
                       title: _("Download Size");
