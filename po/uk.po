@@ -966,14 +966,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "Finished Tasks"
-#~ msgstr "Дії завершено"
-
-#, c-format
-#~ msgid "%s to download"
-#~ msgstr "%s до завантаження"
-
-#, fuzzy, c-format
-#~ msgid "%s to install"
-#~ msgstr "%s до встановлення"
