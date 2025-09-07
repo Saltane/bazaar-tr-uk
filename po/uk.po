@@ -558,35 +558,6 @@ msgstr "Запустити"
 msgid "View Store Page"
 msgstr "Відкрити сторінку в крамниці"
 
-#: src/bz-installed-page.blp:265 src/bz-installed-page.blp:277
-#: src/bz-window.c:921
-msgid "Remove"
-msgstr "Видалити"
-
-#: src/bz-installed-page.c:252
-#, c-format
-msgid ""
-"\"%s\" does not provide a donations link. This does not mean you cannot "
-"support them! Try looking at their <a href=\"%s\">project page</a> for more "
-"information."
-msgstr ""
-"\"%s\" не надає посилання для пожертв. Та це не означає, що Ви не можете "
-"підтримати проєкт! Відвідайте <a href=\"%s\">сторінку проєкту</a>, аби "
-"дізнатися більше."
-
-#: src/bz-installed-page.c:262
-#, c-format
-msgid ""
-"\"%s\" does not provide a donations link. This does not mean you cannot "
-"support them! Try finding their project page for more information."
-msgstr ""
-"\"%s\" не надає посилання для пожертв. Та це не означає, що Ви не можете "
-"підтримати проєкт! Спробуйте знайти сторінку проєкту, аби дізнатися більше."
-
-#: src/bz-installed-page.c:269
-msgid "No Donations Link"
-msgstr "Без посилання для пожертв"
-
 #: src/bz-preferences-dialog.blp:9
 msgid "Preferences"
 msgstr "Налаштування"
