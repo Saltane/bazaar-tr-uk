@@ -36,14 +36,14 @@ msgstr ""
 #: data/io.github.kolunmi.Bazaar.gschema.xml:6
 #, fuzzy
 msgid "Show Git Forge Star Counts"
-msgstr "Показувати вподобання на сторінці розробки"
+msgstr "Показувати вподобання зі сторінки розробки"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:7
 msgid ""
 "Whether to attempt to detect and show \"star counts\" for projects in the "
 "full view"
 msgstr ""
-"Намагатися віднаходити та показувати число вподобань на сторінках проєктів"
+"Намагатися віднаходити та показувати кількість уподобань на сторінках проєктів"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:8
 #, fuzzy
