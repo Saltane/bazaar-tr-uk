@@ -379,26 +379,6 @@ msgstr "Видалити цей застосунок"
 msgid "Share this application"
 msgstr "Поділитися цим застосунком"
 
-#: src/bz-full-view.blp:238
-msgid ""
-"The number of downloads in the last 30 days. Click to view this "
-"application's download statistics."
-msgstr ""
-"Кількість завантажень за останні 30 днів. Натисніть, аби побачити статистику "
-"завантажень цього застосунку."
-
-#: src/bz-full-view.blp:287
-msgid "Support this developer"
-msgstr "Підтримати розробників"
-
-#: src/bz-full-view.blp:288
-msgid "Support"
-msgstr "Підтримати"
-
-#: src/bz-full-view.blp:316
-msgid "VCS Forge Star Count"
-msgstr "Вподобань на сторінці розробки"
-
 #: src/bz-full-view.blp:315
 #, fuzzy
 msgid "Download Size"
