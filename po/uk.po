@@ -1127,9 +1127,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "Open this image in the default image viewer"
-#~ msgstr "Відкрити зображення в переглядачі зображень"
-
-#~ msgid "Copy this image to the clipboard"
-#~ msgstr "Копіювати зображення до буфера обміну"
