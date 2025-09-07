@@ -1115,21 +1115,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "Categories"
-#~ msgstr "Категорії"
-
-#~ msgid "Updated Size"
-#~ msgstr "Розмір після оновлення"
-
-#~ msgid "Freed Space"
-#~ msgstr "Звільнене місце"
-
-#~ msgid "Error Details"
-#~ msgstr "Подробиці помилки"
-
-#~ msgid "Transactions"
-#~ msgstr "Дії"
-
-#~ msgid "Up to date!"
-#~ msgstr "Оновлень не знайдено!"
