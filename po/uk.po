@@ -405,7 +405,7 @@ msgstr "Відкрити в оглядачі"
 #: src/bz-full-view.blp:379 src/bz-full-view.blp:388
 #, fuzzy
 msgid "Download Statistics"
-msgstr "Статистика завантаження"
+msgstr "Статистика завантажень"
 
 #: src/bz-full-view.blp:396
 #, fuzzy
