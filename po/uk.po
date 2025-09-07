@@ -996,6 +996,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "Apps Of The Week"
-#~ msgstr "Тижнева добірка"
