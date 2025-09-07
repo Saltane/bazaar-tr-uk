@@ -1008,7 +1008,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#, c-format
-#~ msgid "Released %x"
-#~ msgstr "Випуск %x"
