@@ -972,39 +972,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgctxt "Project URL Type"
-#~ msgid "Flathub Link"
-#~ msgstr "Посилання Flathub"
-
-#~ msgctxt "Project URL Type"
-#~ msgid "VCS Browser"
-#~ msgstr "Початковий код"
-
-#~ msgid "Full Application View"
-#~ msgstr "Перегляд сторінок застосунків"
-
-#~ msgid "Change what content is shown when viewing applications"
-#~ msgstr "Визначте, що має бути показано при перегляді сторінок застосунків"
-
-#~ msgid ""
-#~ "If you do not have an access token, turning this setting on may cause "
-#~ "GitHub to eventually rate limit you."
-#~ msgstr ""
-#~ "Якщо Ви не маєте токену доступу (access token), увімкнення цього "
-#~ "налаштування може призвести до обмеження Вашого зʼєднання з GitHub."
-
-#~ msgid "Type to filter"
-#~ msgstr "Введіть для пошуку"
-
-#~ msgid "Exclude results with proprietary licenses"
-#~ msgstr "Виключити надходження з власницькою ліцензією"
-
-#~ msgid "Exclude results not originating from Flathub"
-#~ msgstr "Виключити надходження поза Flathub"
-
-#~ msgid "Advanced"
-#~ msgstr "Просунуті"
-
-#~ msgid "Open this link externally"
-#~ msgstr "Відкрити посилання у зовнішній програмі"
