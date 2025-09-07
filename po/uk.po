@@ -1135,15 +1135,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "Calligraphy application page"
-#~ msgstr "Сторінка застосунку Calligraphy"
-
-#~ msgid "Download graph for Blender"
-#~ msgstr "Статистика завантажень Blender"
-
-#~ msgid "in the last month"
-#~ msgstr "протягом минулого місяця"
-
-#~ msgid "Version History"
-#~ msgstr "Історія змін"
