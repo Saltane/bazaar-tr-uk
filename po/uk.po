@@ -1029,16 +1029,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "Show More"
-#~ msgstr "Показати більше"
-
-#, c-format
-#~ msgid "%x"
-#~ msgstr "%x"
-
-#~ msgid "Minimize Lower Bound"
-#~ msgstr "Найнижчий мінімальний поріг"
-
-#~ msgid "Maximize Upper Bound"
-#~ msgstr "Найвищий максимальний поріг"
