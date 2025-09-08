@@ -478,7 +478,7 @@ msgstr "Назва віддаленого сховища"
 #: src/bz-full-view.c:192
 #, c-format
 msgid "%'d downloads in the last month"
-msgstr "%'d завантажень за минулий місяць'"
+msgstr "%'d завантажень за минулий місяць"
 
 #: src/bz-full-view.c:210
 #, c-format
@@ -581,7 +581,7 @@ msgid ""
 "If you do not have an access token, turning this setting on may cause GitHub "
 "to eventually rate limit you."
 msgstr ""
-"Якщо Ви не маєте токен доступу (access token), увімкнення цього налаштування "
+"Якщо Ви не маєте токену доступу (access token), увімкнення цього налаштування "
 "може призвести до обмеження Вашого зʼєднання з GitHub."
 
 #: src/bz-search-widget.blp:69
