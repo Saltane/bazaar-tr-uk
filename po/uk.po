@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-08 07:58+0300\n"
+"POT-Creation-Date: 2025-09-08 13:59+0300\n"
 "PO-Revision-Date: 2025-08-12 22:05+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -69,6 +69,10 @@ msgstr ""
 "Базар наголошує на підтримці розробників, що роблять можливим Linux на "
 "стільничних компʼютерах. Він має вкладку \"підібраних\" застосунків, котра "
 "може бути налаштована дистрибутивами, аби створити цілісніший досвід."
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:24 src/bz-application.c:791
+msgid "Adam Masciola"
+msgstr ""
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:49
 #, fuzzy
@@ -189,10 +193,6 @@ msgstr ""
 #: src/bz-application.c:775
 msgctxt "About Dialog Translator Credit"
 msgid "Peter Dave Hello"
-msgstr ""
-
-#: src/bz-application.c:791
-msgid "Adam Masciola"
 msgstr ""
 
 #: src/bz-application.c:1214
