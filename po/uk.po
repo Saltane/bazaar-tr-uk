@@ -375,7 +375,7 @@ msgstr "Переклад"
 #, fuzzy
 msgctxt "Project URL Type"
 msgid "Contact"
-msgstr "Зворотній звʼязок"
+msgstr "Звʼязок"
 
 #: src/bz-flatpak-entry.c:584
 #, fuzzy
