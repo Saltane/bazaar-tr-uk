@@ -296,43 +296,43 @@ msgstr "Копіювати та вийти"
 
 #: src/bz-flathub-category.c:244
 msgid "Audio & Video"
-msgstr ""
+msgstr "Звук та відео"
 
 #: src/bz-flathub-category.c:246
 msgid "Development"
-msgstr ""
+msgstr "Розробка"
 
 #: src/bz-flathub-category.c:248
 msgid "Education"
-msgstr ""
+msgstr "Освіта"
 
 #: src/bz-flathub-category.c:250
 msgid "Games"
-msgstr ""
+msgstr "Ігри"
 
 #: src/bz-flathub-category.c:252
 msgid "Graphics"
-msgstr ""
+msgstr "Графіка"
 
 #: src/bz-flathub-category.c:254
 msgid "Networking"
-msgstr ""
+msgstr "Мережа"
 
 #: src/bz-flathub-category.c:256
 msgid "Office"
-msgstr ""
+msgstr "Офіс"
 
 #: src/bz-flathub-category.c:258
 msgid "Science"
-msgstr ""
+msgstr "Наука"
 
 #: src/bz-flathub-category.c:260
 msgid "System"
-msgstr ""
+msgstr "Система"
 
 #: src/bz-flathub-category.c:262
 msgid "Utilities"
-msgstr ""
+msgstr "Утиліти"
 
 #: src/bz-flathub-page.blp:15
 msgid "Flathub Not Added"
@@ -671,22 +671,22 @@ msgstr "Завершено за %.02f сек"
 
 #: src/bz-transaction-view.blp:143
 msgid "Finished Tasks"
-msgstr ""
+msgstr "Дії завершено"
 
 #: src/bz-transaction-view.c:111
 #, c-format
 msgid "%s to download"
-msgstr ""
+msgstr "%s до завантаження"
 
 #: src/bz-transaction-view.c:121
 #, fuzzy, c-format
 msgid "%s to install"
-msgstr "Встановити"
+msgstr "%s до встановлення"
 
 #: src/bz-transaction-view.c:131
 #, c-format
 msgid "Transferred %s so far"
-msgstr ""
+msgstr "Наразі отримано %s"
 
 #: src/bz-transaction.c:303
 msgid "Pending"
