@@ -563,19 +563,19 @@ msgstr "Розмір завантаження"
 
 #: src/bz-full-view.blp:373
 msgid "Excludes shared components"
-msgstr ""
+msgstr "Усунути спільні компоненти"
 
 #: src/bz-full-view.blp:428
 msgid "Free Software"
-msgstr ""
+msgstr "Вільні"
 
 #: src/bz-full-view.blp:470
 msgid "Proprietary"
-msgstr ""
+msgstr "Власницькі"
 
 #: src/bz-full-view.blp:536
 msgid "in the last month"
-msgstr ""
+msgstr "протягом минулого місяця"
 
 #: src/bz-full-view.blp:602
 msgid "Repositories"
@@ -596,11 +596,11 @@ msgstr "Історія змін"
 #: src/bz-full-view.c:209
 #, c-format
 msgid "%'d Downloads"
-msgstr ""
+msgstr "%'d завантажень"
 
 #: src/bz-full-view.c:211
 msgid "--- Downloads"
-msgstr ""
+msgstr "--- Завантажень"
 
 #. Translators: This is a date format for timestamps from previous years. Used in the app releases section.
 #. * %B is the full month name, %e is the day, %Y is the year.
@@ -919,7 +919,7 @@ msgstr "Крім того, буде оновлено %d середовищ ви�
 
 #: src/bz-window.blp:80
 msgid "Transactions"
-msgstr ""
+msgstr "Дії"
 
 #: src/bz-window.blp:95 src/bz-window.blp:413
 msgid "Toggle transaction sidebar"
@@ -927,15 +927,15 @@ msgstr "Перемкнути віконце дій над застосункам
 
 #: src/bz-window.blp:130
 msgid "Stop Active Tasks"
-msgstr ""
+msgstr "Зупинити активні дії"
 
 #: src/bz-window.blp:138
 msgid "Clear History"
-msgstr ""
+msgstr "Очистити історію"
 
 #: src/bz-window.blp:154
 msgid "No Tasks Yet"
-msgstr ""
+msgstr "Жодних дій"
 
 #: src/bz-window.blp:209 src/bz-window.blp:213
 msgid "Offline"
@@ -1049,11 +1049,11 @@ msgstr "Налаштування та користувацькі дані буд
 
 #: src/bz-window.c:1257
 msgid "Resume Current Tasks"
-msgstr ""
+msgstr "Відновити активні дії"
 
 #: src/bz-window.c:1263
 msgid "Pause Current Tasks"
-msgstr ""
+msgstr "Призупинити активні дії"
 
 #: src/bz-world-map.c:523
 #, c-format
