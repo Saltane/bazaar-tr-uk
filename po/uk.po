@@ -72,11 +72,11 @@ msgstr "Чекати на закінчення вводу, аби поперед
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:26
 msgid "Saved Window Dimensions"
-msgstr ""
+msgstr "Збережені розміри вікна"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:27
 msgid "The window dimensions to be used by the next Bazaar window"
-msgstr ""
+msgstr "Розміри, що їх користуватиме наступне вікно Базару"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:8
 msgid "Discover and install applications"
