@@ -76,7 +76,7 @@ msgstr ""
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:49
 msgid "The home view displaying flathub apps and categories"
-msgstr ""
+msgstr "Домашня сторінка із застосунками та категоріями з Flathub"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:53
 #, fuzzy
@@ -479,7 +479,7 @@ msgstr "Видалити цей застосунок"
 
 #: src/bz-full-view.blp:260
 msgid "Install Other Version"
-msgstr ""
+msgstr "Встановити іншу версію"
 
 #: src/bz-full-view.blp:285
 msgid "Share this application"
@@ -628,7 +628,7 @@ msgstr "Знаходьте та встановлюйте застосунки"
 msgid ""
 "You have multiple versions of this app installed. Which one would you like "
 "to proceed with? "
-msgstr ""
+msgstr "Ви маєте декілька встановлених версій цього застосунку. З котрою з них Ви бажаєте продовжити?"
 
 #: src/bz-installed-page.c:656 src/bz-window.c:949 src/bz-window.c:968
 msgid "Cancel"
@@ -716,12 +716,12 @@ msgstr "Завершено за %.02f сек"
 #: src/bz-transaction-view.blp:85
 #, fuzzy
 msgid "Install Size"
-msgstr "Встановлені"
+msgstr "Розмір встановлення"
 
 #: src/bz-transaction-view.blp:169
 #, fuzzy
 msgid "Updated Size"
-msgstr "Оновлення"
+msgstr "Розмір оновлення"
 
 #: src/bz-transaction-view.blp:182 src/bz-window.blp:297
 msgid "Update"
@@ -729,12 +729,12 @@ msgstr "Оновлення"
 
 #: src/bz-transaction-view.blp:253
 msgid "Freed Space"
-msgstr ""
+msgstr "Звільнене місця"
 
 #: src/bz-transaction-view.blp:400
 #, fuzzy
 msgid "Error Details"
-msgstr "Докладніше"
+msgstr "Подробиці помилки"
 
 #: src/bz-transaction-view.c:129
 #, c-format
