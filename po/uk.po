@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 20:04+0200\n"
+"POT-Creation-Date: 2025-11-15 11:48+0200\n"
 "PO-Revision-Date: 2025-11-12 02:13+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
-"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.08.2\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -135,19 +135,350 @@ msgstr "Сторінка пошуку"
 msgid "Category page"
 msgstr "Сторінка пошуку з категоріями"
 
-#: src/bz-addons-dialog.blp:14 src/bz-full-view.blp:582
+#: src/bz-addons-dialog.blp:14 src/bz-full-view.blp:698
 msgid "Manage Add-ons"
 msgstr "Керувати розширеннями"
 
-#: src/bz-addons-dialog.c:88 src/bz-transaction-view.blp:212
-#: src/bz-window.c:1101
+#: src/bz-addons-dialog.c:90 src/bz-full-view.blp:538
+#: src/bz-transaction-view.blp:212 src/bz-window.c:1101
 msgid "Remove"
 msgstr "Видалити"
 
-#: src/bz-addons-dialog.c:93 src/bz-full-view.blp:289
+#: src/bz-addons-dialog.c:95 src/bz-full-view.blp:306 src/bz-full-view.blp:525
 #: src/bz-transaction-view.blp:186 src/bz-window.c:1077
 msgid "Install"
 msgstr "Встановити"
+
+#: src/bz-age-rating-dialog.blp:7 src/bz-age-rating-dialog.blp:50
+#: src/bz-full-view.c:341 src/bz-full-view.c:348
+msgid "Age Rating"
+msgstr "Вікове обмеження"
+
+#: src/bz-age-rating-dialog.blp:40 src/bz-age-rating-dialog.c:790
+msgid "?"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:139
+msgid "Cartoon Violence"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:140
+msgid "No information regarding cartoon violence"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:143
+msgid "Fantasy Violence"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:144
+msgid "No information regarding fantasy violence"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:147
+msgid "Realistic Violence"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:148
+msgid "No information regarding realistic violence"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:151
+msgid "Violence Depicting Bloodshed"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:152
+msgid "No information regarding bloodshed"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:155
+msgid "Sexual Violence"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:156
+msgid "No information regarding sexual violence"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:159
+msgid "Alcohol"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:160
+msgid "No information regarding references to alcohol"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:163
+msgid "Narcotics"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:164
+msgid "No information regarding references to illicit drugs"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:167
+msgid "Tobacco"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:168
+msgid "No information regarding references to tobacco products"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:171 src/bz-age-rating-dialog.c:358
+msgid "Nudity"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:172
+msgid "No information regarding nudity of any sort"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:175
+msgid "Sexual Themes"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:176
+msgid "No information regarding references to or depictions of sexual nature"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:179
+msgid "Profanity"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:180
+msgid "No information regarding profanity of any kind"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:183
+msgid "Inappropriate Humor"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:184
+msgid "No information regarding inappropriate humor"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:187
+msgid "Discrimination"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:188
+msgid "No information regarding discriminatory language of any kind"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:191
+msgid "Advertising"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:192
+msgid "No information regarding advertising of any kind"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:195
+msgid "Gambling"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:196
+msgid "No information regarding gambling of any kind"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:199
+msgid "Purchasing"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:200
+msgid "No information regarding the ability to spend money"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:203
+msgid "Chat Between Users"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:204
+msgid "No information regarding ways to chat with other users"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:207
+msgid "Audio Chat Between Users"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:208
+msgid "No information regarding ways to talk with other users"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:211
+#, fuzzy
+msgid "Contact Details"
+msgstr "Звʼязок"
+
+#: src/bz-age-rating-dialog.c:212
+msgid ""
+"No information regarding sharing of social network usernames or email "
+"addresses"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:215
+msgid "Identifying Information"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:216
+msgid "No information regarding sharing of user information with third parties"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:219
+msgid "Location Sharing"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:220
+msgid "No information regarding sharing of physical location with other users"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:223
+msgid "Prostitution"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:224
+msgid "No information regarding references to prostitution"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:227
+msgid "Adultery"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:228
+msgid "No information regarding references to adultery"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:231
+msgid "Sexualized Characters"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:232
+msgid "No information regarding sexualized characters"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:235
+#, fuzzy
+msgid "Desecration"
+msgstr "Освіта"
+
+#: src/bz-age-rating-dialog.c:236
+msgid "No information regarding references to desecration"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:239
+msgid "Human Remains"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:240
+msgid "No information regarding visible dead human remains"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:243
+msgid "Slavery"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:244
+msgid "No information regarding references to slavery"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:307
+msgid "Does not include references to drugs"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:309
+msgid ""
+"Does not include swearing, profanity, and other kinds of strong language"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:311
+msgid "Does not include ads or monetary transactions"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:313
+msgid "Does not include sex or nudity"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:315
+msgid "Does not include uncontrolled chat functionality"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:317
+msgid "Does not include violence"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:352
+msgid "Drugs"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:354
+msgid "Strong Language"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:356
+msgid "Money"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:360
+msgid "Social"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:362
+#, fuzzy
+msgid "Violence"
+msgstr "Наука"
+
+#: src/bz-age-rating-dialog.c:564
+#, c-format
+msgid "%s • %s"
+msgstr ""
+
+#. Translators: Age rating format, e.g. "12+" for ages 12 and up
+#: src/bz-age-rating-dialog.c:752 src/bz-full-view.c:331
+#, c-format
+msgid "%d+"
+msgstr "%d+"
+
+#: src/bz-age-rating-dialog.c:782
+msgctxt "Age rating"
+msgid "All"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:846
+#, c-format
+msgid "%s has an unknown age rating"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:854
+#, c-format
+msgid "%s is suitable for everyone"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:857
+#, fuzzy, c-format
+msgid "%s is suitable for toddlers"
+msgstr "Без обмежень за віком"
+
+#: src/bz-age-rating-dialog.c:860
+#, c-format
+msgid "%s is suitable for young children"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:863
+#, c-format
+msgid "%s is suitable for children"
+msgstr ""
+
+#: src/bz-age-rating-dialog.c:866
+#, fuzzy, c-format
+msgid "%s is suitable for teenagers"
+msgstr "Без обмежень за віком"
+
+#: src/bz-age-rating-dialog.c:869
+#, fuzzy, c-format
+msgid "%s is suitable for adults"
+msgstr "Без обмежень за віком"
+
+#: src/bz-age-rating-dialog.c:872
+#, fuzzy, c-format
+msgid "%s is suitable for %s"
+msgstr "Без обмежень за віком"
 
 #: src/bz-app-size-dialog.c:55
 msgid "Of the size of human DNA"
@@ -206,38 +537,38 @@ msgstr ""
 "Цю можливість наразі вимкнено. Для керування дозволами застосунків радимо "
 "встановити Flatseal."
 
-#: src/bz-application.c:479
+#: src/bz-application.c:481
 msgctxt "About Dialog Developer Credit"
 msgid "Adam Masciola <kolunmi@posteo.net>"
 msgstr ""
 
-#: src/bz-application.c:480
+#: src/bz-application.c:482
 msgctxt "About Dialog Developer Credit"
 msgid "Alexander Vanhee"
 msgstr ""
 
-#: src/bz-application.c:494
+#: src/bz-application.c:504
 msgid "Adam Masciola"
 msgstr ""
 
 #. Translators: Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
-#: src/bz-application.c:497
+#: src/bz-application.c:507
 msgid "translator-credits"
 msgstr "faoquad <faoquad@noreply.codeberg.org>, 2025"
 
-#: src/bz-application.c:1069
+#: src/bz-application.c:1082
 msgid "Constructing Flatpak instance..."
 msgstr "Створення примірника Flatpak..."
 
-#: src/bz-application.c:1086
+#: src/bz-application.c:1099
 msgid "Reusing last Flatpak instance..."
 msgstr "Повторне використання примірника Flatpak..."
 
-#: src/bz-application.c:1111
+#: src/bz-application.c:1124
 msgid "Flathub is not registered on this system"
 msgstr "Flathub не зареєстровано на цій системі"
 
-#: src/bz-application.c:1114
+#: src/bz-application.c:1127
 msgid ""
 "Would you like to add Flathub as a remote? If you decline, the Flathub page "
 "will not be available. You can change this later."
@@ -245,42 +576,42 @@ msgstr ""
 "Бажаєте додати Flathub до переліку віддалених сховищ? В іншому разі, "
 "сторінка Flathub буде недоступна. Ви можете змінити це пізніше."
 
-#: src/bz-application.c:1119 src/bz-update-dialog.blp:6
+#: src/bz-application.c:1132 src/bz-update-dialog.blp:6
 msgid "Later"
 msgstr "Пізніше"
 
-#: src/bz-application.c:1120
+#: src/bz-application.c:1133
 msgid "Add Flathub"
 msgstr "Додати Flathub"
 
-#: src/bz-application.c:1152
+#: src/bz-application.c:1165
 msgid "Identifying installed entries..."
 msgstr "Визначення встановлених надходжень..."
 
-#: src/bz-application.c:1176
+#: src/bz-application.c:1189
 msgid "Receiving Entries"
 msgstr "Отримуємо надходження"
 
-#: src/bz-application.c:1333
+#: src/bz-application.c:1346
 #, c-format
 msgid "%'d of %'d"
 msgstr "%'d із %'d"
 
-#: src/bz-application.c:1346
+#: src/bz-application.c:1359
 #, c-format
 msgid "Waiting for background indexing tasks to catch up..."
 msgstr "Очікується завершення індексації..."
 
-#: src/bz-application.c:1388
+#: src/bz-application.c:1401
 #, c-format
 msgid "Completed initialization in %0.2f seconds"
 msgstr "Ініціалізовано за %0.2f сек"
 
-#: src/bz-application.c:1393 src/bz-application.c:1548
+#: src/bz-application.c:1406 src/bz-application.c:1561
 msgid "Checking for updates..."
 msgstr "Шукаємо оновлення"
 
-#: src/bz-application.c:1432
+#: src/bz-application.c:1445
 msgid "Synchronizing..."
 msgstr "Синхронізуємо..."
 
@@ -526,8 +857,8 @@ msgid ""
 "We could not connect to Flathub. You can still manage and search for "
 "applications."
 msgstr ""
-"Не вдалося зʼєднатися з Flathub. Ви все ще можете шукати застосунки та кер"
-"увати ними."
+"Не вдалося зʼєднатися з Flathub. Ви все ще можете шукати застосунки та "
+"керувати ними."
 
 #: src/bz-flathub-page.blp:52
 msgid "Search Apps"
@@ -549,52 +880,52 @@ msgstr "Ще"
 msgid "Mobile Apps"
 msgstr "Застосунки для мобільних пристроїв"
 
-#: src/bz-flatpak-entry.c:554
+#: src/bz-flatpak-entry.c:570
 msgctxt "Project URL Type"
 msgid "Flathub Page"
 msgstr "Сторінка Flathub"
 
-#: src/bz-flatpak-entry.c:575
+#: src/bz-flatpak-entry.c:591
 msgctxt "Project URL Type"
 msgid "Project Website"
 msgstr "URL проєкту"
 
-#: src/bz-flatpak-entry.c:579
+#: src/bz-flatpak-entry.c:595
 msgctxt "Project URL Type"
 msgid "Issue Tracker"
 msgstr "Відстеження помилок"
 
-#: src/bz-flatpak-entry.c:583
+#: src/bz-flatpak-entry.c:599
 msgctxt "Project URL Type"
 msgid "FAQ"
 msgstr "ЧаПи"
 
-#: src/bz-flatpak-entry.c:587
+#: src/bz-flatpak-entry.c:603
 msgctxt "Project URL Type"
 msgid "Help"
 msgstr "Допомога"
 
-#: src/bz-flatpak-entry.c:591
+#: src/bz-flatpak-entry.c:607
 msgctxt "Project URL Type"
 msgid "Donate"
 msgstr "Пожертви"
 
-#: src/bz-flatpak-entry.c:597
+#: src/bz-flatpak-entry.c:613
 msgctxt "Project URL Type"
 msgid "Translate"
 msgstr "Переклад"
 
-#: src/bz-flatpak-entry.c:601
+#: src/bz-flatpak-entry.c:617
 msgctxt "Project URL Type"
 msgid "Contact"
 msgstr "Звʼязок"
 
-#: src/bz-flatpak-entry.c:605
+#: src/bz-flatpak-entry.c:621
 msgctxt "Project URL Type"
 msgid "Source Code"
 msgstr "Початковий код"
 
-#: src/bz-flatpak-entry.c:611
+#: src/bz-flatpak-entry.c:627
 msgctxt "Project URL Type"
 msgid "Contribute"
 msgstr "Долучитися"
@@ -619,133 +950,138 @@ msgstr "Спробуйте інший запит"
 msgid "Content"
 msgstr "Вміст"
 
-#: src/bz-full-view.blp:196
+#: src/bz-full-view.blp:213
 msgid "Verified by the original developers"
 msgstr "Затверджено розробниками цієї програми"
 
-#: src/bz-full-view.blp:223
+#: src/bz-full-view.blp:240
 msgid "Support"
 msgstr "Підтримати"
 
-#: src/bz-full-view.blp:243
+#: src/bz-full-view.blp:260
 msgid "Repository Star Count"
 msgstr "Вподобань на сторінці розробки"
 
-#: src/bz-full-view.blp:273
+#: src/bz-full-view.blp:290 src/bz-full-view.blp:549
 msgid "Open"
 msgstr "Відкрити посилання"
 
-#: src/bz-full-view.blp:286
+#: src/bz-full-view.blp:303 src/bz-full-view.blp:522
 msgid "Download & Install Application"
 msgstr "Завантажити й встановити цей застосунок"
 
-#: src/bz-full-view.blp:301
+#: src/bz-full-view.blp:318
 msgid "Uninstall Application"
 msgstr "Видалити цей застосунок"
 
-#: src/bz-full-view.blp:316
+#: src/bz-full-view.blp:333 src/bz-full-view.blp:564
 msgid "Install Other Version"
 msgstr "Встановити іншу версію"
 
-#: src/bz-full-view.blp:340
+#: src/bz-full-view.blp:357
 msgid "Size"
 msgstr "Розмір"
 
-#: src/bz-full-view.blp:456
+#: src/bz-full-view.blp:466
 msgid "Downloads /mo"
 msgstr "зав/міс"
 
-#: src/bz-full-view.c:284
+#: src/bz-full-view.blp:583
+msgid "Stopped Receiving Core Updates"
+msgstr ""
+
+#: src/bz-full-view.blp:597
+msgid ""
+"This app uses a runtime that no longer recieves updates or security fixes. "
+"It may become unsafe to use."
+msgstr ""
+
+#: src/bz-full-view.c:276
 msgid "---"
 msgstr "---"
 
 #. Translators: M is the suffix for millions
-#: src/bz-full-view.c:288
+#: src/bz-full-view.c:280
 #, c-format
 msgid "%.2fM"
 msgstr "%.2fмлн."
 
 #. Translators: K is the suffix for thousands
-#: src/bz-full-view.c:291
+#: src/bz-full-view.c:283
 #, c-format
 msgid "%.2fK"
 msgstr "%.2fтис."
 
-#: src/bz-full-view.c:300
+#: src/bz-full-view.c:292
 #, c-format
 msgid "%d downloads in the last 30 days"
 msgstr "%d завантажень протягом останніх 30 днів"
 
-#: src/bz-full-view.c:321
+#: src/bz-full-view.c:313
 #, c-format
 msgid "Download size of %s"
 msgstr "Розмір завантаження"
 
-#. Translators: Age rating format, e.g. "12+" for ages 12 and up
-#: src/bz-full-view.c:331
-#, c-format
-msgid "%d+"
-msgstr "%d+"
-
-#: src/bz-full-view.c:339
+#: src/bz-full-view.c:346
 msgid "All Ages"
 msgstr "Без обмежень"
 
-#: src/bz-full-view.c:341
-msgid "Age Rating"
-msgstr "Вікове обмеження"
+#: src/bz-full-view.c:358
+#, fuzzy
+msgid "Age rating information unavailable"
+msgstr "Категорії недоступні"
 
-#: src/bz-full-view.c:349
+#: src/bz-full-view.c:363
 msgid "Suitable for all ages"
 msgstr "Без обмежень за віком"
 
-#: src/bz-full-view.c:351
+#: src/bz-full-view.c:365
 #, c-format
 msgid "Suitable for ages %d and up"
 msgstr "%d та старше"
 
-#: src/bz-full-view.c:375
+#: src/bz-full-view.c:396
 msgid "Unknown"
 msgstr "Невідомо"
 
-#: src/bz-full-view.c:378
+#: src/bz-full-view.c:399
 msgid "Proprietary Software"
 msgstr "Власницька ліцензія"
 
-#: src/bz-full-view.c:382
+#: src/bz-full-view.c:403
 #, c-format
 msgid "Free software licensed under %s"
 msgstr "Вільне ПЗ за ліцензією %s"
 
-#: src/bz-full-view.c:390
+#: src/bz-full-view.c:411
 msgid "Free"
 msgstr "Вільна ліцензія"
 
-#: src/bz-full-view.c:390
+#: src/bz-full-view.c:411 src/bz-license-dialog.blp:135
 msgid "Proprietary"
 msgstr "Власницька ліцензія"
 
-#: src/bz-full-view.c:410
+#: src/bz-full-view.c:431
 msgid "Adaptive"
 msgstr "Адаптивний"
 
-#: src/bz-full-view.c:410
+#: src/bz-full-view.c:431
 msgid "Desktop Only"
 msgstr "Лише для стільниць"
 
-#: src/bz-full-view.c:416
+#: src/bz-full-view.c:437
 msgid "Works on desktop, tablets, and phones"
 msgstr "Працює на стільницях, планшетах і смартфонах"
 
-#: src/bz-full-view.c:417
+#: src/bz-full-view.c:438
 msgid "May not work on mobile devices"
 msgstr "Може не працювати на мобільних пристроях"
 
-#: src/bz-full-view.c:428
+#: src/bz-full-view.c:449
 msgid "No URL"
 msgstr "Без URL"
 
-#: src/bz-full-view.c:446
+#: src/bz-full-view.c:467
 msgid ""
 "This application has a FLOSS license, meaning the source code can be audited "
 "for safety."
@@ -753,7 +1089,7 @@ msgstr ""
 "Цей застосунок має вільну ліцензію. Це означає, що початковий код може бути "
 "перевірено на безпечність."
 
-#: src/bz-full-view.c:447
+#: src/bz-full-view.c:468
 msgid ""
 "This application has a proprietary license, meaning the source code is "
 "developed privately and cannot be audited by an independent third party."
@@ -761,20 +1097,20 @@ msgstr ""
 "Цей застосунок має невільну (власницьку) ліцензію. Це означає, що початковий "
 "код не є публічно доступним і не може бути перевіреним на безпечність."
 
-#: src/bz-full-view.c:454
+#: src/bz-full-view.c:475
 msgid "Other Apps by this Developer"
 msgstr "Більше від розробників"
 
-#: src/bz-full-view.c:456
+#: src/bz-full-view.c:477
 #, c-format
 msgid "Other Apps by %s"
 msgstr "Більше від %s"
 
-#: src/bz-full-view.c:828
+#: src/bz-full-view.c:868
 msgid "Show Less"
 msgstr "Менше"
 
-#: src/bz-full-view.c:828
+#: src/bz-full-view.c:868
 msgid "Show More"
 msgstr "Показати клавіатурні скорочення"
 
@@ -923,6 +1259,14 @@ msgstr ""
 #: src/bz-installed-page.c:413 src/bz-window.c:1076 src/bz-window.c:1100
 msgid "Cancel"
 msgstr "Скасувати"
+
+#: src/bz-license-dialog.blp:77
+msgid "Community Built"
+msgstr ""
+
+#: src/bz-license-dialog.blp:176
+msgid "Get Involved"
+msgstr ""
 
 # Згідно перекладу на Flathub
 #: src/bz-license-dialog.c:115
@@ -1101,8 +1445,13 @@ msgstr "Версія %s"
 msgid "No details for this release"
 msgstr "Без подробиць"
 
+#: src/bz-rich-app-tile.blp:107
+#, fuzzy
+msgid "Stopped Receiving Updates"
+msgstr "Отримуємо надходження"
+
 # Сирець підказує, що це кнопка завантаження
-#: src/bz-rich-app-tile.blp:103
+#: src/bz-rich-app-tile.blp:123
 msgid "Get"
 msgstr "Завантажити"
 
@@ -1144,11 +1493,11 @@ msgstr "Відкрити посилання"
 msgid "Timeline"
 msgstr "Часоряд"
 
-#: src/bz-stats-dialog.blp:31
+#: src/bz-stats-dialog.blp:44
 msgid "Installs:"
 msgstr "Встановлень:"
 
-#: src/bz-stats-dialog.blp:37
+#: src/bz-stats-dialog.blp:53
 msgid "World"
 msgstr "Світ"
 
