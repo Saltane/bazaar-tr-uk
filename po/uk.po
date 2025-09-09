@@ -257,11 +257,11 @@ msgstr "Ініціалізовано за %0.2f сек"
 #: src/bz-application.c:1574
 #, fuzzy
 msgid "Checking for updates..."
-msgstr "Пошук оновлень"
+msgstr "Шукаємо оновлення"
 
 #: src/bz-application.c:1613
 msgid "Synchronizing..."
-msgstr ""
+msgstr "Синхронізуємо..."
 
 #: src/bz-browse-widget.blp:11 src/bz-flathub-page.blp:11
 #: src/bz-full-view.blp:10 src/bz-installed-page.blp:11 src/bz-window.blp:52
@@ -397,7 +397,7 @@ msgstr "Популярні"
 #, fuzzy
 msgctxt "Project URL Type"
 msgid "Flathub Link"
-msgstr "Flathub"
+msgstr "Посилання Flathub"
 
 #: src/bz-flatpak-entry.c:581
 msgctxt "Project URL Type"
