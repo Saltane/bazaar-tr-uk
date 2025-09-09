@@ -72,11 +72,11 @@ msgstr "Чекати на закінчення вводу, аби поперед
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:40
 msgid "Global Progress Bar Theme"
-msgstr ""
+msgstr "Загальний вигляд смужки поступу"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:41
 msgid "Describes the look of the global progress bar"
-msgstr ""
+msgstr "Описує вигляд загальної смужки поступу"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:45
 msgid "Saved Window Dimensions"
@@ -775,63 +775,63 @@ msgstr "Чекати на закінчення вводу, аби поперед
 
 #: src/bz-preferences-dialog.blp:41
 msgid "Global Progress Bar"
-msgstr ""
+msgstr "Загальна смужка поступу"
 
 #: src/bz-preferences-dialog.blp:44
 msgid "Theme"
-msgstr ""
+msgstr "Вигляд"
 
 #: src/bz-preferences-dialog.blp:45
 msgid "Choose a fun theme for the global progress bar!"
-msgstr ""
+msgstr "Оберіть цікавий зовнішній вигляд для смужки поступу!"
 
 #: src/bz-preferences-dialog.blp:48
 msgid "Accent Color"
-msgstr ""
+msgstr "Акцентний колір"
 
 #: src/bz-preferences-dialog.blp:49
 msgid "Pride Rainbow Flag"
-msgstr ""
+msgstr "Веселковий прапор"
 
 #: src/bz-preferences-dialog.blp:50
 msgid "Lesbian Pride Flag"
-msgstr ""
+msgstr "Лесбійський прапор"
 
 #: src/bz-preferences-dialog.blp:51
 msgid "Transgender Flag"
-msgstr ""
+msgstr "Трансґендерний прапор"
 
 #: src/bz-preferences-dialog.blp:52
 msgid "Nonbinary Flag"
-msgstr ""
+msgstr "Небінарний прапор"
 
 #: src/bz-preferences-dialog.blp:53
 msgid "Bisexual Flag"
-msgstr ""
+msgstr "Бісексуальний прапор"
 
 #: src/bz-preferences-dialog.blp:54
 msgid "Asexual Flag"
-msgstr ""
+msgstr "Асексуальний прапор"
 
 #: src/bz-preferences-dialog.blp:55
 msgid "Pansexual Flag"
-msgstr ""
+msgstr "Пансексуальний прапор"
 
 #: src/bz-preferences-dialog.blp:56
 msgid "Aromantic Flag"
-msgstr ""
+msgstr "Аромантичний прапор"
 
 #: src/bz-preferences-dialog.blp:57
 msgid "Genderfluid Flag"
-msgstr ""
+msgstr "Ґендерфлюїдний прапор"
 
 #: src/bz-preferences-dialog.blp:58
 msgid "Polysexual Flag"
-msgstr ""
+msgstr "Полісексуальний прапор"
 
 #: src/bz-preferences-dialog.blp:59
 msgid "Omnisexual Flag"
-msgstr ""
+msgstr "Омнісексуальний прапор"
 
 #: src/bz-search-widget.blp:69
 msgid "Search Apps"
@@ -849,9 +849,10 @@ msgstr "Копіювати посилання"
 msgid "Open Link"
 msgstr "Відкрити посилання"
 
+#: TODO: переглянути переклад.
 #: src/bz-stats-dialog.blp:26
 msgid "Timeline"
-msgstr ""
+msgstr "Стрічка подій"
 
 #: src/bz-stats-dialog.blp:31
 msgid "Installs:"
@@ -859,7 +860,7 @@ msgstr "Встановлень:"
 
 #: src/bz-stats-dialog.blp:37
 msgid "World"
-msgstr ""
+msgstr "Світ"
 
 #: src/bz-transaction-manager.c:1090
 #, c-format
@@ -1034,20 +1035,20 @@ msgstr "Наразі цього не можна зробити!"
 #: src/bz-window.c:1053
 #, c-format
 msgid "Install %s?"
-msgstr ""
+msgstr "Встановити %s?"
 
 #: src/bz-window.c:1056
 msgid "May install additional shared components"
-msgstr ""
+msgstr "Можуть бути встановлені додаткові компоненти"
 
 #: src/bz-window.c:1075
 #, c-format
 msgid "Remove %s?"
-msgstr ""
+msgstr "Видалити %s?"
 
 #: src/bz-window.c:1078
 msgid "Settings & user data will be kept"
-msgstr ""
+msgstr "Налаштування та користувацькі дані буде збережено"
 
 #: src/bz-window.c:1246
 msgid "Resume the execution of transactions"
@@ -1060,7 +1061,7 @@ msgstr "Призупинити виконання"
 #: src/bz-world-map.c:523
 #, c-format
 msgid "%s: %'u downloads"
-msgstr ""
+msgstr "%s: %'u завантажень"
 
 #: src/gtk/shortcuts-dialog.blp:6
 msgctxt "shortcut window"
