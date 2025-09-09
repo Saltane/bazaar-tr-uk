@@ -48,23 +48,23 @@ msgstr ""
 #: data/io.github.kolunmi.Bazaar.gschema.xml:11
 #: src/bz-preferences-dialog.blp:25
 msgid "Only Show Free Software"
-msgstr ""
+msgstr "Показувати лише вільні застосунки"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:12
 msgid "Hide proprietary software when searching"
-msgstr ""
+msgstr "Ховати власницькі (пропрієтарні) застосунки з пошуку"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:16
 msgid "Show Only Flathub Content"
-msgstr ""
+msgstr "Показувати лише вміст з Flathub"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:17
 msgid "Filter search results to only show applications available on Flathub"
-msgstr ""
+msgstr "Відсіювати надходження, що не походять з Flathub"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:21
 msgid "Debounce Search Inputs"
-msgstr ""
+msgstr "Чекати вводу"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:22
 #, fuzzy
@@ -325,7 +325,7 @@ msgstr "Копіювати зображення до буфера обміну"
 
 #: src/bz-decorated-screenshot.c:140 src/bz-share-dialog.c:62
 msgid "Copied!"
-msgstr ""
+msgstr "Скопійовано!"
 
 #: src/bz-entry-inspector.blp:5
 msgid "Entry Inspector"
@@ -474,7 +474,7 @@ msgstr "Звʼязок"
 #: src/bz-flatpak-entry.c:604
 msgctxt "Project URL Type"
 msgid "Source Code"
-msgstr ""
+msgstr "Початковий код"
 
 #: src/bz-flatpak-entry.c:609
 msgctxt "Project URL Type"
@@ -683,7 +683,7 @@ msgstr "Вподобань на сторінці розробки"
 
 #: src/bz-preferences-dialog.blp:17
 msgid "Not having a GitHub access token may trigger rate limits"
-msgstr ""
+msgstr "Відсутність токену доступу GitHub може призвести до обмеження Вашого зʼєднання з GitHub"
 
 #: src/bz-preferences-dialog.blp:22 src/bz-window.blp:287
 msgid "Search"
@@ -691,28 +691,28 @@ msgstr "Пошук"
 
 #: src/bz-preferences-dialog.blp:26
 msgid "Hide proprietary applications from search results"
-msgstr ""
+msgstr "Ховати власницькі (пропрієтарні) застосунки з пошуку"
 
 #: src/bz-preferences-dialog.blp:30
 msgid "Show Only Flathub Apps"
-msgstr ""
+msgstr "Показувати лише вміст з Flathub"
 
 #: src/bz-preferences-dialog.blp:31
 msgid "Limit search results to applications available on Flathub"
-msgstr ""
+msgstr "Відсіювати надходження, що не походять з Flathub"
 
 #: src/bz-preferences-dialog.blp:35
 msgid "Debounce Search Results"
-msgstr ""
+msgstr "Чекати вводу"
 
 #: src/bz-preferences-dialog.blp:36
 msgid "Wait for a brief pause to reduce system load"
-msgstr ""
+msgstr "Чекати на закінчення вводу, аби попередити миттєві надходження."
 
 #: src/bz-search-widget.blp:69
 #, fuzzy
 msgid "Search Apps"
-msgstr "Налаштування пошуку"
+msgstr "Шукати застосунки"
 
 #: src/bz-share-dialog.blp:13
 msgid "Share"
@@ -725,7 +725,7 @@ msgstr "Копіювати посилання"
 
 #: src/bz-share-dialog.c:116
 msgid "Open Link"
-msgstr ""
+msgstr "Відкрити посилання"
 
 #: src/bz-stats-dialog.blp:15
 msgid "Downloads Over Time"
