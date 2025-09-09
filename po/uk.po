@@ -119,7 +119,7 @@ msgstr ""
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:47
 #, fuzzy
 msgid "The home view displaying Flathub apps"
-msgstr "Домашня сторінка із застосунками та катеґоріями з Flathub"
+msgstr "Домашня сторінка із застосунками з Flathub"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:51
 msgid "Nucleus app page"
@@ -899,11 +899,11 @@ msgstr "Завершено за %.02f сек"
 
 #: src/bz-transaction-view.blp:94
 msgid "App Add-on"
-msgstr ""
+msgstr "Розширення"
 
 #: src/bz-transaction-view.blp:119
 msgid "Runtime"
-msgstr ""
+msgstr "Середовище виконання"
 
 #: src/bz-transaction-view.blp:145 src/bz-transaction-view.blp:171
 msgid "Install Size"
@@ -952,7 +952,7 @@ msgstr "Крім того, буде оновлено %d середовищ ви�
 
 #: src/bz-window.blp:80
 msgid "Tasks"
-msgstr ""
+msgstr "Дії"
 
 #: src/bz-window.blp:99 src/bz-window.blp:418
 msgid "Toggle transaction sidebar"
