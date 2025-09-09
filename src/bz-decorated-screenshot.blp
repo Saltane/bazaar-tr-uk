@@ -8,58 +8,37 @@ template $BzDecoratedScreenshot: Adw.Bin {
     };
 
     [overlay]
-    Revealer revealer {
-      transition-type: crossfade;
+    Box buttons {
+      margin-start: 20;
+      margin-end: 20;
+      margin-top: 20;
+      margin-bottom: 20;
       
-      child: Frame {
+      orientation: vertical;
+      spacing: 5;
+      halign: start;
+      valign: start;
+      sensitive: bind template.async-texture as <$BzAsyncTexture>.loaded;
+
+      Button {
         styles [
-          "card",
-          "view",
+          "osd",
+          "circular",
         ]
         
-        halign: center;
-        valign: center;
-        sensitive: bind template.async-texture as <$BzAsyncTexture>.loaded;
+        icon-name: "external-link-symbolic";
+        clicked => $open_externally_clicked(template);
+      }
+
+      Button copy {
+        styles [
+          "osd",
+          "circular",
+        ]
         
-        child: Box {
-          margin-start: 5;
-          margin-end: 5;
-          margin-top: 5;
-          margin-bottom: 5;
-          orientation: vertical;
-          spacing: 5;
-
-          Button {
-            child: Box {
-              orientation: horizontal;
-              spacing: 10;
-
-              Image {
-                icon-name: "external-link-symbolic";
-              }
-              Label {
-                label: _("Open in Image Viewer");
-              }
-            };
-            clicked => $open_externally_clicked(template);
-          }
-
-          Button copy {
-            child: Box {
-              orientation: horizontal;
-              spacing: 10;
-
-              Image {
-                icon-name: "copy-symbolic";
-              }
-              Label {
-                label: _("Copy to clipboard");
-              }
-            };
-            clicked => $copy_clicked(template);
-          }
-        };
-      };
+        icon-name: "copy-symbolic";
+        clicked => $copy_clicked(template);
+      }
     }
   }
 }

@@ -94,8 +94,10 @@ BZ_DEFINE_DATA (
       BzWindow     *self;
       BzEntryGroup *group;
       gboolean      remove;
+      GtkWidget    *source;
     },
-    BZ_RELEASE_DATA (group, g_object_unref))
+    BZ_RELEASE_DATA (group, g_object_unref);
+    BZ_RELEASE_DATA (source, g_object_unref))
 
 static void
 install_confirmation_response (AdwAlertDialog *alert,
@@ -108,15 +110,17 @@ update_dialog_response (BzUpdateDialog *dialog,
                         BzWindow       *self);
 
 static void
-transact (BzWindow *self,
-          BzEntry  *entry,
-          gboolean  remove);
+transact (BzWindow  *self,
+          BzEntry   *entry,
+          gboolean   remove,
+          GtkWidget *source);
 
 static void
 try_transact (BzWindow     *self,
               BzEntry      *entry,
               BzEntryGroup *group,
-              gboolean      remove);
+              gboolean      remove,
+              GtkWidget    *source);
 
 static DexFuture *
 ready_to_transact (DexFuture    *future,
@@ -253,21 +257,23 @@ search_widget_select_cb (BzWindow       *self,
       NULL);
 
   remove = installable == 0 && removable > 0;
-  try_transact (self, NULL, group, remove);
+  try_transact (self, NULL, group, remove, NULL);
 }
 
 static void
 full_view_install_cb (BzWindow   *self,
+                      GtkWidget  *source,
                       BzFullView *view)
 {
-  try_transact (self, NULL, bz_full_view_get_entry_group (view), FALSE);
+  try_transact (self, NULL, bz_full_view_get_entry_group (view), FALSE, source);
 }
 
 static void
 full_view_remove_cb (BzWindow   *self,
+                     GtkWidget  *source,
                      BzFullView *view)
 {
-  try_transact (self, NULL, bz_full_view_get_entry_group (view), TRUE);
+  try_transact (self, NULL, bz_full_view_get_entry_group (view), TRUE, source);
 }
 
 static void
@@ -275,7 +281,7 @@ installed_page_install_cb (BzWindow   *self,
                            BzEntry    *entry,
                            BzFullView *view)
 {
-  try_transact (self, entry, NULL, FALSE);
+  try_transact (self, entry, NULL, FALSE, NULL);
 }
 
 static void
@@ -283,7 +289,7 @@ installed_page_remove_cb (BzWindow   *self,
                           BzEntry    *entry,
                           BzFullView *view)
 {
-  try_transact (self, entry, NULL, TRUE);
+  try_transact (self, entry, NULL, TRUE, NULL);
 }
 
 static void
@@ -594,6 +600,7 @@ install_confirmation_response (AdwAlertDialog *alert,
 {
   gboolean should_install               = FALSE;
   gboolean should_remove                = FALSE;
+  g_autoptr (GtkWidget) cb_source       = NULL;
   g_autoptr (BzEntry) cb_entry          = NULL;
   g_autoptr (BzEntryGroup) cb_group     = NULL;
   g_autoptr (GListModel) cb_group_model = NULL;
@@ -601,6 +608,7 @@ install_confirmation_response (AdwAlertDialog *alert,
   should_install = g_strcmp0 (response, "install") == 0;
   should_remove  = g_strcmp0 (response, "remove") == 0;
 
+  cb_source      = g_object_steal_data (G_OBJECT (alert), "source");
   cb_entry       = g_object_steal_data (G_OBJECT (alert), "entry");
   cb_group       = g_object_steal_data (G_OBJECT (alert), "group");
   cb_group_model = g_object_steal_data (G_OBJECT (alert), "model");
@@ -631,11 +639,11 @@ install_confirmation_response (AdwAlertDialog *alert,
                 }
 
               if (entry != NULL)
-                transact (self, entry, should_remove);
+                transact (self, entry, should_remove, cb_source);
             }
         }
       else if (cb_entry != NULL)
-        transact (self, cb_entry, should_remove);
+        transact (self, cb_entry, should_remove, cb_source);
     }
 }
 
@@ -780,9 +788,10 @@ bz_window_show_group (BzWindow     *self,
 }
 
 static void
-transact (BzWindow *self,
-          BzEntry  *entry,
-          gboolean  remove)
+transact (BzWindow  *self,
+          BzEntry   *entry,
+          gboolean   remove,
+          GtkWidget *source)
 {
   g_autoptr (BzTransaction) transaction = NULL;
   GdkPaintable *icon                    = NULL;
@@ -802,6 +811,9 @@ transact (BzWindow *self,
       bz_state_info_get_transaction_manager (self->state),
       transaction);
 
+  if (source == NULL)
+    source = GTK_WIDGET (self->main_stack);
+
   icon = bz_entry_get_icon_paintable (entry);
   if (icon != NULL)
     {
@@ -809,8 +821,8 @@ transact (BzWindow *self,
 
       comet = g_object_new (
           BZ_TYPE_COMET,
-          "from", self->main_stack,
-          "to", self->toggle_transactions,
+          "from", remove ? GTK_WIDGET (self->toggle_transactions) : source,
+          "to", remove ? source : GTK_WIDGET (self->toggle_transactions),
           "paintable", icon,
           NULL);
       bz_comet_overlay_spawn (self->comet_overlay, comet);
@@ -823,7 +835,8 @@ static void
 try_transact (BzWindow     *self,
               BzEntry      *entry,
               BzEntryGroup *group,
-              gboolean      remove)
+              gboolean      remove,
+              GtkWidget    *source)
 {
   g_autoptr (DexFuture) base_future = NULL;
   g_autoptr (TransactData) data     = NULL;
@@ -847,6 +860,7 @@ try_transact (BzWindow     *self,
   data->self   = self;
   data->group  = group != NULL ? g_object_ref (group) : NULL;
   data->remove = remove;
+  data->source = source != NULL ? g_object_ref (source) : NULL;
 
   dex_clear (&self->transact_future);
   self->transact_future = dex_future_finally (
@@ -862,6 +876,7 @@ ready_to_transact (DexFuture    *future,
   BzWindow     *self             = data->self;
   BzEntryGroup *group            = data->group;
   gboolean      remove           = data->remove;
+  GtkWidget    *source           = data->source;
   g_autoptr (GError) local_error = NULL;
   const GValue *value            = NULL;
 
@@ -880,7 +895,13 @@ ready_to_transact (DexFuture    *future,
         entry = g_value_dup_object (value);
 
       alert = adw_alert_dialog_new (NULL, NULL);
-      adw_alert_dialog_format_heading (
+      if (source != NULL)
+        g_object_set_data_full (
+            G_OBJECT (alert),
+            "source", g_object_ref (source),
+            g_object_unref);
+
+      adw_alert_dialog_set_heading (
           ADW_ALERT_DIALOG (alert), _ ("Confirm Action"));
 
       if (model != NULL)

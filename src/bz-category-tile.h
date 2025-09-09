@@ -1,6 +1,6 @@
-/* bz-transaction-view.h
+/* bz-category-tile.h
  *
- * Copyright 2025 Adam Masciola
+ * Copyright 2025 Adam Masciola, Alexander Vanhee
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,25 +20,23 @@
 
 #pragma once
 
-#include <adwaita.h>
-
-#include "bz-transaction.h"
+#include <gtk/gtk.h>
+#include "bz-flathub-category.h"
 
 G_BEGIN_DECLS
 
-#define BZ_TYPE_TRANSACTION_VIEW (bz_transaction_view_get_type ())
-G_DECLARE_FINAL_TYPE (BzTransactionView, bz_transaction_view, BZ, TRANSACTION_VIEW, AdwBin)
+#define BZ_TYPE_CATEGORY_TILE (bz_category_tile_get_type ())
 
-BzTransactionView *
-bz_transaction_view_new (void);
+G_DECLARE_FINAL_TYPE (BzCategoryTile, bz_category_tile, BZ, CATEGORY_TILE, GtkButton)
 
-BzTransaction *
-bz_transaction_view_get_transaction (BzTransactionView *self);
+GtkWidget *
+bz_category_tile_new (void);
+
+BzFlathubCategory *
+bz_category_tile_get_category (BzCategoryTile *self);
 
 void
-bz_transaction_view_set_transaction (BzTransactionView *self,
-                                     BzTransaction     *transaction);
+bz_category_tile_set_category (BzCategoryTile    *self,
+                               BzFlathubCategory *category);
 
 G_END_DECLS
-
-/* End of bz-transaction-view.h */

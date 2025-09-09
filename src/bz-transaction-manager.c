@@ -22,6 +22,8 @@
 
 #include <glib/gi18n.h>
 
+#include "bz-backend-transaction-op-payload.h"
+#include "bz-backend-transaction-op-progress-payload.h"
 #include "bz-env.h"
 #include "bz-error.h"
 #include "bz-transaction-manager.h"
@@ -91,11 +93,13 @@ BZ_DEFINE_DATA (
       BzTransactionManager *self;
       BzBackend            *backend;
       BzTransaction        *transaction;
+      DexChannel           *channel;
       GTimer               *timer;
       GCancellable         *cancellable;
     },
     BZ_RELEASE_DATA (backend, g_object_unref);
     BZ_RELEASE_DATA (transaction, bz_transaction_dismiss);
+    BZ_RELEASE_DATA (channel, dex_unref);
     BZ_RELEASE_DATA (timer, g_timer_destroy);
     BZ_RELEASE_DATA (cancellable, g_object_unref));
 
@@ -108,15 +112,6 @@ BZ_DEFINE_DATA (
     },
     BZ_RELEASE_DATA (id, g_free);
     BZ_RELEASE_DATA (dialog, g_object_unref));
-
-static void
-transaction_progress (BzEntry            *entry,
-                      const char         *status,
-                      gboolean            is_estimating,
-                      double              progress,
-                      guint64             bytes_transferred,
-                      guint64             start_time,
-                      QueuedScheduleData *data);
 
 static DexFuture *
 transaction_fiber (QueuedScheduleData *data);
@@ -488,43 +483,23 @@ bz_transaction_manager_clear_finished (BzTransactionManager *self)
     g_object_notify_by_pspec (G_OBJECT (self), props[PROP_HAS_TRANSACTIONS]);
 }
 
-static void
-transaction_progress (BzEntry            *entry,
-                      const char         *status,
-                      gboolean            is_estimating,
-                      double              progress,
-                      guint64             bytes_transferred,
-                      guint64             start_time,
-                      QueuedScheduleData *data)
-{
-  BzTransactionManager *self        = data->self;
-  BzTransaction        *transaction = data->transaction;
-
-  g_object_set (
-      transaction,
-      "pending", is_estimating,
-      "status", status,
-      "progress", progress,
-      NULL);
-
-  self->current_progress = progress;
-  g_object_notify_by_pspec (G_OBJECT (self), props[PROP_CURRENT_PROGRESS]);
-}
-
 static DexFuture *
 transaction_fiber (QueuedScheduleData *data)
 {
   BzTransactionManager *self        = data->self;
   BzBackend            *backend     = data->backend;
   BzTransaction        *transaction = data->transaction;
+  DexChannel           *channel     = data->channel;
   // GTimer               *timer       = data->timer;
   GCancellable *cancellable      = data->cancellable;
-  guint         n_installs       = 0;
-  guint         n_updates        = 0;
-  guint         n_removals       = 0;
   g_autoptr (GError) local_error = NULL;
   gboolean result                = FALSE;
+  guint    n_installs            = 0;
+  guint    n_updates             = 0;
+  guint    n_removals            = 0;
   g_autoptr (GListStore) store   = NULL;
+  g_autoptr (DexFuture) future   = NULL;
+  g_autoptr (GHashTable) op_set  = NULL;
 
   g_object_set (
       transaction,
@@ -613,15 +588,65 @@ transaction_fiber (QueuedScheduleData *data)
   store = g_list_store_new (BZ_TYPE_TRANSACTION);
   g_list_store_append (store, transaction);
 
-  result = dex_await (
-      bz_backend_merge_and_schedule_transactions (
-          backend,
-          G_LIST_MODEL (store),
-          (BzBackendTransactionProgressFunc) transaction_progress,
-          cancellable,
-          queued_schedule_data_ref (data),
-          queued_schedule_data_unref),
-      &local_error);
+  future = bz_backend_merge_and_schedule_transactions (
+      backend,
+      G_LIST_MODEL (store),
+      channel,
+      cancellable);
+
+  op_set = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
+  for (;;)
+    {
+      g_autoptr (GObject) object = NULL;
+
+      object = dex_await_object (dex_channel_receive (channel), NULL);
+      if (object == NULL)
+        break;
+
+      if (BZ_IS_BACKEND_TRANSACTION_OP_PAYLOAD (object))
+        {
+          if (g_hash_table_contains (op_set, object))
+            {
+              bz_transaction_finish_task (
+                  transaction, BZ_BACKEND_TRANSACTION_OP_PAYLOAD (object));
+              g_hash_table_remove (op_set, object);
+            }
+          else
+            {
+              bz_transaction_add_task (
+                  transaction, BZ_BACKEND_TRANSACTION_OP_PAYLOAD (object));
+              g_hash_table_add (op_set, g_object_ref (object));
+            }
+        }
+      else if (BZ_IS_BACKEND_TRANSACTION_OP_PROGRESS_PAYLOAD (object))
+        {
+          const char *status         = NULL;
+          gboolean    is_estimating  = FALSE;
+          double      total_progress = 0.0;
+
+          bz_transaction_update_task (
+              transaction, BZ_BACKEND_TRANSACTION_OP_PROGRESS_PAYLOAD (object));
+
+          status = bz_backend_transaction_op_progress_payload_get_status (
+              BZ_BACKEND_TRANSACTION_OP_PROGRESS_PAYLOAD (object));
+          is_estimating = bz_backend_transaction_op_progress_payload_get_is_estimating (
+              BZ_BACKEND_TRANSACTION_OP_PROGRESS_PAYLOAD (object));
+          total_progress = bz_backend_transaction_op_progress_payload_get_total_progress (
+              BZ_BACKEND_TRANSACTION_OP_PROGRESS_PAYLOAD (object));
+
+          g_object_set (
+              transaction,
+              "pending", is_estimating,
+              "status", status,
+              "progress", total_progress,
+              NULL);
+
+          self->current_progress = total_progress;
+          g_object_notify_by_pspec (G_OBJECT (self), props[PROP_CURRENT_PROGRESS]);
+        }
+    }
+
+  result = dex_await (g_steal_pointer (&future), &local_error);
   if (!result)
     return dex_future_new_for_error (g_steal_pointer (&local_error));
 
@@ -1090,6 +1115,7 @@ dispatch_next (BzTransactionManager *self)
     goto done;
 
   data              = g_queue_pop_tail (&self->queue);
+  data->channel     = dex_channel_new (0);
   data->timer       = g_timer_new ();
   data->cancellable = g_cancellable_new ();
 

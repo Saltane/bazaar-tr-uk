@@ -23,6 +23,8 @@
 
 #include <xmlb.h>
 
+#include "bz-backend-transaction-op-payload.h"
+#include "bz-backend-transaction-op-progress-payload.h"
 #include "bz-backend.h"
 #include "bz-env.h"
 #include "bz-flatpak-private.h"
@@ -145,24 +147,24 @@ BZ_DEFINE_DATA (
     transaction,
     Transaction,
     {
-      GCancellable                    *cancellable;
-      BzFlatpakInstance               *instance;
-      GPtrArray                       *installs;
-      GPtrArray                       *updates;
-      GPtrArray                       *removals;
-      GHashTable                      *ref_to_entry_hash;
-      BzBackendTransactionProgressFunc progress_func;
-      gpointer                         user_data;
-      GDestroyNotify                   destroy_user_data;
-      int                              n_operations;
-      int                              n_finished_operations;
+      GCancellable      *cancellable;
+      BzFlatpakInstance *instance;
+      GPtrArray         *installs;
+      GPtrArray         *updates;
+      GPtrArray         *removals;
+      DexChannel        *channel;
+      GPtrArray         *send_futures;
+      GHashTable        *ref_to_entry_hash;
+      int                n_operations;
+      int                n_finished_operations;
     },
     BZ_RELEASE_DATA (cancellable, g_object_unref);
     BZ_RELEASE_DATA (installs, g_ptr_array_unref);
     BZ_RELEASE_DATA (updates, g_ptr_array_unref);
     BZ_RELEASE_DATA (removals, g_ptr_array_unref);
-    BZ_RELEASE_DATA (ref_to_entry_hash, g_hash_table_unref);
-    BZ_RELEASE_DATA (user_data, self->destroy_user_data))
+    BZ_RELEASE_DATA (channel, dex_unref);
+    BZ_RELEASE_DATA (send_futures, g_ptr_array_unref);
+    BZ_RELEASE_DATA (ref_to_entry_hash, g_hash_table_unref));
 static DexFuture *
 transaction_fiber (TransactionData *data);
 static void
@@ -170,6 +172,21 @@ transaction_new_operation (FlatpakTransaction          *object,
                            FlatpakTransactionOperation *operation,
                            FlatpakTransactionProgress  *progress,
                            TransactionData             *data);
+static void
+transaction_operation_done (FlatpakTransaction          *object,
+                            FlatpakTransactionOperation *operation,
+                            gchar                       *commit,
+                            gint                         result,
+                            TransactionData             *data);
+static gboolean
+transaction_operation_error (FlatpakTransaction          *object,
+                             FlatpakTransactionOperation *operation,
+                             GError                      *error,
+                             gint                         details,
+                             TransactionData             *data);
+gboolean
+transaction_ready (FlatpakTransaction *object,
+                   TransactionData    *data);
 
 static BzFlatpakEntry *
 find_entry_from_operation (TransactionData             *data,
@@ -180,36 +197,16 @@ BZ_DEFINE_DATA (
     transaction_operation,
     TransactionOperation,
     {
-      TransactionData *parent;
-      BzFlatpakEntry  *entry;
-      guint            timeout_handle;
+      TransactionData               *parent;
+      BzFlatpakEntry                *entry;
+      BzBackendTransactionOpPayload *op;
     },
     BZ_RELEASE_DATA (parent, transaction_data_unref);
     BZ_RELEASE_DATA (entry, g_object_unref);
-    BZ_RELEASE_UTAG (timeout_handle, g_source_remove))
+    BZ_RELEASE_DATA (op, g_object_unref));
 static void
 transaction_progress_changed (FlatpakTransactionProgress *object,
                               TransactionOperationData   *data);
-
-BZ_DEFINE_DATA (
-    idle_transaction,
-    IdleTransaction,
-    {
-      BzFlatpakInstance        *hold;
-      TransactionOperationData *parent;
-      char                     *status;
-      gboolean                  is_estimating;
-      double                    progress;
-      guint64                   bytes_transferred;
-      guint64                   start_time;
-    },
-    BZ_RELEASE_DATA (hold, g_object_unref);
-    BZ_RELEASE_DATA (parent, transaction_operation_data_unref);
-    BZ_RELEASE_DATA (status, g_free));
-static gboolean
-transaction_progress_idle (IdleTransactionData *data);
-static gboolean
-transaction_progress_timeout (IdleTransactionData *data);
 
 BZ_DEFINE_DATA (
     add_cache_dir,
@@ -352,17 +349,15 @@ bz_flatpak_instance_retrieve_update_ids (BzBackend    *backend,
 }
 
 static DexFuture *
-bz_flatpak_instance_schedule_transaction (BzBackend                       *backend,
-                                          BzEntry                        **installs,
-                                          guint                            n_installs,
-                                          BzEntry                        **updates,
-                                          guint                            n_updates,
-                                          BzEntry                        **removals,
-                                          guint                            n_removals,
-                                          BzBackendTransactionProgressFunc progress_func,
-                                          GCancellable                    *cancellable,
-                                          gpointer                         user_data,
-                                          GDestroyNotify                   destroy_user_data)
+bz_flatpak_instance_schedule_transaction (BzBackend    *backend,
+                                          BzEntry     **installs,
+                                          guint         n_installs,
+                                          BzEntry     **updates,
+                                          guint         n_updates,
+                                          BzEntry     **removals,
+                                          guint         n_removals,
+                                          DexChannel   *channel,
+                                          GCancellable *cancellable)
 {
   BzFlatpakInstance *self          = BZ_FLATPAK_INSTANCE (backend);
   BzFlatpakEntry   **installs_dup  = NULL;
@@ -411,12 +406,11 @@ bz_flatpak_instance_schedule_transaction (BzBackend                       *backe
   data->installs              = installs_dup != NULL ? g_ptr_array_new_take ((gpointer *) installs_dup, n_installs, g_object_unref) : NULL;
   data->updates               = updates_dup != NULL ? g_ptr_array_new_take ((gpointer *) updates_dup, n_updates, g_object_unref) : NULL;
   data->removals              = removals_dup != NULL ? g_ptr_array_new_take ((gpointer *) removals_dup, n_removals, g_object_unref) : NULL;
+  data->channel               = channel != NULL ? dex_ref (channel) : NULL;
+  data->send_futures          = g_ptr_array_new_with_free_func (dex_unref);
   data->ref_to_entry_hash     = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
-  data->progress_func         = progress_func;
-  data->user_data             = user_data;
-  data->destroy_user_data     = destroy_user_data;
   data->n_operations          = 0;
-  data->n_finished_operations = -1;
+  data->n_finished_operations = 0;
 
   return dex_scheduler_spawn (
       self->scheduler,
@@ -1439,6 +1433,7 @@ transaction_fiber (TransactionData *data)
   GPtrArray         *installations                  = data->installs;
   GPtrArray         *updates                        = data->updates;
   GPtrArray         *removals                       = data->removals;
+  DexChannel        *channel                        = data->channel;
   g_autoptr (GError) local_error                    = NULL;
   g_autoptr (FlatpakTransaction) system_transaction = NULL;
   g_autoptr (FlatpakTransaction) user_transaction   = NULL;
@@ -1450,11 +1445,14 @@ transaction_fiber (TransactionData *data)
       system_transaction = flatpak_transaction_new_for_installation (
           instance->system, cancellable, &local_error);
       if (system_transaction == NULL)
-        return dex_future_new_reject (
-            BZ_FLATPAK_ERROR,
-            BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
-            "Failed to initialize potential transaction for system installation: %s",
-            local_error->message);
+        {
+          dex_channel_close_send (channel);
+          return dex_future_new_reject (
+              BZ_FLATPAK_ERROR,
+              BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
+              "Failed to initialize potential transaction for system installation: %s",
+              local_error->message);
+        }
     }
 
   if (instance->user != NULL)
@@ -1462,11 +1460,14 @@ transaction_fiber (TransactionData *data)
       user_transaction = flatpak_transaction_new_for_installation (
           instance->user, cancellable, &local_error);
       if (user_transaction == NULL)
-        return dex_future_new_reject (
-            BZ_FLATPAK_ERROR,
-            BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
-            "Failed to initialize potential transaction for system installation: %s",
-            local_error->message);
+        {
+          dex_channel_close_send (channel);
+          return dex_future_new_reject (
+              BZ_FLATPAK_ERROR,
+              BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
+              "Failed to initialize potential transaction for system installation: %s",
+              local_error->message);
+        }
     }
 
   if (installations != NULL)
@@ -1485,12 +1486,15 @@ transaction_fiber (TransactionData *data)
 
           if ((is_user && instance->user == NULL) ||
               (!is_user && instance->system == NULL))
-            return dex_future_new_reject (
-                BZ_FLATPAK_ERROR,
-                BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
-                "Failed to append the update of %s to transaction "
-                "because its installation couldn't be found",
-                ref_fmt);
+            {
+              dex_channel_close_send (channel);
+              return dex_future_new_reject (
+                  BZ_FLATPAK_ERROR,
+                  BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
+                  "Failed to append the update of %s to transaction "
+                  "because its installation couldn't be found",
+                  ref_fmt);
+            }
 
           result = flatpak_transaction_add_install (
               is_user
@@ -1501,12 +1505,15 @@ transaction_fiber (TransactionData *data)
               NULL,
               &local_error);
           if (!result)
-            return dex_future_new_reject (
-                BZ_FLATPAK_ERROR,
-                BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
-                "Failed to append the installation of %s to transaction: %s",
-                ref_fmt,
-                local_error->message);
+            {
+              dex_channel_close_send (channel);
+              return dex_future_new_reject (
+                  BZ_FLATPAK_ERROR,
+                  BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
+                  "Failed to append the installation of %s to transaction: %s",
+                  ref_fmt,
+                  local_error->message);
+            }
 
           g_hash_table_replace (data->ref_to_entry_hash,
                                 g_steal_pointer (&ref_fmt),
@@ -1530,12 +1537,15 @@ transaction_fiber (TransactionData *data)
 
           if ((is_user && instance->user == NULL) ||
               (!is_user && instance->system == NULL))
-            return dex_future_new_reject (
-                BZ_FLATPAK_ERROR,
-                BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
-                "Failed to append the update of %s to transaction "
-                "because its installation couldn't be found",
-                ref_fmt);
+            {
+              dex_channel_close_send (channel);
+              return dex_future_new_reject (
+                  BZ_FLATPAK_ERROR,
+                  BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
+                  "Failed to append the update of %s to transaction "
+                  "because its installation couldn't be found",
+                  ref_fmt);
+            }
 
           result = flatpak_transaction_add_update (
               is_user
@@ -1546,12 +1556,15 @@ transaction_fiber (TransactionData *data)
               NULL,
               &local_error);
           if (!result)
-            return dex_future_new_reject (
-                BZ_FLATPAK_ERROR,
-                BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
-                "Failed to append the update of %s to transaction: %s",
-                ref_fmt,
-                local_error->message);
+            {
+              dex_channel_close_send (channel);
+              return dex_future_new_reject (
+                  BZ_FLATPAK_ERROR,
+                  BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
+                  "Failed to append the update of %s to transaction: %s",
+                  ref_fmt,
+                  local_error->message);
+            }
 
           g_hash_table_replace (data->ref_to_entry_hash,
                                 g_steal_pointer (&ref_fmt),
@@ -1575,12 +1588,15 @@ transaction_fiber (TransactionData *data)
 
           if ((is_user && instance->user == NULL) ||
               (!is_user && instance->system == NULL))
-            return dex_future_new_reject (
-                BZ_FLATPAK_ERROR,
-                BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
-                "Failed to append the removal of %s to transaction "
-                "because its installation couldn't be found",
-                ref_fmt);
+            {
+              dex_channel_close_send (channel);
+              return dex_future_new_reject (
+                  BZ_FLATPAK_ERROR,
+                  BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
+                  "Failed to append the removal of %s to transaction "
+                  "because its installation couldn't be found",
+                  ref_fmt);
+            }
 
           result = flatpak_transaction_add_uninstall (
               is_user
@@ -1589,12 +1605,15 @@ transaction_fiber (TransactionData *data)
               ref_fmt,
               &local_error);
           if (!result)
-            return dex_future_new_reject (
-                BZ_FLATPAK_ERROR,
-                BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
-                "Failed to append the removal of %s to transaction: %s",
-                ref_fmt,
-                local_error->message);
+            {
+              dex_channel_close_send (channel);
+              return dex_future_new_reject (
+                  BZ_FLATPAK_ERROR,
+                  BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
+                  "Failed to append the removal of %s to transaction: %s",
+                  ref_fmt,
+                  local_error->message);
+            }
 
           g_hash_table_replace (data->ref_to_entry_hash,
                                 g_steal_pointer (&ref_fmt),
@@ -1606,28 +1625,48 @@ transaction_fiber (TransactionData *data)
       !flatpak_transaction_is_empty (system_transaction))
     {
       g_signal_connect (system_transaction, "new-operation", G_CALLBACK (transaction_new_operation), data);
+      g_signal_connect (system_transaction, "operation-done", G_CALLBACK (transaction_operation_done), data);
+      g_signal_connect (system_transaction, "operation-error", G_CALLBACK (transaction_operation_error), data);
+      g_signal_connect (system_transaction, "ready", G_CALLBACK (transaction_ready), data);
+
       result = flatpak_transaction_run (system_transaction, cancellable, &local_error);
       if (!result)
-        return dex_future_new_reject (
-            BZ_FLATPAK_ERROR,
-            BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
-            "Failed to run flatpak transaction on system installation: %s",
-            local_error->message);
+        {
+          dex_channel_close_send (channel);
+          return dex_future_new_reject (
+              BZ_FLATPAK_ERROR,
+              BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
+              "Failed to run flatpak transaction on system installation: %s",
+              local_error->message);
+        }
     }
 
   if (user_transaction != NULL &&
       !flatpak_transaction_is_empty (user_transaction))
     {
       g_signal_connect (user_transaction, "new-operation", G_CALLBACK (transaction_new_operation), data);
+      g_signal_connect (user_transaction, "operation-done", G_CALLBACK (transaction_operation_done), data);
+      g_signal_connect (user_transaction, "operation-error", G_CALLBACK (transaction_operation_error), data);
+      g_signal_connect (user_transaction, "ready", G_CALLBACK (transaction_ready), data);
+
       result = flatpak_transaction_run (user_transaction, cancellable, &local_error);
       if (!result)
-        return dex_future_new_reject (
-            BZ_FLATPAK_ERROR,
-            BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
-            "Failed to run flatpak transaction on user installation: %s",
-            local_error->message);
+        {
+          dex_channel_close_send (channel);
+          return dex_future_new_reject (
+              BZ_FLATPAK_ERROR,
+              BZ_FLATPAK_ERROR_TRANSACTION_FAILURE,
+              "Failed to run flatpak transaction on user installation: %s",
+              local_error->message);
+        }
     }
 
+  dex_await (dex_future_allv (
+                 (DexFuture *const *) data->send_futures->pdata,
+                 data->send_futures->len),
+             NULL);
+
+  dex_channel_close_send (channel);
   return dex_future_new_true ();
 }
 
@@ -1638,20 +1677,38 @@ transaction_new_operation (FlatpakTransaction          *transaction,
                            TransactionData             *data)
 {
   BzFlatpakEntry *entry                               = NULL;
+  g_autoptr (BzBackendTransactionOpPayload) payload   = NULL;
   g_autoptr (TransactionOperationData) operation_data = NULL;
 
-  data->n_finished_operations++;
-
-  if (data->progress_func == NULL)
+  if (data->channel == NULL)
     return;
 
-  flatpak_transaction_progress_set_update_frequency (progress, 150);
+  flatpak_transaction_progress_set_update_frequency (progress, 100);
   entry = find_entry_from_operation (data, operation, &data->n_operations);
 
-  operation_data                 = transaction_operation_data_new ();
-  operation_data->parent         = transaction_data_ref (data);
-  operation_data->entry          = entry != NULL ? g_object_ref (entry) : NULL;
-  operation_data->timeout_handle = 0;
+  payload = bz_backend_transaction_op_payload_new ();
+  bz_backend_transaction_op_payload_set_name (
+      payload, flatpak_transaction_operation_get_ref (operation));
+  bz_backend_transaction_op_payload_set_download_size (
+      payload, flatpak_transaction_operation_get_download_size (operation));
+  bz_backend_transaction_op_payload_set_installed_size (
+      payload, flatpak_transaction_operation_get_installed_size (operation));
+
+  g_ptr_array_add (
+      data->send_futures,
+      dex_channel_send (
+          data->channel,
+          dex_future_new_for_object (payload)));
+
+  g_object_set_data_full (
+      G_OBJECT (operation),
+      "payload", g_object_ref (payload),
+      g_object_unref);
+
+  operation_data         = transaction_operation_data_new ();
+  operation_data->parent = transaction_data_ref (data);
+  operation_data->entry  = entry != NULL ? g_object_ref (entry) : NULL;
+  operation_data->op     = g_object_ref (payload);
 
   g_signal_connect_data (
       progress, "changed",
@@ -1659,6 +1716,51 @@ transaction_new_operation (FlatpakTransaction          *transaction,
       transaction_operation_data_ref (operation_data),
       transaction_operation_data_unref_closure,
       G_CONNECT_DEFAULT);
+}
+
+static void
+transaction_operation_done (FlatpakTransaction          *object,
+                            FlatpakTransactionOperation *operation,
+                            gchar                       *commit,
+                            gint                         result,
+                            TransactionData             *data)
+{
+  g_autoptr (BzBackendTransactionOpPayload) payload = NULL;
+
+  data->n_finished_operations++;
+
+  payload = g_object_steal_data (G_OBJECT (operation), "payload");
+  if (payload != NULL)
+    g_ptr_array_add (
+        data->send_futures,
+        dex_channel_send (
+            data->channel,
+            dex_future_new_for_object (payload)));
+}
+
+static gboolean
+transaction_operation_error (FlatpakTransaction          *object,
+                             FlatpakTransactionOperation *operation,
+                             GError                      *error,
+                             gint                         details,
+                             TransactionData             *data)
+{
+  /* `FLATPAK_TRANSACTION_ERROR_DETAILS_NON_FATAL` is the only
+     possible value of `details` */
+
+  return TRUE;
+}
+
+gboolean
+transaction_ready (FlatpakTransaction *object,
+                   TransactionData    *data)
+{
+  g_autolist (GObject) operations = NULL;
+
+  operations = flatpak_transaction_get_operations (object);
+  data->n_operations += g_list_length (operations);
+
+  return TRUE;
 }
 
 static BzFlatpakEntry *
@@ -1669,19 +1771,19 @@ find_entry_from_operation (TransactionData             *data,
   GPtrArray *related_to_ops = NULL;
 
   related_to_ops = flatpak_transaction_operation_get_related_to_ops (operation);
-  /* count all deps if applicable */
-  if (n_operations != NULL && related_to_ops != NULL)
-    {
-      *n_operations += related_to_ops->len;
+  // /* count all deps if applicable */
+  // if (n_operations != NULL && related_to_ops != NULL)
+  //   {
+  //     *n_operations += related_to_ops->len;
 
-      for (guint i = 0; i < related_to_ops->len; i++)
-        {
-          FlatpakTransactionOperation *related_op = NULL;
+  //     for (guint i = 0; i < related_to_ops->len; i++)
+  //       {
+  //         FlatpakTransactionOperation *related_op = NULL;
 
-          related_op = g_ptr_array_index (related_to_ops, i);
-          find_entry_from_operation (NULL, related_op, n_operations);
-        }
-    }
+  //         related_op = g_ptr_array_index (related_to_ops, i);
+  //         find_entry_from_operation (NULL, related_op, n_operations);
+  //       }
+  //   }
 
   if (data != NULL)
     {
@@ -1716,73 +1818,31 @@ static void
 transaction_progress_changed (FlatpakTransactionProgress *progress,
                               TransactionOperationData   *data)
 {
-  g_autoptr (IdleTransactionData) idle_data = NULL;
+  g_autoptr (BzBackendTransactionOpProgressPayload) payload = NULL;
 
-  idle_data                = idle_transaction_data_new ();
-  idle_data->hold          = g_object_ref (data->parent->instance);
-  idle_data->parent        = transaction_operation_data_ref (data);
-  idle_data->status        = flatpak_transaction_progress_get_status (progress);
-  idle_data->is_estimating = flatpak_transaction_progress_get_is_estimating (progress);
-  idle_data->progress      = (double) (flatpak_transaction_progress_get_progress (progress) +
-                                  (100 * data->parent->n_finished_operations)) /
-                        (100.0 * MAX (1.0, (double) (data->parent->n_operations)));
-  idle_data->bytes_transferred = flatpak_transaction_progress_get_bytes_transferred (progress);
-  idle_data->start_time        = flatpak_transaction_progress_get_start_time (progress);
+  payload = bz_backend_transaction_op_progress_payload_new ();
+  bz_backend_transaction_op_progress_payload_set_op (
+      payload, data->op);
+  bz_backend_transaction_op_progress_payload_set_status (
+      payload, flatpak_transaction_progress_get_status (progress));
+  bz_backend_transaction_op_progress_payload_set_is_estimating (
+      payload, flatpak_transaction_progress_get_is_estimating (progress));
+  bz_backend_transaction_op_progress_payload_set_progress (
+      payload, (double) flatpak_transaction_progress_get_progress (progress) / 100.0);
+  bz_backend_transaction_op_progress_payload_set_total_progress (
+      payload, (double) (flatpak_transaction_progress_get_progress (progress) +
+                         (100 * data->parent->n_finished_operations)) /
+                   (100.0 * MAX (1.0, (double) (data->parent->n_operations))));
+  bz_backend_transaction_op_progress_payload_set_bytes_transferred (
+      payload, flatpak_transaction_progress_get_bytes_transferred (progress));
+  bz_backend_transaction_op_progress_payload_set_start_time (
+      payload, flatpak_transaction_progress_get_start_time (progress));
 
-  g_idle_add_full (
-      G_PRIORITY_DEFAULT,
-      (GSourceFunc) transaction_progress_idle,
-      idle_transaction_data_ref (idle_data),
-      idle_transaction_data_unref);
-
-  if (idle_data->is_estimating)
-    {
-      if (data->timeout_handle == 0)
-        /* We'll send an update periodically so the UI can pulse */
-        data->timeout_handle = g_timeout_add_full (
-            G_PRIORITY_HIGH_IDLE,
-            150,
-            (GSourceFunc) transaction_progress_timeout,
-            idle_transaction_data_ref (idle_data),
-            idle_transaction_data_unref);
-    }
-  else
-    g_clear_handle_id (&data->timeout_handle,
-                       g_source_remove);
-}
-
-static gboolean
-transaction_progress_idle (IdleTransactionData *data)
-{
-  data->parent->parent->progress_func (
-      data->parent->entry != NULL
-          ? BZ_ENTRY (data->parent->entry)
-          : NULL,
-      data->status,
-      data->is_estimating,
-      data->progress,
-      data->bytes_transferred,
-      data->start_time,
-      data->parent->parent->user_data);
-
-  return G_SOURCE_REMOVE;
-}
-
-static gboolean
-transaction_progress_timeout (IdleTransactionData *data)
-{
-  data->parent->parent->progress_func (
-      data->parent->entry != NULL
-          ? BZ_ENTRY (data->parent->entry)
-          : NULL,
-      data->status,
-      data->is_estimating,
-      data->progress,
-      data->bytes_transferred,
-      data->start_time,
-      data->parent->parent->user_data);
-
-  return G_SOURCE_CONTINUE;
+  g_ptr_array_add (
+      data->parent->send_futures,
+      dex_channel_send (
+          data->parent->channel,
+          dex_future_new_for_object (payload)));
 }
 
 static void

@@ -21,6 +21,7 @@
 #pragma once
 
 #include "bz-entry.h"
+#include "bz-transaction-task.h"
 
 G_BEGIN_DECLS
 
@@ -65,5 +66,17 @@ bz_transaction_dismiss (BzTransaction *self)
   bz_transaction_release (self);
   g_object_unref (self);
 }
+
+void
+bz_transaction_add_task (BzTransaction                 *self,
+                         BzBackendTransactionOpPayload *payload);
+
+void
+bz_transaction_update_task (BzTransaction                         *self,
+                            BzBackendTransactionOpProgressPayload *payload);
+
+void
+bz_transaction_finish_task (BzTransaction                 *self,
+                            BzBackendTransactionOpPayload *payload);
 
 G_END_DECLS

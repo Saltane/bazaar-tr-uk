@@ -15,192 +15,176 @@ template $BzTransactionView: Adw.Bin {
       orientation: vertical;
       spacing: 5;
 
-      Box {
-        hexpand: true;
-        orientation: horizontal;
-        spacing: 10;
-
-        Box installs {
-          hexpand: true;
-          orientation: vertical;
-          spacing: 3;
-
-          Label {
-            styles [
-              "title-4",
-            ]
-
-            ellipsize: end;
-            label: _("Installing");
-          }
-
-          ListView {
-            styles [
-              "navigation-sidebar",
-            ]
-
-            model: NoSelection {
-              model: bind template.transaction as <$BzTransaction>.installs;
-            };
-
-            factory: factory;
-          }
-        }
-
-        Separator separator_1 {}
-
-        Box updates {
-          hexpand: true;
-          orientation: vertical;
-          spacing: 3;
-
-          Label {
-            styles [
-              "title-4",
-            ]
-
-            ellipsize: end;
-            label: _("Updating");
-          }
-
-          ListView {
-            styles [
-              "navigation-sidebar",
-            ]
-
-            model: NoSelection {
-              model: bind template.transaction as <$BzTransaction>.updates;
-            };
-
-            factory: factory;
-          }
-        }
-
-        Separator separator_2 {}
-
-        Box removals {
-          hexpand: true;
-          orientation: vertical;
-          spacing: 3;
-
-          Label {
-            styles [
-              "title-4",
-            ]
-
-            ellipsize: end;
-            label: _("Removing");
-          }
-
-          ListView {
-            styles [
-              "navigation-sidebar",
-            ]
-
-            model: NoSelection {
-              model: bind template.transaction as <$BzTransaction>.removals;
-            };
-
-            factory: factory;
-          }
-        }
-      }
-
-      Separator {}
-
-      Label {
+      ListView {
         styles [
-          "accent",
-          "heading",
+          "navigation-sidebar",
         ]
 
-        margin-start: 15;
-        margin-top: 15;
-        margin-end: 15;
-        xalign: 0;
-        ellipsize: end;
-        label: bind template.transaction as <$BzTransaction>.status;
-      }
-
-      Label {
-        styles [
-          "error",
-          "heading",
-        ]
-
-        margin-start: 15;
-        margin-end: 15;
-        wrap: true;
-        wrap-mode: word_char;
-        xalign: 0;
-        visible: bind $invert_boolean(template.transaction as <$BzTransaction>.success) as <bool>;
-        label: bind template.transaction as <$BzTransaction>.error;
-      }
-
-      $BzProgressBar {
-        hexpand: "true";
-        margin-bottom: "15";
-        margin-start: "15";
-        margin-end: "15";
-        fraction: bind template.transaction as <$BzTransaction>.progress;
         visible: bind $invert_boolean(template.transaction as <$BzTransaction>.finished) as <bool>;
+        
+        model: NoSelection {
+          model: bind template.transaction as <$BzTransaction>.current-ops;
+        };
+
+        factory: BuilderListItemFactory {
+          template ListItem {
+            activatable: false;
+
+            child: Box {
+              margin-start: 5;
+              margin-end: 5;
+              margin-top: 5;
+              margin-bottom: 5;
+                
+              orientation: vertical;
+              spacing: 7;
+
+              Label {
+                styles [
+                  "title-4",
+                ]
+
+                hexpand: true;
+                ellipsize: middle;
+                xalign: 1.0;
+                label: bind template.item as <$BzTransactionTask>.op as <$BzBackendTransactionOpPayload>.name;
+              }
+                
+              Label {
+                styles [
+                  "accent",
+                ]
+
+                hexpand: true;
+                xalign: 0.0;
+                ellipsize: end;
+                single-line-mode: true;
+                label: bind template.item as <$BzTransactionTask>.last-progress as <$BzBackendTransactionOpProgressPayload>.status;
+              }
+              
+              $BzProgressBar {
+                hexpand: "true";
+                fraction: bind template.item as <$BzTransactionTask>.last-progress as <$BzBackendTransactionOpProgressPayload>.progress;
+              }
+              
+              // Label {
+              //   styles [
+              //     "dimmed",
+              //   ]
+
+              //   hexpand: true;
+              //   xalign: 0.0;
+              //   ellipsize: end;
+              //   single-line-mode: true;
+              //   label: bind $format_bytes_transferred(template.item as <$BzTransactionTask>.last-progress as <$BzBackendTransactionOpProgressPayload>.bytes-transferred) as <string>;
+              // }
+
+              Box {
+                orientation: horizontal;
+                spacing: 5;
+                  
+                Image {
+                  icon-name: "folder-download-symbolic";
+                }
+                  
+                Label {
+                  hexpand: true;
+                  xalign: 0.0;
+                  ellipsize: end;
+                  single-line-mode: true;
+                  label: bind $format_download_size(template.item as <$BzTransactionTask>.op as <$BzBackendTransactionOpPayload>.download-size) as <string>;
+                }
+              }
+
+              Box {
+                orientation: horizontal;
+                spacing: 5;
+                  
+                Image {
+                  icon-name: "drive-harddisk-symbolic";
+                }
+                  
+                Label {
+                  hexpand: true;
+                  xalign: 0.0;
+                  ellipsize: end;
+                  single-line-mode: true;
+                  label: bind $format_installed_size(template.item as <$BzTransactionTask>.op as <$BzBackendTransactionOpPayload>.installed-size) as <string>;
+                }
+              }
+            };
+          }
+        };
       }
 
-      Label {
-        styles [
-          "dimmed",
-        ]
+      // $BzProgressBar {
+      //   hexpand: "true";
+      //   margin-bottom: "15";
+      //   margin-start: "15";
+      //   margin-end: "15";
+      //   fraction: bind template.transaction as <$BzTransaction>.progress;
+      //   visible: bind $invert_boolean(template.transaction as <$BzTransaction>.finished) as <bool>;
+      // }
 
-        margin-bottom: 15;
-        margin-start: 15;
-        margin-end: 15;
-        xalign: 0;
-        ellipsize: end;
-        label: bind template.transaction as <$BzTransaction>.name;
+      // Label {
+      //   styles [
+      //     "dimmed",
+      //   ]
+
+      //   margin-bottom: 15;
+      //   margin-start: 15;
+      //   margin-end: 15;
+      //   xalign: 0;
+      //   ellipsize: end;
+      //   label: bind template.transaction as <$BzTransaction>.name;
+      // }
+
+      Expander {
+        label: _("Finished Tasks");
+        expanded: true;
+        
+        child: ListView {
+          styles [
+            "navigation-sidebar",
+          ]
+
+          model: NoSelection {
+            model: bind template.transaction as <$BzTransaction>.finished-ops;
+          };
+
+          factory: BuilderListItemFactory {
+            template ListItem {
+              activatable: false;
+
+              child: Box {
+                orientation: horizontal;
+                spacing: 5;
+
+                Image {
+                  styles [
+                    "success",
+                  ]
+                  icon-name: "check-plain-symbolic";
+                }
+                
+                Label {
+                  styles [
+                    "dimmed",
+                  ]
+
+                  hexpand: true;
+                  xalign: 0.0;
+                  ellipsize: end;
+                  single-line-mode: true;
+                  label: bind template.item as <$BzBackendTransactionOpPayload>.name; 
+                }
+              };
+            }
+          };
+        };
       }
     };
   };
 }
 
-BuilderListItemFactory factory {
-  template ListItem {
-    activatable: false;
 
-    child: CenterBox {
-      orientation: horizontal;
-      margin-start: 5;
-      margin-end: 5;
-      margin-top: 5;
-      margin-bottom: 5;
-
-      start-widget: Box {
-        orientation: horizontal;
-        spacing: 15;
-
-        Image {
-          icon-size: large;
-          paintable: bind template.item as <$BzEntry>.icon-paintable;
-          visible: bind $invert_boolean($is_null(template.item as <$BzEntry>.icon-paintable) as <bool>) as <bool>;
-        }
-
-        Image {
-          icon-size: large;
-          icon-name: "image-missing-symbolic";
-          visible: bind $is_null(template.item as <$BzEntry>.icon-paintable) as <bool>;
-        }
-
-        Label {
-          styles [
-            "heading",
-          ]
-
-          hexpand: true;
-          xalign: 0;
-          ellipsize: end;
-          single-line-mode: true;
-          label: bind template.item as <$BzEntry>.title;
-        }
-      };
-    };
-  }
-}
