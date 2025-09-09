@@ -277,11 +277,11 @@ msgstr "Оглядач"
 
 #: src/bz-decorated-screenshot.blp:30
 msgid "Open this image in the default image viewer"
-msgstr ""
+msgstr "Відкрити зображення в переглядачі зображень"
 
 #: src/bz-decorated-screenshot.blp:43
 msgid "Copy this image to the clipboard"
-msgstr ""
+msgstr "Копіювати зображення до буфера обміну"
 
 #: src/bz-entry-inspector.blp:5
 msgid "Entry Inspector"
