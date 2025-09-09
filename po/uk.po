@@ -237,12 +237,12 @@ msgstr "Отримання віддалених надходжень із зас
 #: src/bz-application.c:1447
 #, c-format
 msgid "Receiving Entries"
-msgstr ""
+msgstr "Отримуємо надходження"
 
 #: src/bz-application.c:1448
 #, c-format
 msgid "%'d of %'d"
-msgstr ""
+msgstr "%'d із %'d"
 
 #: src/bz-application.c:1455
 #, c-format
