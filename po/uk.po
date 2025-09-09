@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-08 13:59+0300\n"
+"POT-Creation-Date: 2025-09-09 04:15+0300\n"
 "PO-Revision-Date: 2025-08-12 22:05+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -270,14 +270,6 @@ msgstr ""
 msgid "Browser"
 msgstr "Оглядач"
 
-#: src/bz-decorated-screenshot.blp:41
-msgid "Open in Image Viewer"
-msgstr "Відкрити в переглядачі зображень"
-
-#: src/bz-decorated-screenshot.blp:56
-msgid "Copy to clipboard"
-msgstr "Копіювати до буфера обміну"
-
 #: src/bz-entry-inspector.blp:5
 msgid "Entry Inspector"
 msgstr "Зневаджувач надходжень"
@@ -302,6 +294,46 @@ msgstr "Вийти"
 msgid "Copy and Close"
 msgstr "Копіювати та вийти"
 
+#: src/bz-flathub-category.c:244
+msgid "Audio & Video"
+msgstr ""
+
+#: src/bz-flathub-category.c:246
+msgid "Development"
+msgstr ""
+
+#: src/bz-flathub-category.c:248
+msgid "Education"
+msgstr ""
+
+#: src/bz-flathub-category.c:250
+msgid "Games"
+msgstr ""
+
+#: src/bz-flathub-category.c:252
+msgid "Graphics"
+msgstr ""
+
+#: src/bz-flathub-category.c:254
+msgid "Networking"
+msgstr ""
+
+#: src/bz-flathub-category.c:256
+msgid "Office"
+msgstr ""
+
+#: src/bz-flathub-category.c:258
+msgid "Science"
+msgstr ""
+
+#: src/bz-flathub-category.c:260
+msgid "System"
+msgstr ""
+
+#: src/bz-flathub-category.c:262
+msgid "Utilities"
+msgstr ""
+
 #: src/bz-flathub-page.blp:15
 msgid "Flathub Not Added"
 msgstr "Flathub не додано"
@@ -318,8 +350,8 @@ msgstr "Тижнева добірка"
 msgid "Trending"
 msgstr "Набирають популярність"
 
-#: src/bz-flathub-page.blp:99 src/bz-flathub-page.blp:179
-#: src/bz-flathub-page.blp:226 src/bz-flathub-page.blp:273
+#: src/bz-flathub-page.blp:99 src/bz-flathub-page.blp:178
+#: src/bz-flathub-page.blp:225 src/bz-flathub-page.blp:272
 #, fuzzy
 msgid "Show More"
 msgstr "Показати більше"
@@ -328,15 +360,15 @@ msgstr "Показати більше"
 msgid "Categories"
 msgstr "Категорії"
 
-#: src/bz-flathub-page.blp:173
+#: src/bz-flathub-page.blp:172
 msgid "Recently Updated"
 msgstr "Нещодавно оновлені"
 
-#: src/bz-flathub-page.blp:220
+#: src/bz-flathub-page.blp:219
 msgid "Recently Added"
 msgstr "Нещодавно додані"
 
-#: src/bz-flathub-page.blp:267
+#: src/bz-flathub-page.blp:266
 msgid "Popular"
 msgstr "Популярні"
 
@@ -417,7 +449,7 @@ msgstr "Запустити цей застосунок"
 msgid "Download and install this application"
 msgstr "Завантажити та встановити цей застосунок"
 
-#: src/bz-full-view.blp:237 src/bz-window.c:940
+#: src/bz-full-view.blp:237 src/bz-window.c:961
 msgid "Install"
 msgstr "Встановити"
 
@@ -542,7 +574,7 @@ msgstr "Встановлені"
 msgid "Support this application"
 msgstr "Поділитися цим застосунком"
 
-#: src/bz-installed-page.blp:122 src/bz-window.c:921
+#: src/bz-installed-page.blp:122 src/bz-window.c:942
 msgid "Remove"
 msgstr "Видалити"
 
@@ -632,24 +664,31 @@ msgstr "Найнижчий мінімальний поріг"
 msgid "Maximize Upper Bound"
 msgstr "Найвищий максимальний поріг"
 
-#: src/bz-transaction-manager.c:1055
+#: src/bz-transaction-manager.c:1080
 #, c-format
 msgid "Finished in %.02f seconds"
 msgstr "Завершено за %.02f сек"
 
-#: src/bz-transaction-view.blp:34
-msgid "Installing"
-msgstr "Встановлюємо"
+#: src/bz-transaction-view.blp:143
+msgid "Finished Tasks"
+msgstr ""
 
-#: src/bz-transaction-view.blp:63
-msgid "Updating"
-msgstr "Оновлюємо"
+#: src/bz-transaction-view.c:111
+#, c-format
+msgid "%s to download"
+msgstr ""
 
-#: src/bz-transaction-view.blp:92
-msgid "Removing"
-msgstr "Видаляємо"
+#: src/bz-transaction-view.c:121
+#, fuzzy, c-format
+msgid "%s to install"
+msgstr "Встановити"
 
-#: src/bz-transaction.c:268
+#: src/bz-transaction-view.c:131
+#, c-format
+msgid "Transferred %s so far"
+msgstr ""
+
+#: src/bz-transaction.c:303
 msgid "Pending"
 msgstr "Очікуємо"
 
@@ -775,11 +814,11 @@ msgstr "_Про Базар"
 msgid "_Donate to Bazaar ❤️"
 msgstr "_Пожертувати Базару ❤️"
 
-#: src/bz-window.c:586
+#: src/bz-window.c:592
 msgid "Up to date!"
 msgstr "Оновлень не знайдено!"
 
-#: src/bz-window.c:762
+#: src/bz-window.c:770
 msgid ""
 "The ability to inspect and install local .flatpak bundle files is coming "
 "soon! In the meantime, try running\n"
@@ -795,15 +834,15 @@ msgstr ""
 "\n"
 "у терміналі."
 
-#: src/bz-window.c:837
+#: src/bz-window.c:850
 msgid "Can't do that right now!"
 msgstr "Наразі цього не можна зробити!"
 
-#: src/bz-window.c:884
+#: src/bz-window.c:905
 msgid "Confirm Action"
 msgstr "Підтвердити дію"
 
-#: src/bz-window.c:913
+#: src/bz-window.c:934
 #, c-format
 msgid ""
 "You are about to remove the following Flatpak:\n"
@@ -820,11 +859,11 @@ msgstr ""
 "\n"
 "Упевнені?"
 
-#: src/bz-window.c:920 src/bz-window.c:939
+#: src/bz-window.c:941 src/bz-window.c:960
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: src/bz-window.c:932
+#: src/bz-window.c:953
 #, c-format
 msgid ""
 "You are about to install the following Flatpak:\n"
@@ -841,15 +880,15 @@ msgstr ""
 "\n"
 "Упевнені?"
 
-#: src/bz-window.c:962
+#: src/bz-window.c:983
 msgid "More details"
 msgstr "Докладніше"
 
-#: src/bz-window.c:1088
+#: src/bz-window.c:1109
 msgid "Resume the execution of transactions"
 msgstr "Відновити виконання"
 
-#: src/bz-window.c:1094
+#: src/bz-window.c:1115
 msgid "Pause the execution of transactions"
 msgstr "Призупинити виконання"
 
@@ -882,3 +921,18 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
+
+#~ msgid "Open in Image Viewer"
+#~ msgstr "Відкрити в переглядачі зображень"
+
+#~ msgid "Copy to clipboard"
+#~ msgstr "Копіювати до буфера обміну"
+
+#~ msgid "Installing"
+#~ msgstr "Встановлюємо"
+
+#~ msgid "Updating"
+#~ msgstr "Оновлюємо"
+
+#~ msgid "Removing"
+#~ msgstr "Видаляємо"
