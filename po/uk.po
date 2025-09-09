@@ -116,11 +116,11 @@ msgstr ""
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:49
 msgid "The home view displaying Flathub apps &amp; categories"
-msgstr ""
+msgstr "Домашня сторінка із застосунками та катеґоріями з Flathub"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:53
 msgid "Nucleus app page"
-msgstr ""
+msgstr "Сторінка застосунку Nucleus"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:57
 msgid "Searching for Blender"
@@ -132,47 +132,49 @@ msgstr "Керувати розширеннями"
 
 #: src/bz-app-size-dialog.c:55
 msgid "Of the size of human DNA"
-msgstr ""
+msgstr "людська ДНК"
 
 #: src/bz-app-size-dialog.c:55
 msgid "3 billion base pairs"
-msgstr ""
+msgstr "3 мільярди пар основ"
 
 #: src/bz-app-size-dialog.c:56
 msgid "Of the Linux Kernel"
-msgstr ""
+msgstr "ядро Linux"
 
+# NOTE: не потребує перекладу.
 #: src/bz-app-size-dialog.c:56
 msgid "linux-6.17.tar.xz"
 msgstr ""
 
 #: src/bz-app-size-dialog.c:57
 msgid "Of the Apollo 11 guidance computer"
-msgstr ""
+msgstr "бортовий обчислювач Apollo 11"
 
 #: src/bz-app-size-dialog.c:57
 msgid "Total ROM and RAM"
-msgstr ""
+msgstr "увесь простір ППЗ та ОЗУ"
 
 #: src/bz-app-size-dialog.c:58
 msgid "Of the original Super Mario Bros"
-msgstr ""
+msgstr "перший Super Mario"
 
+# NOTE: відбулася локалізація проти прямого перекладу.
 #: src/bz-app-size-dialog.c:58
 msgid "On the NES"
-msgstr ""
+msgstr "на Dendy"
 
 #: src/bz-app-size-dialog.c:59
 msgid "Of the size of Wikipedia"
-msgstr ""
+msgstr "ціла Wikipedia"
 
 #: src/bz-app-size-dialog.c:59
 msgid "Without any media"
-msgstr ""
+msgstr "без медіявмісту"
 
 #: src/bz-app-size-dialog.blp:43
 msgid "--- MB"
-msgstr ""
+msgstr "--- МБ"
 
 #: src/bz-app-size-dialog.blp:53 src/bz-full-view.blp:364
 msgid "Download Size"
@@ -615,11 +617,11 @@ msgstr "Власницькі"
 
 #: src/bz-full-view.blp:484
 msgid "Source code may not be available"
-msgstr ""
+msgstr "Початковий код може бути недоступним"
 
 #: src/bz-full-view.blp:539
 msgid "Click for details"
-msgstr ""
+msgstr "Натисніть для докладнощів"
 
 #: src/bz-full-view.blp:605
 msgid "Repositories"
@@ -636,7 +638,7 @@ msgstr "Відкрити в оглядачі"
 #: src/bz-full-view.c:211
 #, c-format
 msgid "%'d Monthly Downloads"
-msgstr ""
+msgstr "%'d щомісячних завантажень"
 
 #: src/bz-full-view.c:213
 msgid "--- Downloads"
@@ -644,7 +646,7 @@ msgstr "--- Завантажень"
 
 #: src/bz-full-view.c:239
 msgid "Unknown"
-msgstr ""
+msgstr "Невідомо"
 
 #. Translators: This is a date format for timestamps from previous years. Used in the app releases section.
 #. * %B is the full month name, %e is the day, %Y is the year.
