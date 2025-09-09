@@ -575,7 +575,7 @@ msgstr "Назва віддаленого сховища"
 
 #: src/bz-full-view.blp:430
 msgid "Version History"
-msgstr ""
+msgstr "Історія змін"
 
 #: src/bz-full-view.c:209
 #, c-format
@@ -585,7 +585,7 @@ msgstr "%'d завантажень за минулий місяць"
 #: src/bz-full-view.c:227 src/bz-full-view.c:465
 #, c-format
 msgid "%x"
-msgstr ""
+msgstr "%x"
 
 #: src/bz-full-view.c:238
 msgid "No URL"
@@ -610,11 +610,11 @@ msgstr ""
 #: src/bz-full-view.c:478
 #, c-format
 msgid "Version %s"
-msgstr ""
+msgstr "Версія %s"
 
 #: src/bz-full-view.c:495
 msgid "No details for this release"
-msgstr ""
+msgstr "Без подробиць"
 
 #: src/bz-inspector.blp:5
 msgid "Bazaar Inspector"
