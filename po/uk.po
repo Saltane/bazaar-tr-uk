@@ -410,7 +410,7 @@ msgstr "Набирають популярність"
 
 #: src/bz-flathub-page.blp:111
 msgid "More Trending"
-msgstr "Набирають популярність"
+msgstr "Показати більше" # TODO: переглянути переклад.
 
 #: src/bz-flathub-page.blp:127
 msgid "Categories"
@@ -422,7 +422,7 @@ msgstr "Нещодавно оновлені"
 
 #: src/bz-flathub-page.blp:195
 msgid "More Updated"
-msgstr "Оновлення"
+msgstr "Показати більше" # TODO: переглянути переклад.
 
 #: src/bz-flathub-page.blp:216 src/bz-flathub-page.c:196
 msgid "Recently Added"
@@ -430,7 +430,7 @@ msgstr "Нещодавно додані"
 
 #: src/bz-flathub-page.blp:247
 msgid "More Added"
-msgstr "Докладніше"
+msgstr "Показати більше" # TODO: переглянути переклад.
 
 #: src/bz-flathub-page.blp:268 src/bz-flathub-page.c:206
 msgid "Popular"
@@ -438,7 +438,7 @@ msgstr "Популярні"
 
 #: src/bz-flathub-page.blp:299
 msgid "More Popular"
-msgstr "Популярні"
+msgstr "Показати більше" # TODO: переглянути переклад.
 
 #: src/bz-flatpak-entry.c:519
 msgctxt "Project URL Type"
@@ -600,7 +600,7 @@ msgstr "%'d завантажень за минулий місяць"
 #. *
 #: src/bz-full-view.c:237
 msgid "%B %-d, %Y"
-msgstr ""
+msgstr "%-d %B %Y"
 
 #. Translators: This is a date format for timestamps from the current year. Used in the app releases section.
 #. * %B is the full month name, %e is the day.
@@ -610,7 +610,7 @@ msgstr ""
 #. *
 #: src/bz-full-view.c:245
 msgid "%B %-d"
-msgstr ""
+msgstr "%-d %B"
 
 #: src/bz-full-view.c:256
 msgid "No URL"
@@ -778,7 +778,7 @@ msgstr "Завантажень протягом часу"
 
 #: src/bz-stats-dialog.blp:21
 msgid "Installs:"
-msgstr "Встановити"
+msgstr "Встановлень:"
 
 #: src/bz-transaction-manager.c:1090
 #, c-format
