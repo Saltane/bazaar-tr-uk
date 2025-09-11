@@ -138,11 +138,6 @@ cmp_group (BzEntryGroup *a,
            BzEntryGroup *b,
            gpointer      user_data);
 
-static gboolean
-string_eq_entry (BzEntry    *a,
-                 BzEntry    *b,
-                 const char *id);
-
 static void
 bz_application_dispose (GObject *object)
 {
@@ -897,17 +892,6 @@ map_ids_to_entries (GtkStringObject *string,
 }
 
 static gboolean
-string_eq_entry (BzEntry    *a,
-                 BzEntry    *b,
-                 const char *id)
-{
-  const char *entry_id = NULL;
-
-  entry_id = bz_entry_get_unique_id (a);
-  return g_strcmp0 (entry_id, id) == 0;
-}
-
-static gboolean
 filter_application_ids (GtkStringObject *string,
                         BzApplication   *self)
 {
@@ -1004,7 +988,7 @@ init_service_struct (BzApplication *self)
   self->settings = g_settings_new (app_id);
 
   self->groups         = g_list_store_new (BZ_TYPE_ENTRY_GROUP);
-  self->installed_apps = g_list_store_new (BZ_TYPE_ENTRY);
+  self->installed_apps = g_list_store_new (BZ_TYPE_ENTRY_GROUP);
   self->ids_to_groups  = g_hash_table_new_full (
       g_str_hash, g_str_equal, g_free, g_object_unref);
 
@@ -1168,7 +1152,20 @@ transaction_success (BzApplication        *self,
 
       bz_entry_set_installed (entry, TRUE);
       if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_APPLICATION))
-        g_list_store_append (self->installed_apps, entry);
+        {
+          BzEntryGroup *group = NULL;
+
+          group = g_hash_table_lookup (self->ids_to_groups, bz_entry_get_id (entry));
+          if (group != NULL)
+            {
+              gboolean found    = FALSE;
+              guint    position = 0;
+
+              found = g_list_store_find (self->installed_apps, group, &position);
+              if (!found)
+                g_list_store_insert_sorted (self->installed_apps, group, (GCompareDataFunc) cmp_group, NULL);
+            }
+        }
       dex_future_disown (bz_entry_cache_manager_add (self->cache, entry));
     }
 
@@ -1183,16 +1180,18 @@ transaction_success (BzApplication        *self,
       bz_entry_set_installed (entry, FALSE);
       if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_APPLICATION))
         {
-          const char *unique_id = NULL;
-          gboolean    found     = FALSE;
-          guint       position  = 0;
+          BzEntryGroup *group = NULL;
 
-          unique_id = bz_entry_get_unique_id (entry);
-          found     = g_list_store_find_with_equal_func_full (
-              self->installed_apps, NULL, (GEqualFuncFull) string_eq_entry,
-              (gpointer) unique_id, &position);
-          if (found)
-            g_list_store_remove (self->installed_apps, position);
+          group = g_hash_table_lookup (self->ids_to_groups, bz_entry_get_id (entry));
+          if (group != NULL && !bz_entry_group_get_removable (group))
+            {
+              gboolean found    = FALSE;
+              guint    position = 0;
+
+              found = g_list_store_find (self->installed_apps, group, &position);
+              if (found)
+                g_list_store_remove (self->installed_apps, position);
+            }
         }
       dex_future_disown (bz_entry_cache_manager_add (self->cache, entry));
     }
@@ -1391,7 +1390,11 @@ refresh_fiber (BzApplication *self)
 
               group = g_hash_table_lookup (self->ids_to_groups, id);
               if (group != NULL)
-                bz_entry_group_add (group, entry);
+                {
+                  bz_entry_group_add (group, entry);
+                  if (installed && !g_list_store_find (self->installed_apps, group, NULL))
+                    g_list_store_append (self->installed_apps, group);
+                }
               else
                 {
                   g_autoptr (BzEntryGroup) new_group = NULL;
@@ -1402,10 +1405,10 @@ refresh_fiber (BzApplication *self)
                   g_list_store_append (self->groups, new_group);
                   g_hash_table_replace (self->ids_to_groups, g_strdup (id), g_object_ref (new_group));
                   bz_entry_group_add (new_group, entry);
-                }
 
-              if (installed)
-                g_list_store_append (self->installed_apps, entry);
+                  if (installed)
+                    g_list_store_append (self->installed_apps, new_group);
+                }
             }
 
           if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_ADDON))
@@ -1459,6 +1462,7 @@ refresh_fiber (BzApplication *self)
       g_clear_pointer (&busy_step_label, g_free);
     }
   g_list_store_sort (self->groups, (GCompareDataFunc) cmp_group, NULL);
+  g_list_store_sort (self->installed_apps, (GCompareDataFunc) cmp_group, NULL);
 
   busy_step_label = g_strdup_printf (_ ("Waiting for background indexing tasks to catch up...")),
   bz_state_info_set_busy_step_label (self->state, busy_step_label);
@@ -1489,11 +1493,11 @@ refresh_fiber (BzApplication *self)
   g_debug ("Finished synchronizing with remotes, notifying UI...");
   bz_state_info_set_online (self->state, TRUE);
   bz_state_info_set_all_entry_groups (self->state, G_LIST_MODEL (self->groups));
-  bz_state_info_set_all_installed_entries (self->state, G_LIST_MODEL (self->installed_apps));
   bz_search_engine_set_model (self->search_engine, G_LIST_MODEL (self->groups));
   bz_state_info_set_busy (self->state, FALSE);
 
   gtk_filter_changed (GTK_FILTER (self->application_filter), GTK_FILTER_CHANGE_DIFFERENT);
+  bz_state_info_set_all_installed_entry_groups (self->state, G_LIST_MODEL (self->installed_apps));
 
   busy_step_label = g_strdup_printf (
       _ ("Completed initialization in %0.2f seconds"),
@@ -1576,7 +1580,7 @@ refresh_finally (DexFuture     *future,
     {
       bz_state_info_set_checking_for_updates (self->state, FALSE);
       bz_state_info_set_all_entry_groups (self->state, G_LIST_MODEL (self->groups));
-      bz_state_info_set_all_installed_entries (self->state, G_LIST_MODEL (self->installed_apps));
+      bz_state_info_set_all_installed_entry_groups (self->state, G_LIST_MODEL (self->installed_apps));
       bz_search_engine_set_model (self->search_engine, G_LIST_MODEL (self->groups));
       bz_state_info_set_busy (self->state, FALSE);
     }
@@ -1637,7 +1641,7 @@ refresh (BzApplication *self)
   g_debug ("Refreshing complete application state...");
 
   bz_state_info_set_all_entry_groups (self->state, NULL);
-  bz_state_info_set_all_installed_entries (self->state, NULL);
+  bz_state_info_set_all_installed_entry_groups (self->state, NULL);
   bz_state_info_set_flathub (self->state, NULL);
   bz_search_engine_set_model (self->search_engine, NULL);
 

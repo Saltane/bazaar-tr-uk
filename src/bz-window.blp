@@ -244,7 +244,7 @@ template $BzWindow: Adw.ApplicationWindow {
 
                     child: $BzInstalledPage {
                       state: bind template.state;
-                      model: bind template.state as <$BzStateInfo>.all-installed-entries;
+                      model: bind template.state as <$BzStateInfo>.all-installed-entry-groups;
                       install => $installed_page_install_cb(template);
                       remove => $installed_page_remove_cb(template);
                       show-entry => $installed_page_show_cb(template);

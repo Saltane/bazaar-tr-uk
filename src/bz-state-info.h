@@ -70,10 +70,10 @@ GListModel *
 bz_state_info_get_all_entries (BzStateInfo *self);
 
 GListModel *
-bz_state_info_get_all_installed_entries (BzStateInfo *self);
+bz_state_info_get_all_entry_groups (BzStateInfo *self);
 
 GListModel *
-bz_state_info_get_all_entry_groups (BzStateInfo *self);
+bz_state_info_get_all_installed_entry_groups (BzStateInfo *self);
 
 BzSearchEngine *
 bz_state_info_get_search_engine (BzStateInfo *self);
@@ -150,12 +150,12 @@ bz_state_info_set_all_entries (BzStateInfo *self,
                                GListModel  *all_entries);
 
 void
-bz_state_info_set_all_installed_entries (BzStateInfo *self,
-                                         GListModel  *all_installed_entries);
-
-void
 bz_state_info_set_all_entry_groups (BzStateInfo *self,
                                     GListModel  *all_entry_groups);
+
+void
+bz_state_info_set_all_installed_entry_groups (BzStateInfo *self,
+                                              GListModel  *all_installed_entry_groups);
 
 void
 bz_state_info_set_search_engine (BzStateInfo    *self,
@@ -175,11 +175,11 @@ bz_state_info_set_busy (BzStateInfo *self,
 
 void
 bz_state_info_set_busy_step_label (BzStateInfo *self,
-                              const char  *busy_step_label);
+                                   const char  *busy_step_label);
 
 void
 bz_state_info_set_busy_progress_label (BzStateInfo *self,
-                              const char  *busy_progress_label);
+                                       const char  *busy_progress_label);
 
 void
 bz_state_info_set_busy_progress (BzStateInfo *self,

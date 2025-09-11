@@ -35,8 +35,8 @@ struct _BzStateInfo
   BzApplicationMapFactory *entry_factory;
   BzApplicationMapFactory *application_factory;
   GListModel              *all_entries;
-  GListModel              *all_installed_entries;
   GListModel              *all_entry_groups;
+  GListModel              *all_installed_entry_groups;
   BzSearchEngine          *search_engine;
   BzContentProvider       *curated_provider;
   BzFlathubState          *flathub;
@@ -66,8 +66,8 @@ enum
   PROP_ENTRY_FACTORY,
   PROP_APPLICATION_FACTORY,
   PROP_ALL_ENTRIES,
-  PROP_ALL_INSTALLED_ENTRIES,
   PROP_ALL_ENTRY_GROUPS,
+  PROP_ALL_INSTALLED_ENTRY_GROUPS,
   PROP_SEARCH_ENGINE,
   PROP_CURATED_PROVIDER,
   PROP_FLATHUB,
@@ -99,8 +99,8 @@ bz_state_info_dispose (GObject *object)
   g_clear_pointer (&self->entry_factory, g_object_unref);
   g_clear_pointer (&self->application_factory, g_object_unref);
   g_clear_pointer (&self->all_entries, g_object_unref);
-  g_clear_pointer (&self->all_installed_entries, g_object_unref);
   g_clear_pointer (&self->all_entry_groups, g_object_unref);
+  g_clear_pointer (&self->all_installed_entry_groups, g_object_unref);
   g_clear_pointer (&self->search_engine, g_object_unref);
   g_clear_pointer (&self->curated_provider, g_object_unref);
   g_clear_pointer (&self->flathub, g_object_unref);
@@ -154,11 +154,11 @@ bz_state_info_get_property (GObject    *object,
     case PROP_ALL_ENTRIES:
       g_value_set_object (value, bz_state_info_get_all_entries (self));
       break;
-    case PROP_ALL_INSTALLED_ENTRIES:
-      g_value_set_object (value, bz_state_info_get_all_installed_entries (self));
-      break;
     case PROP_ALL_ENTRY_GROUPS:
       g_value_set_object (value, bz_state_info_get_all_entry_groups (self));
+      break;
+    case PROP_ALL_INSTALLED_ENTRY_GROUPS:
+      g_value_set_object (value, bz_state_info_get_all_installed_entry_groups (self));
       break;
     case PROP_SEARCH_ENGINE:
       g_value_set_object (value, bz_state_info_get_search_engine (self));
@@ -238,11 +238,11 @@ bz_state_info_set_property (GObject      *object,
     case PROP_ALL_ENTRIES:
       bz_state_info_set_all_entries (self, g_value_get_object (value));
       break;
-    case PROP_ALL_INSTALLED_ENTRIES:
-      bz_state_info_set_all_installed_entries (self, g_value_get_object (value));
-      break;
     case PROP_ALL_ENTRY_GROUPS:
       bz_state_info_set_all_entry_groups (self, g_value_get_object (value));
+      break;
+    case PROP_ALL_INSTALLED_ENTRY_GROUPS:
+      bz_state_info_set_all_installed_entry_groups (self, g_value_get_object (value));
       break;
     case PROP_SEARCH_ENGINE:
       bz_state_info_set_search_engine (self, g_value_get_object (value));
@@ -365,16 +365,16 @@ bz_state_info_class_init (BzStateInfoClass *klass)
           G_TYPE_LIST_MODEL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
 
-  props[PROP_ALL_INSTALLED_ENTRIES] =
+  props[PROP_ALL_ENTRY_GROUPS] =
       g_param_spec_object (
-          "all-installed-entries",
+          "all-entry-groups",
           NULL, NULL,
           G_TYPE_LIST_MODEL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
 
-  props[PROP_ALL_ENTRY_GROUPS] =
+  props[PROP_ALL_INSTALLED_ENTRY_GROUPS] =
       g_param_spec_object (
-          "all-entry-groups",
+          "all-installed-entry-groups",
           NULL, NULL,
           G_TYPE_LIST_MODEL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
@@ -535,17 +535,17 @@ bz_state_info_get_all_entries (BzStateInfo *self)
 }
 
 GListModel *
-bz_state_info_get_all_installed_entries (BzStateInfo *self)
-{
-  g_return_val_if_fail (BZ_IS_STATE_INFO (self), NULL);
-  return self->all_installed_entries;
-}
-
-GListModel *
 bz_state_info_get_all_entry_groups (BzStateInfo *self)
 {
   g_return_val_if_fail (BZ_IS_STATE_INFO (self), NULL);
   return self->all_entry_groups;
+}
+
+GListModel *
+bz_state_info_get_all_installed_entry_groups (BzStateInfo *self)
+{
+  g_return_val_if_fail (BZ_IS_STATE_INFO (self), NULL);
+  return self->all_installed_entry_groups;
 }
 
 BzSearchEngine *
@@ -762,19 +762,6 @@ bz_state_info_set_all_entries (BzStateInfo *self,
 }
 
 void
-bz_state_info_set_all_installed_entries (BzStateInfo *self,
-                                         GListModel  *all_installed_entries)
-{
-  g_return_if_fail (BZ_IS_STATE_INFO (self));
-
-  g_clear_pointer (&self->all_installed_entries, g_object_unref);
-  if (all_installed_entries != NULL)
-    self->all_installed_entries = g_object_ref (all_installed_entries);
-
-  g_object_notify_by_pspec (G_OBJECT (self), props[PROP_ALL_INSTALLED_ENTRIES]);
-}
-
-void
 bz_state_info_set_all_entry_groups (BzStateInfo *self,
                                     GListModel  *all_entry_groups)
 {
@@ -785,6 +772,19 @@ bz_state_info_set_all_entry_groups (BzStateInfo *self,
     self->all_entry_groups = g_object_ref (all_entry_groups);
 
   g_object_notify_by_pspec (G_OBJECT (self), props[PROP_ALL_ENTRY_GROUPS]);
+}
+
+void
+bz_state_info_set_all_installed_entry_groups (BzStateInfo *self,
+                                              GListModel  *all_installed_entry_groups)
+{
+  g_return_if_fail (BZ_IS_STATE_INFO (self));
+
+  g_clear_pointer (&self->all_installed_entry_groups, g_object_unref);
+  if (all_installed_entry_groups != NULL)
+    self->all_installed_entry_groups = g_object_ref (all_installed_entry_groups);
+
+  g_object_notify_by_pspec (G_OBJECT (self), props[PROP_ALL_INSTALLED_ENTRY_GROUPS]);
 }
 
 void
