@@ -213,3 +213,12 @@ background: shade(#deddda, 1.05);
 .category-tile.category-utility:active {
 background: shade(#deddda, .95);
 }
+
+
+
+
+
+.transaction-sidebar-entry-list {
+    margin: 0;
+    padding: 0;
+}

@@ -108,6 +108,7 @@ open_generic_id (BzApplication *self,
 static void
 transaction_success (BzApplication        *self,
                      BzTransaction        *transaction,
+                     GHashTable           *errored,
                      BzTransactionManager *manager);
 
 static DexFuture *
@@ -1141,6 +1142,7 @@ open_generic_id (BzApplication *self,
 static void
 transaction_success (BzApplication        *self,
                      BzTransaction        *transaction,
+                     GHashTable           *errored,
                      BzTransactionManager *manager)
 {
   GListModel *installs   = NULL;
@@ -1161,6 +1163,9 @@ transaction_success (BzApplication        *self,
       g_autoptr (BzEntry) entry = NULL;
 
       entry = g_list_model_get_item (installs, i);
+      if (g_hash_table_contains (errored, entry))
+        continue;
+
       bz_entry_set_installed (entry, TRUE);
       if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_APPLICATION))
         g_list_store_append (self->installed_apps, entry);
@@ -1172,6 +1177,9 @@ transaction_success (BzApplication        *self,
       g_autoptr (BzEntry) entry = NULL;
 
       entry = g_list_model_get_item (removals, i);
+      if (g_hash_table_contains (errored, entry))
+        continue;
+
       bz_entry_set_installed (entry, FALSE);
       if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_APPLICATION))
         {
