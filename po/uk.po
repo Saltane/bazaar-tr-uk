@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-22 18:30+0300\n"
+"POT-Creation-Date: 2025-09-23 02:32+0300\n"
 "PO-Revision-Date: 2025-08-12 22:05+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -677,7 +677,9 @@ msgstr "Вподобань на сторінці розробки"
 
 #: src/bz-preferences-dialog.blp:17
 msgid "Not having a GitHub access token may trigger rate limits"
-msgstr "Відсутність токену доступу GitHub може призвести до обмеження Вашого зʼєднання з GitHub"
+msgstr ""
+"Відсутність токену доступу GitHub може призвести до обмеження Вашого "
+"зʼєднання з GitHub"
 
 #: src/bz-preferences-dialog.blp:22 src/bz-window.blp:287
 msgid "Search"
