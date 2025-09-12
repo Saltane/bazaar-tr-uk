@@ -1312,7 +1312,7 @@ refresh_fiber (BzApplication *self)
   bz_state_info_set_busy_step_label (self->state, busy_step_label);
   g_clear_pointer (&busy_step_label, g_free);
 
-  channel            = dex_channel_new (50);
+  channel            = dex_channel_new (100);
   sys_name_to_addons = g_hash_table_new_full (
       g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
   usr_name_to_addons = g_hash_table_new_full (

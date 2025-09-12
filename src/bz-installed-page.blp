@@ -127,7 +127,7 @@ template $BzInstalledPage: Adw.Bin {
                       height-request: 32;
                       valign: center;
                       icon-name: "user-trash-symbolic";
-                      sensitive: bind $invert_boolean(template.item as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.holding) as <bool>;
+                      sensitive: bind $invert_boolean($is_zero(template.item as <$BzEntryGroup>.removable-and-available) as <bool>) as <bool>;
                       
                       clicked => $remove_cb(template);
                     }
@@ -168,6 +168,7 @@ template $BzInstalledPage: Adw.Bin {
 
                             has-tooltip: true;
                             tooltip-text: _("Run this application");
+                            sensitive: bind $invert_boolean($is_zero(template.item as <$BzEntryGroup>.removable-and-available) as <bool>) as <bool>;
 
                             child: Box {
                               orientation: horizontal;
@@ -193,6 +194,7 @@ template $BzInstalledPage: Adw.Bin {
                             has-tooltip: true;
                             tooltip-text: _("Manage Addons");
                             visible: bind $invert_boolean($is_null(template.item as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.addons) as <bool>) as <bool>;
+                            sensitive: bind $invert_boolean($is_zero(template.item as <$BzEntryGroup>.removable-and-available) as <bool>) as <bool>;
 
                             child: Box {
                               orientation: horizontal;
