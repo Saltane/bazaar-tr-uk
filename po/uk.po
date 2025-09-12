@@ -628,7 +628,9 @@ msgstr "Оберіть встановлення"
 msgid ""
 "You have multiple versions of this app installed. Which one would you like "
 "to proceed with? "
-msgstr "Ви маєте декілька встановлених версій цього застосунку. З котрою з них Ви бажаєте продовжити?"
+msgstr ""
+"Ви маєте декілька встановлених версій цього застосунку. З котрою з них Ви "
+"бажаєте продовжити?"
 
 #: src/bz-installed-page.c:656 src/bz-window.c:949 src/bz-window.c:968
 msgid "Cancel"
