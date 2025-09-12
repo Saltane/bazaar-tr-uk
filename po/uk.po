@@ -723,7 +723,7 @@ msgstr "Розмір встановлення"
 #: src/bz-transaction-view.blp:169
 #, fuzzy
 msgid "Updated Size"
-msgstr "Розмір оновлення"
+msgstr "Розмір після оновлення"
 
 #: src/bz-transaction-view.blp:182 src/bz-window.blp:297
 msgid "Update"
