@@ -466,7 +466,7 @@ msgstr "Запустити цей застосунок"
 #: src/bz-full-view.blp:225
 #, fuzzy
 msgid "Download & Install Application"
-msgstr "Завантажити та встановити цей застосунок"
+msgstr "Завантажити й встановити цей застосунок"
 
 #: src/bz-full-view.blp:231 src/bz-transaction-view.blp:98 src/bz-window.c:969
 msgid "Install"
@@ -622,7 +622,7 @@ msgstr "Відкрити сторінку в крамниці"
 #: src/bz-installed-page.c:649
 #, fuzzy
 msgid "Choose an Installation"
-msgstr "Знаходьте та встановлюйте застосунки"
+msgstr "Оберіть встановлення"
 
 #: src/bz-installed-page.c:652
 msgid ""
@@ -729,7 +729,7 @@ msgstr "Оновлення"
 
 #: src/bz-transaction-view.blp:253
 msgid "Freed Space"
-msgstr "Звільнене місця"
+msgstr "Звільнене місце"
 
 #: src/bz-transaction-view.blp:400
 #, fuzzy
