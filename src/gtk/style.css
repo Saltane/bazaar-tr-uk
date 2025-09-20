@@ -20,10 +20,6 @@
     border-radius: 0;
 }
 
-.app-tile {
-    background-color: alpha(var(--card-bg-color), 0.7);
-}
-
 .screenshot {
     border-radius: 20px;
 }
@@ -43,10 +39,6 @@
 .browser-banner-description {
     font-size: 1.33em;
     font-weight: normal;
-}
-
-.navigation-sidebar {
-	padding:0;
 }
 
 .support {

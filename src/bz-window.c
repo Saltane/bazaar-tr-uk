@@ -512,6 +512,11 @@ key_pressed (BzWindow              *self,
   guint32 unichar = 0;
   char    buf[32] = { 0 };
 
+  /* Ignore if this is a modifier-shortcut of some sort */
+  if (state & ~(GDK_NO_MODIFIER_MASK | GDK_SHIFT_MASK))
+    return FALSE;
+
+  /* Ignore if we are already inside search  */
   if (adw_overlay_split_view_get_show_sidebar (self->search_split))
     return FALSE;
 
@@ -543,7 +548,7 @@ bz_window_init (BzWindow *self)
   //       gtk_widget_set_visible (GTK_WIDGET (self->support_kde), TRUE);
   //   }
 
-  adw_toggle_group_set_active_name (self->title_toggle_group, "curated");
+  adw_toggle_group_set_active_name (self->title_toggle_group, "flathub");
 
   self->key_controller = gtk_event_controller_key_new ();
   g_signal_connect_swapped (self->key_controller, "key-pressed", G_CALLBACK (key_pressed), self);
@@ -573,6 +578,15 @@ has_transactions_changed (BzWindow             *self,
                           BzTransactionManager *manager)
 {
   check_transactions (self);
+}
+
+static void
+has_inputs_changed (BzWindow          *self,
+                    GParamSpec        *pspec,
+                    BzContentProvider *provider)
+{
+  if (!bz_content_provider_get_has_inputs (provider))
+    adw_toggle_group_set_active_name (self->title_toggle_group, "flathub");
 }
 
 static void
@@ -714,16 +728,10 @@ bz_window_new (BzStateInfo *state)
                            "notify::has-transactions",
                            G_CALLBACK (has_transactions_changed),
                            window, G_CONNECT_SWAPPED);
-
-  /* TODO: connect to "items-changed" if this ever becomes dynamic */
-  if (g_list_model_get_n_items (
-          bz_state_info_get_curated_configs (state)) == 0)
-    {
-      adw_toggle_group_set_active_name (
-          window->title_toggle_group, "flathub");
-      adw_toggle_group_remove (
-          window->title_toggle_group, window->curated_toggle);
-    }
+  g_signal_connect_object (bz_state_info_get_curated_provider (state),
+                           "notify::has-inputs",
+                           G_CALLBACK (has_inputs_changed),
+                           window, G_CONNECT_SWAPPED);
 
   g_object_notify_by_pspec (G_OBJECT (window), props[PROP_STATE]);
 
@@ -793,6 +801,17 @@ bz_window_show_group (BzWindow     *self,
   gtk_widget_set_visible (GTK_WIDGET (self->go_back), TRUE);
   gtk_widget_set_visible (GTK_WIDGET (self->search), FALSE);
   gtk_revealer_set_reveal_child (self->title_revealer, FALSE);
+}
+
+void
+bz_window_set_category_view_mode (BzWindow *self,
+                                  gboolean  enabled)
+{
+  g_return_if_fail (BZ_IS_WINDOW (self));
+
+  gtk_widget_set_visible (GTK_WIDGET (self->go_back), enabled);
+  gtk_widget_set_visible (GTK_WIDGET (self->search), !enabled);
+  gtk_revealer_set_reveal_child (self->title_revealer, !enabled);
 }
 
 static void
@@ -1137,6 +1156,9 @@ set_page (BzWindow *self)
   gboolean    show_search   = FALSE;
   const char *visible_child = NULL;
 
+  if (self->state == NULL)
+    return;
+
   active_name = adw_toggle_group_get_active_name (self->title_toggle_group);
   show_search = adw_overlay_split_view_get_show_sidebar (self->search_split);
 
@@ -1150,6 +1172,8 @@ set_page (BzWindow *self)
     visible_child = bz_state_info_get_online (self->state) ? "browse" : "offline";
   else if (g_strcmp0 (active_name, "flathub") == 0)
     visible_child = bz_state_info_get_online (self->state) ? "flathub" : "offline";
+  else
+    visible_child = "flathub";
 
   adw_navigation_view_replace_with_tags (self->main_stack, (const char *[]) { visible_child }, 1);
   gtk_widget_set_sensitive (GTK_WIDGET (self->title_toggle_group), !bz_state_info_get_busy (self->state));
@@ -1163,17 +1187,6 @@ set_page (BzWindow *self)
     gtk_widget_grab_focus (GTK_WIDGET (self->search_widget));
   else
     bz_full_view_set_entry_group (self->full_view, NULL);
-}
-
-void
-bz_window_set_category_view_mode (BzWindow *self,
-                                  gboolean  enabled)
-{
-  g_return_if_fail (BZ_IS_WINDOW (self));
-
-  gtk_widget_set_visible (GTK_WIDGET (self->go_back), enabled);
-  gtk_widget_set_visible (GTK_WIDGET (self->search), !enabled);
-  gtk_revealer_set_reveal_child (self->title_revealer, !enabled);
 }
 
 static void
