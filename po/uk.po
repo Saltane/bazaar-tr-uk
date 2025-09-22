@@ -866,7 +866,6 @@ msgid "_Quit Service"
 msgstr "_Завершити роботу сервісу"
 
 #: src/bz-window.blp:420
-#, fuzzy
 msgid "_Refresh Content"
 msgstr "_Оновити вміст"
 
