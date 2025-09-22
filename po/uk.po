@@ -429,7 +429,7 @@ msgstr "Популярні"
 #: src/bz-flatpak-entry.c:562
 msgctxt "Project URL Type"
 msgid "Flathub Page"
-msgstr "Flathub"
+msgstr "Сторінка Flathub"
 
 #: src/bz-flatpak-entry.c:581
 msgctxt "Project URL Type"
@@ -669,7 +669,7 @@ msgstr "Налаштування"
 
 #: src/bz-preferences-dialog.blp:13
 msgid "Application Details"
-msgstr "Докладніше"
+msgstr "Докладнощі застосунку"
 
 #: src/bz-preferences-dialog.blp:16
 msgid "Git Forge Star Counts"
