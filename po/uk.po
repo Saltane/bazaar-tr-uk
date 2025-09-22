@@ -67,7 +67,6 @@ msgid "Debounce Search Inputs"
 msgstr "Чекати вводу"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:22
-#, fuzzy
 msgid "Add a delay before searching to prevent instant replies while typing"
 msgstr "Чекати на закінчення вводу, аби попередити миттєві надходження."
 
@@ -286,7 +285,6 @@ msgid "Completed initialization in %0.2f seconds"
 msgstr "Ініціалізовано за %0.2f сек"
 
 #: src/bz-application.c:1575
-#, fuzzy
 msgid "Checking for updates..."
 msgstr "Шукаємо оновлення"
 
@@ -429,7 +427,6 @@ msgid "Popular"
 msgstr "Популярні"
 
 #: src/bz-flatpak-entry.c:562
-#, fuzzy
 msgctxt "Project URL Type"
 msgid "Flathub Page"
 msgstr "Flathub"
@@ -440,7 +437,6 @@ msgid "Homepage"
 msgstr "Домашня сторінка"
 
 #: src/bz-flatpak-entry.c:584
-#, fuzzy
 msgctxt "Project URL Type"
 msgid "Issue Tracker"
 msgstr "Відстеження помилок"
@@ -456,7 +452,6 @@ msgid "Help"
 msgstr "Допомога"
 
 #: src/bz-flatpak-entry.c:593
-#, fuzzy
 msgctxt "Project URL Type"
 msgid "Donate"
 msgstr "Пожертви"
@@ -673,7 +668,6 @@ msgid "Preferences"
 msgstr "Налаштування"
 
 #: src/bz-preferences-dialog.blp:13
-#, fuzzy
 msgid "Application Details"
 msgstr "Докладніше"
 
@@ -710,7 +704,6 @@ msgid "Wait for a brief pause to reduce system load"
 msgstr "Чекати на закінчення вводу, аби попередити миттєві надходження."
 
 #: src/bz-search-widget.blp:69
-#, fuzzy
 msgid "Search Apps"
 msgstr "Шукати застосунки"
 
@@ -719,7 +712,6 @@ msgid "Share"
 msgstr "Поділитися"
 
 #: src/bz-share-dialog.c:105
-#, fuzzy
 msgid "Copy Link"
 msgstr "Копіювати посилання"
 
@@ -981,7 +973,6 @@ msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
 
-#, fuzzy
 #~ msgctxt "Project URL Type"
 #~ msgid "Flathub Link"
 #~ msgstr "Посилання Flathub"
