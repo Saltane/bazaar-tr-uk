@@ -71,7 +71,9 @@ template $BzFullView: Adw.Bin {
                       halign: center;
                       width-request: 128;
                       height-request: 128;
-                      paintable: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.icon-paintable;
+                      paintable: bind template.entry-group as <$BzEntryGroup>.icon-paintable;
+
+                      styles ["icon-dropshadow"]
                     }
 
                     Box {

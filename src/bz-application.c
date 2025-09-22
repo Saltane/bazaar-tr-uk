@@ -748,14 +748,15 @@ bz_application_about_action (GSimpleAction *action,
     C_ ("About Dialog Translator Credit", "Lucosec"),
     C_ ("About Dialog Translator Credit", "Léane GRASSER"),
     C_ ("About Dialog Translator Credit", "Marcel Mrówka (Microwave)"),
+    C_ ("About Dialog Translator Credit", "Peter Dave Hello"),
     C_ ("About Dialog Translator Credit", "Pietro F."),
     C_ ("About Dialog Translator Credit", "Shihfu Juan"),
     C_ ("About Dialog Translator Credit", "Shinsei"),
     C_ ("About Dialog Translator Credit", "Vlastimil Dědek"),
     C_ ("About Dialog Translator Credit", "asen23"),
+    C_ ("About Dialog Translator Credit", "camegone"),
     C_ ("About Dialog Translator Credit", "renner"),
     C_ ("About Dialog Translator Credit", "robotta"),
-    C_ ("About Dialog Translator Credit", "Peter Dave Hello"),
     /* This array MUST be NULL terminated */
     NULL
   };

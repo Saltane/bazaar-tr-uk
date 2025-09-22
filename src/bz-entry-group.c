@@ -22,6 +22,7 @@
 #define BAZAAR_MODULE "entry-group"
 
 #include "bz-entry-group.h"
+#include "bz-async-texture.h"
 #include "bz-env.h"
 
 struct _BzEntryGroup
@@ -30,18 +31,19 @@ struct _BzEntryGroup
 
   BzApplicationMapFactory *factory;
 
-  GListStore *store;
-  char       *id;
-  char       *title;
-  char       *developer;
-  char       *description;
-  GIcon      *mini_icon;
-  gboolean    is_floss;
-  char       *light_accent_color;
-  char       *dark_accent_color;
-  gboolean    is_flathub;
-  GPtrArray  *search_tokens;
-  char       *remote_repos_string;
+  GListStore   *store;
+  char         *id;
+  char         *title;
+  char         *developer;
+  char         *description;
+  GdkPaintable *icon_paintable;
+  GIcon        *mini_icon;
+  gboolean      is_floss;
+  char         *light_accent_color;
+  char         *dark_accent_color;
+  gboolean      is_flathub;
+  GPtrArray    *search_tokens;
+  char         *remote_repos_string;
 
   int max_usefulness;
 
@@ -67,6 +69,7 @@ enum
   PROP_TITLE,
   PROP_DEVELOPER,
   PROP_DESCRIPTION,
+  PROP_ICON_PAINTABLE,
   PROP_MINI_ICON,
   PROP_IS_FLOSS,
   PROP_LIGHT_ACCENT_COLOR,
@@ -132,6 +135,7 @@ bz_entry_group_dispose (GObject *object)
   g_clear_pointer (&self->description, g_free);
   g_clear_pointer (&self->light_accent_color, g_free);
   g_clear_pointer (&self->dark_accent_color, g_free);
+  g_clear_object (&self->icon_paintable);
   g_clear_object (&self->mini_icon);
   g_clear_pointer (&self->search_tokens, g_ptr_array_unref);
   g_clear_pointer (&self->remote_repos_string, g_free);
@@ -165,6 +169,9 @@ bz_entry_group_get_property (GObject    *object,
       break;
     case PROP_DESCRIPTION:
       g_value_set_string (value, bz_entry_group_get_description (self));
+      break;
+    case PROP_ICON_PAINTABLE:
+      g_value_set_object (value, bz_entry_group_get_icon_paintable (self));
       break;
     case PROP_MINI_ICON:
       g_value_set_object (value, bz_entry_group_get_mini_icon (self));
@@ -228,6 +235,7 @@ bz_entry_group_set_property (GObject      *object,
     case PROP_TITLE:
     case PROP_DEVELOPER:
     case PROP_DESCRIPTION:
+    case PROP_ICON_PAINTABLE:
     case PROP_MINI_ICON:
     case PROP_IS_FLOSS:
     case PROP_LIGHT_ACCENT_COLOR:
@@ -285,6 +293,13 @@ bz_entry_group_class_init (BzEntryGroupClass *klass)
       g_param_spec_string (
           "description",
           NULL, NULL, NULL,
+          G_PARAM_READABLE);
+
+  props[PROP_ICON_PAINTABLE] =
+      g_param_spec_object (
+          "icon-paintable",
+          NULL, NULL,
+          GDK_TYPE_PAINTABLE,
           G_PARAM_READABLE);
 
   props[PROP_MINI_ICON] =
@@ -437,6 +452,13 @@ bz_entry_group_get_description (BzEntryGroup *self)
 {
   g_return_val_if_fail (BZ_IS_ENTRY_GROUP (self), NULL);
   return self->description;
+}
+
+GdkPaintable *
+bz_entry_group_get_icon_paintable (BzEntryGroup *self)
+{
+  g_return_val_if_fail (BZ_IS_ENTRY_GROUP (self), NULL);
+  return self->icon_paintable;
 }
 
 GIcon *
@@ -608,19 +630,21 @@ bz_entry_group_add (BzEntryGroup *self,
     }
   else
     {
-      const char *title              = NULL;
-      const char *developer          = NULL;
-      const char *description        = NULL;
-      GIcon      *mini_icon          = NULL;
-      GPtrArray  *search_tokens      = NULL;
-      const char *light_accent_color = NULL;
-      const char *dark_accent_color  = NULL;
+      const char   *title              = NULL;
+      const char   *developer          = NULL;
+      const char   *description        = NULL;
+      GdkPaintable *icon_paintable     = NULL;
+      GIcon        *mini_icon          = NULL;
+      GPtrArray    *search_tokens      = NULL;
+      const char   *light_accent_color = NULL;
+      const char   *dark_accent_color  = NULL;
 
       g_list_store_append (self->store, unique_id_string);
 
       title              = bz_entry_get_title (entry);
       developer          = bz_entry_get_developer (entry);
       description        = bz_entry_get_description (entry);
+      icon_paintable     = bz_entry_get_icon_paintable (entry);
       mini_icon          = bz_entry_get_mini_icon (entry);
       search_tokens      = bz_entry_get_search_tokens (entry);
       light_accent_color = bz_entry_get_light_accent_color (entry);
@@ -640,6 +664,11 @@ bz_entry_group_add (BzEntryGroup *self,
         {
           self->description = g_strdup (description);
           g_object_notify_by_pspec (G_OBJECT (self), props[PROP_DESCRIPTION]);
+        }
+      if (icon_paintable != NULL && self->icon_paintable == NULL)
+        {
+          self->icon_paintable = g_object_ref (icon_paintable);
+          g_object_notify_by_pspec (G_OBJECT (self), props[PROP_ICON_PAINTABLE]);
         }
       if (mini_icon != NULL && self->mini_icon == NULL)
         {
@@ -851,19 +880,21 @@ static void
 sync_props (BzEntryGroup *self,
             BzEntry      *entry)
 {
-  const char *title              = NULL;
-  const char *developer          = NULL;
-  const char *description        = NULL;
-  GIcon      *mini_icon          = NULL;
-  GPtrArray  *search_tokens      = NULL;
-  gboolean    is_floss           = FALSE;
-  const char *light_accent_color = NULL;
-  const char *dark_accent_color  = NULL;
-  gboolean    is_flathub         = FALSE;
+  const char   *title              = NULL;
+  const char   *developer          = NULL;
+  const char   *description        = NULL;
+  GdkPaintable *icon_paintable     = NULL;
+  GIcon        *mini_icon          = NULL;
+  GPtrArray    *search_tokens      = NULL;
+  gboolean      is_floss           = FALSE;
+  const char   *light_accent_color = NULL;
+  const char   *dark_accent_color  = NULL;
+  gboolean      is_flathub         = FALSE;
 
   title              = bz_entry_get_title (entry);
   developer          = bz_entry_get_developer (entry);
   description        = bz_entry_get_description (entry);
+  icon_paintable     = bz_entry_get_icon_paintable (entry);
   mini_icon          = bz_entry_get_mini_icon (entry);
   search_tokens      = bz_entry_get_search_tokens (entry);
   is_floss           = bz_entry_get_is_foss (entry);
@@ -888,6 +919,18 @@ sync_props (BzEntryGroup *self,
       g_clear_pointer (&self->description, g_free);
       self->description = g_strdup (description);
       g_object_notify_by_pspec (G_OBJECT (self), props[PROP_DESCRIPTION]);
+    }
+  /* only grab icon paintable if we don't have it already to reduce
+     flickering in UI */
+  if (icon_paintable != NULL &&
+      (self->icon_paintable == NULL ||
+       (BZ_IS_ASYNC_TEXTURE (self->icon_paintable) &&
+        !bz_async_texture_get_loaded (BZ_ASYNC_TEXTURE (self->icon_paintable)) &&
+        !bz_async_texture_is_loading (BZ_ASYNC_TEXTURE (self->icon_paintable)))))
+    {
+      g_clear_object (&self->icon_paintable);
+      self->icon_paintable = g_object_ref (icon_paintable);
+      g_object_notify_by_pspec (G_OBJECT (self), props[PROP_ICON_PAINTABLE]);
     }
   if (mini_icon != NULL)
     {
