@@ -409,7 +409,6 @@ msgid "Trending"
 msgstr "Набирають популярність"
 
 #: src/bz-flathub-page.blp:111
-#, fuzzy
 msgid "More Trending"
 msgstr "Набирають популярність"
 
@@ -422,7 +421,6 @@ msgid "Recently Updated"
 msgstr "Нещодавно оновлені"
 
 #: src/bz-flathub-page.blp:195
-#, fuzzy
 msgid "More Updated"
 msgstr "Оновлення"
 
@@ -431,7 +429,6 @@ msgid "Recently Added"
 msgstr "Нещодавно додані"
 
 #: src/bz-flathub-page.blp:247
-#, fuzzy
 msgid "More Added"
 msgstr "Докладніше"
 
@@ -440,7 +437,6 @@ msgid "Popular"
 msgstr "Популярні"
 
 #: src/bz-flathub-page.blp:299
-#, fuzzy
 msgid "More Popular"
 msgstr "Популярні"
 
@@ -781,7 +777,6 @@ msgid "Downloads Over Time"
 msgstr "Завантажень протягом часу"
 
 #: src/bz-stats-dialog.blp:21
-#, fuzzy
 msgid "Installs:"
 msgstr "Встановити"
 
