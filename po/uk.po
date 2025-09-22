@@ -522,7 +522,6 @@ msgid "Uninstall Application"
 msgstr "Видалити цей застосунок"
 
 #: src/bz-full-view.blp:250 src/bz-installed-page.blp:125
-#, fuzzy
 msgid "Manage Add-ons"
 msgstr "Керувати розширеннями"
 
