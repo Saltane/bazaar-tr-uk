@@ -863,11 +863,11 @@ msgstr "Перемкнути віконце дій над застосункам
 
 #: src/bz-window.blp:415
 msgid "_Quit Service"
-msgstr "_Завершити роботу сервісу"
+msgstr "_Вийти"
 
 #: src/bz-window.blp:420
 msgid "_Refresh Content"
-msgstr "_Оновити вміст"
+msgstr "_Оновити"
 
 #: src/bz-window.blp:425
 msgid "_Preferences"
