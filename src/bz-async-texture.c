@@ -20,11 +20,13 @@
 
 #define G_LOG_DOMAIN "BAZAAR::ASYNC-TEXTURE"
 
-#define MAX_CONCURRENT_LOADS   4
+#define MAX_CONCURRENT_LOADS   32
 #define MAX_LOAD_RETRIES       3
 #define RETRY_INTERVAL_SECONDS 5
 
-#include <glycin-gtk4-1/glycin-gtk4.h>
+#include "config.h"
+
+#include <glycin-gtk4-2/glycin-gtk4.h>
 #include <libdex.h>
 
 #include "bz-async-texture.h"
@@ -63,8 +65,8 @@ struct _BzAsyncTexture
   DexFuture    *task;
   GCancellable *cancellable;
 
-  int   retries;
-  guint current_source;
+  int        retries;
+  DexFuture *retry_future;
 
   GdkPaintable *paintable;
   GMutex        texture_mutex;
@@ -100,22 +102,23 @@ load_finally (DexFuture      *future,
 static void
 maybe_load (BzAsyncTexture *self);
 
-static gboolean
-idle_notify (BzAsyncTexture *self);
+static DexFuture *
+retry_cb (DexFuture      *future,
+          BzAsyncTexture *self);
 
 static gboolean
-idle_reload (BzAsyncTexture *self);
+idle_notify (BzAsyncTexture *self);
 
 static void
 bz_async_texture_dispose (GObject *object)
 {
   BzAsyncTexture *self = BZ_ASYNC_TEXTURE (object);
 
-  g_clear_handle_id (&self->current_source, g_source_remove);
   if (self->cancellable != NULL)
     g_cancellable_cancel (self->cancellable);
   dex_clear (&self->task);
   g_clear_object (&self->cancellable);
+  dex_clear (&self->retry_future);
 
   g_clear_object (&self->source);
   g_clear_pointer (&self->source_uri, g_free);
@@ -473,7 +476,7 @@ maybe_load (BzAsyncTexture *self)
   future = dex_future_finally (
       future,
       (DexFutureCallback) load_finally,
-      g_object_ref (self), g_object_unref);
+      self, NULL);
   self->task = g_steal_pointer (&future);
 }
 
@@ -484,9 +487,6 @@ load_fiber_work (LoadData *data)
   static guint    ongoing_queued[MAX_CONCURRENT_LOADS] = { 0 };
   static BzGuard *gates[MAX_CONCURRENT_LOADS]          = { 0 };
   static GMutex   mutexes[MAX_CONCURRENT_LOADS]        = { 0 };
-
-  static GMutex texload_mutex = { 0 };
-  static gint64 last_texload  = 0;
 
   GFile        *source            = data->source;
   char         *source_uri        = data->source_uri;
@@ -655,7 +655,11 @@ load_fiber_work (LoadData *data)
         }
 
       loader = gly_loader_new (load_file);
-      image  = gly_loader_load (loader, &local_error);
+#ifdef SANDBOXED_LIBFLATPAK
+      gly_loader_set_sandbox_selector (loader, GLY_SANDBOX_SELECTOR_NOT_SANDBOXED);
+#endif
+
+      image = gly_loader_load (loader, &local_error);
       if (is_http && cache_into == NULL)
         /* delete tmp file */
         g_file_delete (load_file, NULL, NULL);
@@ -668,33 +672,6 @@ load_fiber_work (LoadData *data)
     }
 
   bz_clear_guard (&slot_guard);
-
-  /* This dance is to prevent overloading gtk with texture load
-     requests */
-  g_mutex_lock (&texload_mutex);
-  if (last_texload == 0)
-    {
-      last_texload = g_get_monotonic_time ();
-      g_mutex_unlock (&texload_mutex);
-    }
-  else
-    {
-      gint64 now                  = 0;
-      g_autoptr (DexFuture) await = NULL;
-
-      now = g_get_monotonic_time ();
-      if (now < last_texload + 1000)
-        {
-          last_texload += 1000;
-          await = dex_timeout_new_deadline (last_texload);
-        }
-      else
-        last_texload = now;
-      g_mutex_unlock (&texload_mutex);
-
-      if (await != NULL)
-        dex_await (g_steal_pointer (&await), NULL);
-    }
 
   texture = gly_gtk_frame_get_texture (frame);
   if (texture == NULL)
@@ -714,17 +691,17 @@ load_finally (DexFuture      *future,
   g_autoptr (GMutexLocker) locker = NULL;
 
   locker = g_mutex_locker_new (&self->texture_mutex);
+  dex_clear (&self->task);
 
   if (dex_future_is_resolved (future))
     {
       g_clear_object (&self->paintable);
       self->paintable = g_value_dup_object (dex_future_get_value (future, NULL));
 
-      g_clear_handle_id (&self->current_source, g_source_remove);
-      self->current_source = g_idle_add_full (
+      g_idle_add_full (
           G_PRIORITY_DEFAULT_IDLE,
           (GSourceFunc) idle_notify,
-          self, NULL);
+          g_object_ref (self), g_object_unref);
 
       return dex_future_new_for_object (self->paintable);
     }
@@ -747,11 +724,10 @@ load_finally (DexFuture      *future,
                        MAX_LOAD_RETRIES - self->retries);
           self->retries++;
 
-          g_clear_handle_id (&self->current_source, g_source_remove);
-          self->current_source = g_timeout_add_seconds_full (
-              G_PRIORITY_DEFAULT_IDLE,
-              RETRY_INTERVAL_SECONDS,
-              (GSourceFunc) idle_reload,
+          dex_clear (&self->retry_future);
+          self->retry_future = dex_future_then (
+              dex_timeout_new_seconds (RETRY_INTERVAL_SECONDS),
+              (DexFutureCallback) retry_cb,
               self, NULL);
         }
 
@@ -759,27 +735,25 @@ load_finally (DexFuture      *future,
     }
 }
 
-static gboolean
-idle_notify (BzAsyncTexture *self)
-{
-  self->current_source = 0;
-
-  g_object_notify_by_pspec (G_OBJECT (self), props[PROP_LOADED]);
-  gdk_paintable_invalidate_contents (GDK_PAINTABLE (self));
-  gdk_paintable_invalidate_size (GDK_PAINTABLE (self));
-
-  return G_SOURCE_REMOVE;
-}
-
-static gboolean
-idle_reload (BzAsyncTexture *self)
+static DexFuture *
+retry_cb (DexFuture      *future,
+          BzAsyncTexture *self)
 {
   g_autoptr (GMutexLocker) locker = NULL;
 
-  self->current_source = 0;
-
   locker = g_mutex_locker_new (&self->texture_mutex);
+  dex_clear (self->retry_future);
+
   maybe_load (self);
+  return NULL;
+}
+
+static gboolean
+idle_notify (BzAsyncTexture *self)
+{
+  g_object_notify_by_pspec (G_OBJECT (self), props[PROP_LOADED]);
+  gdk_paintable_invalidate_contents (GDK_PAINTABLE (self));
+  gdk_paintable_invalidate_size (GDK_PAINTABLE (self));
 
   return G_SOURCE_REMOVE;
 }

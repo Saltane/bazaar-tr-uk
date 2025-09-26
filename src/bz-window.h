@@ -58,4 +58,7 @@ void
 bz_window_add_toast (BzWindow *self,
                      AdwToast *toast);
 
+BzStateInfo *
+bz_window_get_state_info (BzWindow *self);
+
 G_END_DECLS

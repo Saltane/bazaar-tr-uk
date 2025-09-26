@@ -54,8 +54,7 @@ struct _BzEntryGroup
   int updatable_available;
   int removable_available;
 
-  GWeakRef  ui_entry;
-  BzResult *entry_cradle;
+  GWeakRef ui_entry;
 };
 
 G_DEFINE_FINAL_TYPE (BzEntryGroup, bz_entry_group, G_TYPE_OBJECT)
@@ -100,22 +99,6 @@ holding_changed (BzEntryGroup *self,
                  BzEntry      *entry);
 
 static void
-mini_icon_changed (BzEntryGroup *self,
-                   GParamSpec   *pspec,
-                   BzEntry      *entry);
-
-static void
-ui_entry_complete (BzEntryGroup *self);
-
-static void
-ui_entry_completed_cb (BzEntryGroup *self,
-                       GParamSpec   *pspec,
-                       BzResult     *result);
-
-static gboolean
-ui_entry_ref_timeout (BzEntry *entry);
-
-static void
 sync_props (BzEntryGroup *self,
             BzEntry      *entry);
 
@@ -140,7 +123,6 @@ bz_entry_group_dispose (GObject *object)
   g_clear_pointer (&self->search_tokens, g_ptr_array_unref);
   g_clear_pointer (&self->remote_repos_string, g_free);
   g_weak_ref_clear (&self->ui_entry);
-  g_clear_object (&self->entry_cradle);
 
   G_OBJECT_CLASS (bz_entry_group_parent_class)->dispose (object);
 }
@@ -523,18 +505,6 @@ bz_entry_group_dup_ui_entry (BzEntryGroup *self)
             return NULL;
 
           g_weak_ref_set (&self->ui_entry, result);
-
-          g_clear_object (&self->entry_cradle);
-          self->entry_cradle = g_object_ref (result);
-
-          if (bz_result_get_resolved (result))
-            /* recursing queries will hit the weak ref */
-            ui_entry_complete (self);
-          else
-            g_signal_connect_object (
-                result, "notify::pending",
-                G_CALLBACK (ui_entry_completed_cb),
-                self, G_CONNECT_SWAPPED);
         }
       return g_steal_pointer (&result);
     }
@@ -815,65 +785,6 @@ holding_changed (BzEntryGroup *self,
 
   g_object_notify_by_pspec (G_OBJECT (self), props[PROP_REMOVABLE_AND_AVAILABLE]);
   g_object_notify_by_pspec (G_OBJECT (self), props[PROP_INSTALLABLE_AND_AVAILABLE]);
-}
-
-static void
-mini_icon_changed (BzEntryGroup *self,
-                   GParamSpec   *pspec,
-                   BzEntry      *entry)
-{
-  GIcon *mini_icon = NULL;
-
-  mini_icon = bz_entry_get_mini_icon (entry);
-  if (mini_icon != NULL)
-    {
-      g_clear_object (&self->mini_icon);
-      self->mini_icon = g_object_ref (mini_icon);
-      g_object_notify_by_pspec (G_OBJECT (self), props[PROP_MINI_ICON]);
-    }
-}
-
-static void
-ui_entry_complete (BzEntryGroup *self)
-{
-  if (bz_result_get_resolved (self->entry_cradle))
-    {
-      BzEntry *entry = NULL;
-
-      entry = bz_result_get_object (self->entry_cradle);
-      sync_props (self, entry);
-      g_signal_connect_object (entry, "notify::mini-icon", G_CALLBACK (mini_icon_changed), self, G_CONNECT_SWAPPED);
-
-      /* give result 1 second to live before
-       * banishing back to where it belongs
-       */
-      g_timeout_add_seconds_full (
-          G_PRIORITY_DEFAULT, 1,
-          (GSourceFunc) ui_entry_ref_timeout,
-          g_steal_pointer (&self->entry_cradle), g_object_unref);
-    }
-  else
-    {
-      g_warning ("Unable to load UI entry for group %s: %s",
-                 self->id, bz_result_get_message (self->entry_cradle));
-      g_clear_object (&self->entry_cradle);
-      return;
-    }
-}
-
-static void
-ui_entry_completed_cb (BzEntryGroup *self,
-                       GParamSpec   *pspec,
-                       BzResult     *result)
-{
-  ui_entry_complete (self);
-}
-
-static gboolean
-ui_entry_ref_timeout (BzEntry *entry)
-{
-  /* event loop will discard the entry for us */
-  return G_SOURCE_REMOVE;
 }
 
 static void
