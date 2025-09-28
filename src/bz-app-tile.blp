@@ -75,10 +75,13 @@ template $BzAppTile: Button {
         ]
 
         xalign: 0.0;
+        yalign: 0.0;
         wrap: true;
         ellipsize: end;
-        max-width-chars: 35;
+        vexpand: true;
         lines: 3;
+        max-width-chars: 15;
+        single-line-mode: true;
         label: bind template.group as <$BzEntryGroup>.description;
       }
     }
