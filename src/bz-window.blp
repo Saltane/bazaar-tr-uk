@@ -148,6 +148,7 @@ template $BzWindow: Adw.ApplicationWindow {
               child: Overlay {
                 child: Adw.NavigationView main_stack {
 
+                  pop-on-escape: false;
                   notify::visible-page => $visible_page_changed_cb(template);
 
                   Adw.NavigationPage {
