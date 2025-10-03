@@ -410,7 +410,7 @@ msgstr "Набирають популярність"
 
 #: src/bz-flathub-page.blp:111
 msgid "More Trending"
-msgstr "Показати більше" # TODO: переглянути переклад.
+msgstr "Показати більше" # TODO(uk): переглянути переклад.
 
 #: src/bz-flathub-page.blp:127
 msgid "Categories"
@@ -422,7 +422,7 @@ msgstr "Нещодавно оновлені"
 
 #: src/bz-flathub-page.blp:195
 msgid "More Updated"
-msgstr "Показати більше" # TODO: переглянути переклад.
+msgstr "Показати більше" # TODO(uk): переглянути переклад.
 
 #: src/bz-flathub-page.blp:216 src/bz-flathub-page.c:196
 msgid "Recently Added"
@@ -430,7 +430,7 @@ msgstr "Нещодавно додані"
 
 #: src/bz-flathub-page.blp:247
 msgid "More Added"
-msgstr "Показати більше" # TODO: переглянути переклад.
+msgstr "Показати більше" # TODO(uk): переглянути переклад.
 
 #: src/bz-flathub-page.blp:268 src/bz-flathub-page.c:206
 msgid "Popular"
@@ -438,7 +438,7 @@ msgstr "Популярні"
 
 #: src/bz-flathub-page.blp:299
 msgid "More Popular"
-msgstr "Показати більше" # TODO: переглянути переклад.
+msgstr "Показати більше" # TODO(uk): переглянути переклад.
 
 #: src/bz-flatpak-entry.c:519
 msgctxt "Project URL Type"
