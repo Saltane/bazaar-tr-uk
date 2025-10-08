@@ -562,23 +562,20 @@ msgid "Download Size"
 msgstr "Розмір завантаження"
 
 #: src/bz-full-view.blp:373
-#, fuzzy
 msgid "Excludes shared components"
-msgstr "Можуть бути встановлені додаткові компоненти"
+msgstr ""
 
 #: src/bz-full-view.blp:428
-#, fuzzy
 msgid "Free Software"
-msgstr "Показувати лише вільні застосунки"
+msgstr ""
 
 #: src/bz-full-view.blp:470
 msgid "Proprietary"
 msgstr ""
 
 #: src/bz-full-view.blp:536
-#, fuzzy
 msgid "in the last month"
-msgstr "%'d завантажень за минулий місяць"
+msgstr ""
 
 #: src/bz-full-view.blp:602
 msgid "Repositories"
@@ -597,14 +594,13 @@ msgid "Version History"
 msgstr "Історія змін"
 
 #: src/bz-full-view.c:209
-#, fuzzy, c-format
+#, c-format
 msgid "%'d Downloads"
-msgstr "%s: %'u завантажень"
+msgstr ""
 
 #: src/bz-full-view.c:211
-#, fuzzy
 msgid "--- Downloads"
-msgstr "Розмір завантаження"
+msgstr ""
 
 #. Translators: This is a date format for timestamps from previous years. Used in the app releases section.
 #. * %B is the full month name, %e is the day, %Y is the year.
@@ -922,9 +918,8 @@ msgid "Additionally, %d runtimes and/or addons will be updated."
 msgstr "Крім того, буде оновлено %d середовищ виконання та/або розширень."
 
 #: src/bz-window.blp:80
-#, fuzzy
 msgid "Transactions"
-msgstr "Більше дій"
+msgstr ""
 
 #: src/bz-window.blp:95 src/bz-window.blp:413
 msgid "Toggle transaction sidebar"
@@ -935,9 +930,8 @@ msgid "Stop Active Tasks"
 msgstr ""
 
 #: src/bz-window.blp:138
-#, fuzzy
 msgid "Clear History"
-msgstr "Історія змін"
+msgstr ""
 
 #: src/bz-window.blp:154
 msgid "No Tasks Yet"
