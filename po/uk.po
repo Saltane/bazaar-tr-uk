@@ -92,7 +92,6 @@ msgid "Discover and install applications"
 msgstr "Знаходьте та встановлюйте застосунки"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:10
-#, fuzzy
 msgid ""
 "A new app store for GNOME with a focus on discovering and installing "
 "applications and addons from Flatpak remotes, particularly Flathub."
@@ -102,7 +101,6 @@ msgstr ""
 "Flathub"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:14
-#, fuzzy
 msgid ""
 "It emphasizes supporting the developers who make the Linux desktop possible. "
 "Bazaar features a \"curated\" tab that can be configured by distributors to "
@@ -117,7 +115,6 @@ msgid "Adam Masciola"
 msgstr ""
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:47
-#, fuzzy
 msgid "The home view displaying Flathub apps"
 msgstr "Домашня сторінка із застосунками з Flathub"
 
