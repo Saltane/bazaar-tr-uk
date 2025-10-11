@@ -52,6 +52,7 @@ gdbus_src = gnome.gdbus_codegen(
 bz_sources = [
   'bz-addons-dialog.c',
   'bz-app-tile.c',
+  'bz-app-size-dialog.c',
   'bz-apps-page.c',
   'bz-application-map-factory.c',
   'bz-application.c',
@@ -112,6 +113,7 @@ bz_sources = [
   'bz-share-dialog.c',
   'bz-state-info.c',
   'bz-stats-dialog.c',
+  'bz-spdx.c',
   'bz-transaction-manager.c',
   'bz-transaction-task.c',
   'bz-transaction-view.c',
@@ -145,6 +147,7 @@ blueprints = custom_target('blueprints',
   input: files(
     'bz-addons-dialog.blp',
     'bz-app-tile.blp',
+    'bz-app-size-dialog.blp',
     'bz-apps-page.blp',
     'bz-browse-widget.blp',
     'bz-category-tile.blp',
