@@ -153,7 +153,7 @@ msgstr "бортовий обчислювач Apollo 11"
 
 #: src/bz-app-size-dialog.c:57
 msgid "Total ROM and RAM"
-msgstr "увесь простір ППЗ та ОЗУ"
+msgstr "увесь простір ПЗП та ОЗП"
 
 #: src/bz-app-size-dialog.c:58
 msgid "Of the original Super Mario Bros"
