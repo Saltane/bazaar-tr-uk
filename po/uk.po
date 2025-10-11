@@ -149,7 +149,7 @@ msgstr ""
 
 #: src/bz-app-size-dialog.c:57
 msgid "Of the Apollo 11 guidance computer"
-msgstr "від бортовий обчислювач Apollo 11"
+msgstr "від бортового обчислювача Apollo 11"
 
 #: src/bz-app-size-dialog.c:57
 msgid "Total ROM and RAM"
