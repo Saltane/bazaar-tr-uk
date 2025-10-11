@@ -132,7 +132,7 @@ msgstr "Керувати розширеннями"
 
 #: src/bz-app-size-dialog.c:55
 msgid "Of the size of human DNA"
-msgstr "людська ДНК"
+msgstr "від людської ДНК"
 
 #: src/bz-app-size-dialog.c:55
 msgid "3 billion base pairs"
@@ -140,7 +140,7 @@ msgstr "3 мільярди пар основ"
 
 #: src/bz-app-size-dialog.c:56
 msgid "Of the Linux Kernel"
-msgstr "ядро Linux"
+msgstr "від ядра Linux"
 
 # NOTE: не потребує перекладу.
 #: src/bz-app-size-dialog.c:56
@@ -149,7 +149,7 @@ msgstr ""
 
 #: src/bz-app-size-dialog.c:57
 msgid "Of the Apollo 11 guidance computer"
-msgstr "бортовий обчислювач Apollo 11"
+msgstr "від бортовий обчислювач Apollo 11"
 
 #: src/bz-app-size-dialog.c:57
 msgid "Total ROM and RAM"
@@ -157,16 +157,15 @@ msgstr "увесь простір ПЗП та ОЗП"
 
 #: src/bz-app-size-dialog.c:58
 msgid "Of the original Super Mario Bros"
-msgstr "перший Super Mario"
+msgstr "від першого Super Mario Bros"
 
-# NOTE: відбулася локалізація проти прямого перекладу.
 #: src/bz-app-size-dialog.c:58
 msgid "On the NES"
-msgstr "на Dendy"
+msgstr "на NES"
 
 #: src/bz-app-size-dialog.c:59
 msgid "Of the size of Wikipedia"
-msgstr "ціла Wikipedia"
+msgstr "від усієї Вікіпедії"
 
 #: src/bz-app-size-dialog.c:59
 msgid "Without any media"
