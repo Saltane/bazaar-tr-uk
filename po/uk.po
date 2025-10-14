@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-11 10:11+0300\n"
+"POT-Creation-Date: 2025-10-14 09:17+0300\n"
 "PO-Revision-Date: 2025-08-12 22:05+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -110,7 +110,7 @@ msgstr ""
 "стільничних компʼютерах. Він має вкладку \"підібраних\" застосунків, котра "
 "може бути налаштована дистрибутивами, аби створити цілісніший досвід."
 
-#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:24 src/bz-application.c:783
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:24 src/bz-application.c:496
 msgid "Adam Masciola"
 msgstr ""
 
@@ -179,7 +179,7 @@ msgstr "--- МБ"
 msgid "Download Size"
 msgstr "Розмір завантаження"
 
-#: src/bz-application.c:679
+#: src/bz-application.c:392
 msgid ""
 "This functionality is currently disabled. It is recommended you download and "
 "install Flatseal to manage app permissions."
@@ -187,124 +187,124 @@ msgstr ""
 "Цю можливість наразі вимкнено. Для керування дозволами застосунків радимо "
 "встановити Flatseal."
 
-#: src/bz-application.c:743
+#: src/bz-application.c:456
 msgctxt "About Dialog Developer Credit"
 msgid "Adam Masciola <kolunmi@posteo.net>"
 msgstr ""
 
-#: src/bz-application.c:744
+#: src/bz-application.c:457
 msgctxt "About Dialog Developer Credit"
 msgid "Alexander Vanhee"
 msgstr ""
 
-#: src/bz-application.c:749
+#: src/bz-application.c:462
 msgctxt "About Dialog Translator Credit"
 msgid "Ahmed Najmawi"
 msgstr ""
 
-#: src/bz-application.c:750
+#: src/bz-application.c:463
 msgctxt "About Dialog Translator Credit"
 msgid "AtomHare"
 msgstr ""
 
-#: src/bz-application.c:751
+#: src/bz-application.c:464
 msgctxt "About Dialog Translator Credit"
 msgid "Azenyr"
 msgstr ""
 
-#: src/bz-application.c:752
+#: src/bz-application.c:465
 msgctxt "About Dialog Translator Credit"
 msgid "Goudarz Jafari"
 msgstr ""
 
-#: src/bz-application.c:753
+#: src/bz-application.c:466
 msgctxt "About Dialog Translator Credit"
 msgid "Jill Fiore (Lumaeris)"
 msgstr ""
 
-#: src/bz-application.c:754
+#: src/bz-application.c:467
 msgctxt "About Dialog Translator Credit"
 msgid "João Victor (Leal)"
 msgstr ""
 
-#: src/bz-application.c:755
+#: src/bz-application.c:468
 msgctxt "About Dialog Translator Credit"
 msgid "KiKaraage"
 msgstr ""
 
-#: src/bz-application.c:756
+#: src/bz-application.c:469
 msgctxt "About Dialog Translator Credit"
 msgid "Lucosec"
 msgstr ""
 
-#: src/bz-application.c:757
+#: src/bz-application.c:470
 msgctxt "About Dialog Translator Credit"
 msgid "Léane GRASSER"
 msgstr ""
 
-#: src/bz-application.c:758
+#: src/bz-application.c:471
 msgctxt "About Dialog Translator Credit"
 msgid "Marcel Mrówka (Microwave)"
 msgstr ""
 
-#: src/bz-application.c:759
+#: src/bz-application.c:472
 msgctxt "About Dialog Translator Credit"
 msgid "Peter Dave Hello"
 msgstr ""
 
-#: src/bz-application.c:760
+#: src/bz-application.c:473
 msgctxt "About Dialog Translator Credit"
 msgid "Pietro F."
 msgstr ""
 
-#: src/bz-application.c:761
+#: src/bz-application.c:474
 msgctxt "About Dialog Translator Credit"
 msgid "Shihfu Juan"
 msgstr ""
 
-#: src/bz-application.c:762
+#: src/bz-application.c:475
 msgctxt "About Dialog Translator Credit"
 msgid "Shinsei"
 msgstr ""
 
-#: src/bz-application.c:763
+#: src/bz-application.c:476
 msgctxt "About Dialog Translator Credit"
 msgid "Vlastimil Dědek"
 msgstr ""
 
-#: src/bz-application.c:764
+#: src/bz-application.c:477
 msgctxt "About Dialog Translator Credit"
 msgid "asen23"
 msgstr ""
 
-#: src/bz-application.c:765
+#: src/bz-application.c:478
 msgctxt "About Dialog Translator Credit"
 msgid "camegone"
 msgstr ""
 
-#: src/bz-application.c:766
+#: src/bz-application.c:479
 msgctxt "About Dialog Translator Credit"
 msgid "renner"
 msgstr ""
 
-#: src/bz-application.c:767
+#: src/bz-application.c:480
 msgctxt "About Dialog Translator Credit"
 msgid "robotta"
 msgstr ""
 
-#: src/bz-application.c:1305
+#: src/bz-application.c:1019
 msgid "Constructing Flatpak instance..."
 msgstr "Створення примірника Flatpak..."
 
-#: src/bz-application.c:1322
+#: src/bz-application.c:1036
 msgid "Reusing last Flatpak instance..."
 msgstr "Повторне використання примірника Flatpak..."
 
-#: src/bz-application.c:1347
+#: src/bz-application.c:1061
 msgid "Flathub is not registered on this system"
 msgstr "Flathub не зареєстровано на цій системі"
 
-#: src/bz-application.c:1350
+#: src/bz-application.c:1064
 msgid ""
 "Would you like to add Flathub as a remote? If you decline, the Flathub page "
 "will not be available. You can change this later."
@@ -312,49 +312,49 @@ msgstr ""
 "Бажаєте додати Flathub до переліку віддалених сховищ? В іншому разі, "
 "сторінка Flathub буде недоступна. Ви можете змінити це пізніше."
 
-#: src/bz-application.c:1355 src/bz-update-dialog.blp:6
+#: src/bz-application.c:1069 src/bz-update-dialog.blp:6
 msgid "Later"
 msgstr "Пізніше"
 
-#: src/bz-application.c:1356
+#: src/bz-application.c:1070
 msgid "Add Flathub"
 msgstr "Додати Flathub"
 
-#: src/bz-application.c:1388
+#: src/bz-application.c:1102
 #, c-format
 msgid "Identifying installed entries..."
 msgstr "Визначення встановлених надходжень..."
 
-#: src/bz-application.c:1400
+#: src/bz-application.c:1114
 #, c-format
 msgid "Beginning remote entry retrieval while referencing %d blocklist(s)..."
 msgstr "Отримання віддалених надходжень із застосуванням %d чорних списків..."
 
-#: src/bz-application.c:1548
+#: src/bz-application.c:1262
 #, c-format
 msgid "Receiving Entries"
 msgstr "Отримуємо надходження"
 
-#: src/bz-application.c:1549
+#: src/bz-application.c:1263
 #, c-format
 msgid "%'d of %'d"
 msgstr "%'d із %'d"
 
-#: src/bz-application.c:1559
+#: src/bz-application.c:1273
 #, c-format
 msgid "Waiting for background indexing tasks to catch up..."
 msgstr "Очікується завершення індексації..."
 
-#: src/bz-application.c:1595
+#: src/bz-application.c:1309
 #, c-format
 msgid "Completed initialization in %0.2f seconds"
 msgstr "Ініціалізовано за %0.2f сек"
 
-#: src/bz-application.c:1600
+#: src/bz-application.c:1314
 msgid "Checking for updates..."
 msgstr "Шукаємо оновлення"
 
-#: src/bz-application.c:1639
+#: src/bz-application.c:1353
 msgid "Synchronizing..."
 msgstr "Синхронізуємо..."
 
@@ -378,18 +378,6 @@ msgstr ""
 #: src/bz-browse-widget.blp:22 src/bz-flathub-page.blp:22
 msgid "Browser"
 msgstr "Оглядач"
-
-#: src/bz-decorated-screenshot.blp:30
-msgid "Open this image in the default image viewer"
-msgstr "Відкрити зображення в переглядачі зображень"
-
-#: src/bz-decorated-screenshot.blp:43
-msgid "Copy this image to the clipboard"
-msgstr "Копіювати зображення до буфера обміну"
-
-#: src/bz-decorated-screenshot.c:140 src/bz-share-dialog.c:62
-msgid "Copied!"
-msgstr "Скопійовано!"
 
 #: src/bz-entry-inspector.blp:5
 msgid "Entry Inspector"
@@ -634,16 +622,16 @@ msgstr "URL проєкту"
 msgid "Open in browser"
 msgstr "Відкрити в оглядачі"
 
-#: src/bz-full-view.c:211
+#: src/bz-full-view.c:212
 #, c-format
 msgid "%'d Monthly Downloads"
 msgstr "%'d щомісячних завантажень"
 
-#: src/bz-full-view.c:213
+#: src/bz-full-view.c:214
 msgid "--- Downloads"
 msgstr "--- Завантажень"
 
-#: src/bz-full-view.c:239
+#: src/bz-full-view.c:240
 msgid "Unknown"
 msgstr "Невідомо"
 
@@ -653,7 +641,7 @@ msgstr "Невідомо"
 #. * See https://docs.gtk.org/glib/method.DateTime.format.html for format options
 #. * Please modify to make it sound natural in your locale.
 #. *
-#: src/bz-full-view.c:266
+#: src/bz-full-view.c:267
 msgid "%B %-d, %Y"
 msgstr "%-d %B %Y"
 
@@ -663,15 +651,15 @@ msgstr "%-d %B %Y"
 #. * See https://docs.gtk.org/glib/method.DateTime.format.html for format options
 #. * Please modify to make it sound natural in your locale.
 #. *
-#: src/bz-full-view.c:274
+#: src/bz-full-view.c:275
 msgid "%B %-d"
 msgstr "%-d %B"
 
-#: src/bz-full-view.c:285
+#: src/bz-full-view.c:286
 msgid "No URL"
 msgstr "Без URL"
 
-#: src/bz-full-view.c:303
+#: src/bz-full-view.c:304
 msgid ""
 "This application has a FLOSS license, meaning the source code can be audited "
 "for safety."
@@ -679,7 +667,7 @@ msgstr ""
 "Цей застосунок має вільну ліцензію. Це означає, що початковий код може бути "
 "перевірено на безпечність."
 
-#: src/bz-full-view.c:304
+#: src/bz-full-view.c:305
 msgid ""
 "This application has a proprietary license, meaning the source code is "
 "developed privately and cannot be audited by an independent third party."
@@ -687,12 +675,12 @@ msgstr ""
 "Цей застосунок має невільну (власницьку) ліцензію. Це означає, що початковий "
 "код не є публічно доступним і не може бути перевіреним на безпечність."
 
-#: src/bz-full-view.c:594
+#: src/bz-full-view.c:595
 #, c-format
 msgid "Version %s"
 msgstr "Версія %s"
 
-#: src/bz-full-view.c:611
+#: src/bz-full-view.c:612
 msgid "No details for this release"
 msgstr "Без подробиць"
 
@@ -879,6 +867,10 @@ msgstr "Шукати застосунки"
 #: src/bz-share-dialog.blp:13
 msgid "Share"
 msgstr "Поділитися"
+
+#: src/bz-share-dialog.c:62
+msgid "Copied!"
+msgstr "Скопійовано!"
 
 #: src/bz-share-dialog.c:106
 msgid "Copy Link"
@@ -1135,3 +1127,9 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
+
+#~ msgid "Open this image in the default image viewer"
+#~ msgstr "Відкрити зображення в переглядачі зображень"
+
+#~ msgid "Copy this image to the clipboard"
+#~ msgstr "Копіювати зображення до буфера обміну"
