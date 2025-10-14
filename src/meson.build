@@ -6,7 +6,7 @@ libdex_opts = [
 ]
 
 libadwaita_dep       = dependency('libadwaita-1', version: '>= 1.7')
-libdex_dep           = dependency('libdex-1', version: '>= 0.11.1', default_options: libdex_opts)
+libdex_dep           = dependency('libdex-1', version: '>= 1.0.0', default_options: libdex_opts)
 flatpak_dep          = dependency('flatpak', version: '>= 1.9')
 appstream_dep        = dependency('appstream', version: '>= 1.0')
 xmlb_dep             = dependency('xmlb', version: '>= 0.3.4')
@@ -105,6 +105,7 @@ bz_sources = [
   'bz-result.c',
   'bz-review.c',
   'bz-screenshot.c',
+  'bz-screenshot-dialog.c',
   'bz-search-engine.c',
   'bz-search-result.c',
   'bz-search-widget.c',
@@ -124,6 +125,7 @@ bz_sources = [
   'bz-world-map.c',
   'bz-world-map-parser.c',
   'bz-yaml-parser.c',
+  'bz-zoom.c',
   'main.c',
 ]
 
@@ -161,6 +163,7 @@ blueprints = custom_target('blueprints',
     'bz-installed-page.blp',
     'bz-preferences-dialog.blp',
     'bz-progress-bar.blp',
+    'bz-screenshot-dialog.blp',
     'bz-search-widget.blp',
     'bz-section-view.blp',
     'bz-share-dialog.blp',
