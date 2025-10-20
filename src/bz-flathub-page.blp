@@ -36,32 +36,22 @@ template $BzFlathubPage: Adw.Bin {
            child: Box {
              margin-start: 25;
              margin-end: 25;
-             margin-top: 20;
+             margin-top: 5;
              margin-bottom: 20;
              orientation: vertical;
              spacing: 15;
 
-             $BzDynamicListView {
-               styles [
-                 "flathub-page-section",
-               ]
-
-               margin-top: 16;
-               hexpand: true;
-               max-children-per-line:3;
-               scroll: false;
-               noscroll-kind: flow-box;
-               child-type: "BzDetailedAppTile";
-               child-prop: "group";
-               model: SliceListModel {
-                 offset: 0;
-                 size: 6;
-                 model: bind template.state as <$BzFlathubState>.apps_of_the_day_week;
-               };
-
-               bind-widget => $bind_widget_cb(template);
-               unbind-widget => $unbind_widget_cb(template);
-             }
+             $BzFeaturedCarousel {
+                margin-start:8;
+                margin-end:8;
+                styles [
+                  "flathub-page-section",
+                ]
+                margin-top: 16;
+                hexpand: true;
+                model: bind template.state as <$BzFlathubState>.apps_of_the_day_week;
+                group-clicked => $featured_carousel_group_clicked_cb(template);
+              }
 
              Box {
                orientation: vertical;
@@ -115,36 +105,21 @@ template $BzFlathubPage: Adw.Bin {
                 }
              }
 
-             Box {
-               orientation: vertical;
-               spacing: 10;
-
-               Label {
-                 margin-start: 8;
-                 styles [
-                   "title-1",
-                 ]
-                 label: _("Categories");
-                 xalign: 0.0;
-                 hexpand: true;
-               }
+             $BzDynamicListView {
+               styles [
+                 "flathub-page-section",
+               ]
              
-               $BzDynamicListView {
-                 styles [
-                   "flathub-page-section",
-                 ]
-               
-                 hexpand: true;
-                 max-children-per-line:5;
-                 scroll: false;
-                 noscroll-kind: flow-box;
-                 child-type: "BzCategoryTile";
-                 child-prop: "category";
-                 model: bind template.state as <$BzFlathubState>.categories;
-               
-                 bind-widget => $bind_category_tile_cb(template);
-                 unbind-widget => $unbind_category_tile_cb(template);
-               }
+               hexpand: true;
+               max-children-per-line:5;
+               scroll: false;
+               noscroll-kind: flow-box;
+               child-type: "BzCategoryTile";
+               child-prop: "category";
+               model: bind template.state as <$BzFlathubState>.categories;
+
+               bind-widget => $bind_category_tile_cb(template);
+               unbind-widget => $unbind_category_tile_cb(template);
              }
 
              Box {

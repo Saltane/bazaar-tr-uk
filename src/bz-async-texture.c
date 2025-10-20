@@ -401,7 +401,10 @@ bz_async_texture_dup_texture (BzAsyncTexture *self)
   g_return_val_if_fail (BZ_IS_ASYNC_TEXTURE (self), NULL);
 
   locker = g_mutex_locker_new (&self->texture_mutex);
-  return g_object_ref (GDK_TEXTURE (self->paintable));
+  if (GDK_IS_TEXTURE (self->paintable))
+    return (GdkTexture *) g_object_ref (self->paintable);
+  else
+    return NULL;
 }
 
 DexFuture *
@@ -413,7 +416,16 @@ bz_async_texture_dup_future (BzAsyncTexture *self)
 
   locker = g_mutex_locker_new (&self->texture_mutex);
   maybe_load (self);
-  return dex_ref (self->task);
+
+  if (self->task != NULL)
+    return dex_ref (self->task);
+  else if (GDK_IS_TEXTURE (self->paintable))
+    return dex_future_new_for_object (self->paintable);
+  else
+    return dex_future_new_reject (
+        G_IO_ERROR,
+        G_IO_ERROR_FAILED,
+        "texture is in an invalid state");
 }
 
 void

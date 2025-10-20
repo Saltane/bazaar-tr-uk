@@ -25,6 +25,7 @@
 
 #include "bz-addons-dialog.h"
 #include "bz-app-size-dialog.h"
+#include "bz-appstream-description-render.h"
 #include "bz-decorated-screenshot.h"
 #include "bz-dynamic-list-view.h"
 #include "bz-env.h"
@@ -57,10 +58,14 @@ struct _BzFullView
   DexFuture *loading_forge_stars;
 
   /* Template widgets */
-  AdwViewStack *stack;
-  GtkWidget    *forge_stars;
-  GtkLabel     *forge_stars_label;
-  GtkListBox   *releases_box;
+  AdwViewStack      *stack;
+  GtkScrolledWindow *main_scroll;
+  GtkScrolledWindow *info_scroll;
+  BzDynamicListView *screenshots;
+  GtkWidget         *shadow_overlay;
+  GtkWidget         *forge_stars;
+  GtkLabel          *forge_stars_label;
+  GtkListBox        *releases_box;
 };
 
 G_DEFINE_FINAL_TYPE (BzFullView, bz_full_view, ADW_TYPE_BIN)
@@ -569,15 +574,15 @@ create_release_row (const char *version,
                     const char *description,
                     guint64     timestamp)
 {
-  AdwActionRow *row               = NULL;
-  GtkBox       *content_box       = NULL;
-  GtkBox       *header_box        = NULL;
-  GtkLabel     *version_label     = NULL;
-  GtkLabel     *date_label        = NULL;
-  GtkLabel     *description_label = NULL;
-  g_autoptr (GDateTime) date      = NULL;
-  g_autofree char *date_str       = NULL;
-  g_autofree char *version_text   = NULL;
+  AdwActionRow                 *row                = NULL;
+  GtkBox                       *content_box        = NULL;
+  GtkBox                       *header_box         = NULL;
+  GtkLabel                     *version_label      = NULL;
+  GtkLabel                     *date_label         = NULL;
+  BzAppstreamDescriptionRender *description_widget = NULL;
+  g_autoptr (GDateTime) date                       = NULL;
+  g_autofree char *date_str                        = NULL;
+  g_autofree char *version_text                    = NULL;
 
   date_str = format_timestamp (NULL, timestamp);
 
@@ -608,25 +613,23 @@ create_release_row (const char *version,
 
   gtk_box_append (content_box, GTK_WIDGET (header_box));
 
-  description_label = GTK_LABEL (gtk_label_new (
-      (description && *description) ? description : _ ("No details for this release")));
-  gtk_widget_set_halign (GTK_WIDGET (description_label), GTK_ALIGN_FILL);
-  gtk_label_set_xalign (description_label, 0.0);
-
   if (description && *description)
     {
-      gtk_widget_set_margin_top (GTK_WIDGET (description_label), 10);
-      gtk_label_set_wrap (description_label, TRUE);
-      gtk_label_set_use_markup (description_label, TRUE);
-      gtk_label_set_selectable (description_label, TRUE);
+      description_widget = bz_appstream_description_render_new ();
+      bz_appstream_description_render_set_appstream_description (description_widget, description);
+      bz_appstream_description_render_set_selectable (description_widget, TRUE);
+      gtk_widget_set_margin_top (GTK_WIDGET (description_widget), 10);
     }
   else
     {
-      gtk_widget_set_margin_top (GTK_WIDGET (description_label), 5);
-      gtk_widget_add_css_class (GTK_WIDGET (description_label), "dim-label");
+      GtkLabel *fallback_label = GTK_LABEL (gtk_label_new (_ ("No details for this release")));
+      gtk_widget_set_margin_top (GTK_WIDGET (fallback_label), 5);
+      gtk_widget_add_css_class (GTK_WIDGET (fallback_label), "dim-label");
+      gtk_label_set_xalign (fallback_label, 0.0);
+      description_widget = (BzAppstreamDescriptionRender *) fallback_label;
     }
 
-  gtk_box_append (content_box, GTK_WIDGET (description_label));
+  gtk_box_append (content_box, GTK_WIDGET (description_widget));
   gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (row), GTK_WIDGET (content_box));
 
   return GTK_WIDGET (row);
@@ -744,6 +747,62 @@ screenshots_unbind_widget_cb (BzFullView            *self,
 }
 
 static void
+update_fake_shadow (BzFullView *self)
+{
+  GtkAdjustment *adj_main          = NULL;
+  GtkAdjustment *adj_info          = NULL;
+  GtkAdjustment *adj_screenshots   = NULL;
+  double         value_main        = 0.0;
+  double         value_info        = 0.0;
+  double         value_screenshots = 0.0;
+  gboolean       should_show       = FALSE;
+
+  adj_main        = gtk_scrolled_window_get_vadjustment (self->main_scroll);
+  adj_info        = gtk_scrolled_window_get_vadjustment (self->info_scroll);
+  adj_screenshots = bz_dynamic_list_view_get_vadjustment (self->screenshots);
+
+  if (adj_main != NULL)
+    value_main = gtk_adjustment_get_value (adj_main);
+
+  if (adj_info != NULL)
+    value_info = gtk_adjustment_get_value (adj_info);
+
+  if (adj_screenshots != NULL)
+    value_screenshots = gtk_adjustment_get_value (adj_screenshots);
+
+  should_show = (value_main > 0.0 || value_info > 0.0 || value_screenshots > 0.0);
+
+  if (should_show)
+    gtk_widget_add_css_class (self->shadow_overlay, "active");
+  else
+    gtk_widget_remove_css_class (self->shadow_overlay, "active");
+}
+
+static void
+on_scroll_adjustment_changed (GtkAdjustment *adjustment,
+                              BzFullView    *self)
+{
+  update_fake_shadow (self);
+}
+
+static void
+on_screenshots_vadjustment_notify (BzDynamicListView *screenshots,
+                                   GParamSpec        *pspec,
+                                   BzFullView        *self)
+{
+  GtkAdjustment *new_adj = NULL;
+
+  new_adj = bz_dynamic_list_view_get_vadjustment (screenshots);
+  if (new_adj != NULL)
+    {
+      g_signal_connect (new_adj, "value-changed",
+                        G_CALLBACK (on_scroll_adjustment_changed), self);
+    }
+
+  update_fake_shadow (self);
+}
+
+static void
 bz_full_view_class_init (BzFullViewClass *klass)
 {
   GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -848,6 +907,7 @@ bz_full_view_class_init (BzFullViewClass *klass)
       G_TYPE_FROM_CLASS (klass),
       g_cclosure_marshal_VOID__OBJECTv);
 
+  g_type_ensure (BZ_TYPE_APPSTREAM_DESCRIPTION_RENDER);
   g_type_ensure (BZ_TYPE_DECORATED_SCREENSHOT);
   g_type_ensure (BZ_TYPE_DYNAMIC_LIST_VIEW);
   g_type_ensure (BZ_TYPE_ENTRY);
@@ -858,9 +918,13 @@ bz_full_view_class_init (BzFullViewClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/io/github/kolunmi/Bazaar/bz-full-view.ui");
   gtk_widget_class_bind_template_child (widget_class, BzFullView, stack);
+  gtk_widget_class_bind_template_child (widget_class, BzFullView, shadow_overlay);
   gtk_widget_class_bind_template_child (widget_class, BzFullView, forge_stars);
   gtk_widget_class_bind_template_child (widget_class, BzFullView, forge_stars_label);
   gtk_widget_class_bind_template_child (widget_class, BzFullView, releases_box);
+  gtk_widget_class_bind_template_child (widget_class, BzFullView, screenshots);
+  gtk_widget_class_bind_template_child (widget_class, BzFullView, main_scroll);
+  gtk_widget_class_bind_template_child (widget_class, BzFullView, info_scroll);
   gtk_widget_class_bind_template_callback (widget_class, invert_boolean);
   gtk_widget_class_bind_template_callback (widget_class, is_zero);
   gtk_widget_class_bind_template_callback (widget_class, is_null);
@@ -892,7 +956,29 @@ bz_full_view_class_init (BzFullViewClass *klass)
 static void
 bz_full_view_init (BzFullView *self)
 {
+  GtkAdjustment *adj_main = NULL;
+  GtkAdjustment *adj_info = NULL;
+
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  adj_main = gtk_scrolled_window_get_vadjustment (self->main_scroll);
+  adj_info = gtk_scrolled_window_get_vadjustment (self->info_scroll);
+
+  if (adj_main != NULL)
+    g_signal_connect (adj_main, "value-changed",
+                      G_CALLBACK (on_scroll_adjustment_changed), self);
+
+  if (adj_info != NULL)
+    g_signal_connect (adj_info, "value-changed",
+                      G_CALLBACK (on_scroll_adjustment_changed), self);
+
+  if (self->screenshots != NULL)
+    {
+      g_signal_connect (self->screenshots, "notify::vadjustment",
+                        G_CALLBACK (on_screenshots_vadjustment_notify), self);
+
+      on_screenshots_vadjustment_notify (self->screenshots, NULL, self);
+    }
 }
 
 GtkWidget *
