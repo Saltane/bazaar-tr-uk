@@ -479,6 +479,7 @@ bz_application_about_action (GSimpleAction *action,
     C_ ("About Dialog Translator Credit", "Marcel Mrówka (Microwave)"),
     C_ ("About Dialog Translator Credit", "Peter Dave Hello"),
     C_ ("About Dialog Translator Credit", "Pietro F."),
+    C_ ("About Dialog Translator Credit", "Sabri Ünal"),
     C_ ("About Dialog Translator Credit", "Shihfu Juan"),
     C_ ("About Dialog Translator Credit", "Shinsei"),
     C_ ("About Dialog Translator Credit", "Vlastimil Dědek"),
@@ -650,6 +651,10 @@ bz_application_init (BzApplication *self)
       GTK_APPLICATION (self),
       "app.quit",
       (const char *[]) { "<primary>q", NULL });
+  gtk_application_set_accels_for_action (
+      GTK_APPLICATION (self),
+      "app.preferences",
+      (const char *[]) { "<primary>comma", NULL });
   gtk_application_set_accels_for_action (
       GTK_APPLICATION (self),
       "app.refresh",
@@ -1037,7 +1042,7 @@ refresh_fiber (BzApplication *self)
           dex_scheduler_get_default (),
           bz_get_dex_stack_size (),
           (DexFiberFunc) watch_backend_notifs_fiber,
-          self, NULL);
+          g_object_ref (self), g_object_unref);
     }
   else
     {
@@ -1494,7 +1499,7 @@ periodic_timeout_cb (BzApplication *self)
           dex_scheduler_get_default (),
           bz_get_dex_stack_size (),
           (DexFiberFunc) update_check_fiber,
-          self, NULL);
+          g_object_ref (self), g_object_unref);
     }
 
   return G_SOURCE_CONTINUE;
@@ -1603,10 +1608,10 @@ refresh (BzApplication *self)
       dex_scheduler_get_default (),
       bz_get_dex_stack_size (),
       (DexFiberFunc) refresh_fiber,
-      self, NULL);
+      g_object_ref (self), g_object_unref);
   future = dex_future_finally (
       future, (DexFutureCallback) refresh_finally,
-      self, NULL);
+      g_object_ref (self), g_object_unref);
   self->refresh_task = g_steal_pointer (&future);
 }
 

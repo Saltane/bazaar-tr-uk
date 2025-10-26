@@ -60,6 +60,9 @@ src/bz-preferences-dialog.c
 src/bz-progress-bar.blp
 src/bz-progress-bar.c
 src/bz-release.c
+src/bz-releases-dialog.blp
+src/bz-releases-list.blp
+src/bz-releases-list.c
 src/bz-result.c
 src/bz-review.c
 src/bz-screenshot.c
@@ -70,8 +73,8 @@ src/bz-search-widget.c
 src/bz-section-view.blp
 src/bz-section-view.c
 src/bz-serializable.c
-src/bz-share-dialog.blp
-src/bz-share-dialog.c
+src/bz-share-list.blp
+src/bz-share-list.c
 src/bz-state-info.c
 src/bz-stats-dialog.blp
 src/bz-stats-dialog.c

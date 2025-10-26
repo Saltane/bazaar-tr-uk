@@ -1,6 +1,6 @@
-/* bz-share-dialog.h
+/* bz-releases-list.h
  *
- * Copyright 2025 Adam Masciola
+ * Copyright 2025 Alexander Vanhee, Adam Masciola
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,15 @@
 
 #include <adwaita.h>
 
-#include "bz-entry.h"
-
 G_BEGIN_DECLS
 
-#define BZ_TYPE_SHARE_DIALOG (bz_share_dialog_get_type ())
-G_DECLARE_FINAL_TYPE (BzShareDialog, bz_share_dialog, BZ, SHARE_DIALOG, AdwDialog)
+#define BZ_TYPE_RELEASES_LIST (bz_releases_list_get_type ())
 
-AdwDialog *
-bz_share_dialog_new (BzEntry *entry);
+G_DECLARE_FINAL_TYPE (BzReleasesList, bz_releases_list, BZ, RELEASES_LIST, AdwBin)
+
+GtkWidget  *bz_releases_list_new (void);
+void        bz_releases_list_set_version_history (BzReleasesList *self,
+                                                  GListModel     *version_history);
+GListModel *bz_releases_list_get_version_history (BzReleasesList *self);
 
 G_END_DECLS

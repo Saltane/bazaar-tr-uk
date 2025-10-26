@@ -501,6 +501,7 @@ static DexFuture *
 load_fiber_work (LoadData *data)
 {
   static GMutex   queueing_mutex                       = { 0 };
+  static guint    concurrent_loads                     = 0;
   static guint    ongoing_queued[MAX_CONCURRENT_LOADS] = { 0 };
   static BzGuard *gates[MAX_CONCURRENT_LOADS]          = { 0 };
   static GMutex   mutexes[MAX_CONCURRENT_LOADS]        = { 0 };
@@ -523,9 +524,27 @@ load_fiber_work (LoadData *data)
   g_autoptr (GdkTexture) texture        = NULL;
   g_autoptr (GlyFrame) frame            = NULL;
 
-  /* Rate limiting to reduce competition for resources */
   locker = g_mutex_locker_new (&queueing_mutex);
-  for (guint i = 0; i < G_N_ELEMENTS (gates); i++)
+  if (concurrent_loads == 0)
+    {
+      /* Ensure we don't overload the system with work; aim for # of logical
+         processors divided by 2
+
+        See:
+          https://github.com/kolunmi/bazaar/issues/497
+          https://docs.gtk.org/glib/func.get_num_processors.html
+
+        Eva Thu, 23 Oct 2025 14:19:44 -0700
+        */
+      concurrent_loads = MIN (
+          MAX_CONCURRENT_LOADS,
+          MAX (1, g_get_num_processors () / 2));
+
+      g_debug ("Allowing %d concurrent texture loads", concurrent_loads);
+    }
+
+  /* Rate limiting to reduce competition for resources */
+  for (guint i = 0; i < concurrent_loads; i++)
     {
       if (ongoing_queued[i] < slot_queued)
         {
@@ -794,12 +813,7 @@ load_finally (DexFuture *future,
   g_autoptr (BzAsyncTexture) self = NULL;
   g_autoptr (GMutexLocker) locker = NULL;
 
-  self = g_weak_ref_get (&data->self);
-  if (self == NULL)
-    return dex_future_new_reject (
-        DEX_ERROR,
-        DEX_ERROR_UNKNOWN,
-        "Object was discarded");
+  bz_weak_get_or_return_reject (self, &data->self);
 
   locker = g_mutex_locker_new (&self->texture_mutex);
   dex_clear (&self->task);
@@ -853,15 +867,10 @@ retry_cb (DexFuture *future,
   g_autoptr (BzAsyncTexture) self = NULL;
   g_autoptr (GMutexLocker) locker = NULL;
 
-  self = g_weak_ref_get (&data->self);
-  if (self == NULL)
-    return dex_future_new_reject (
-        DEX_ERROR,
-        DEX_ERROR_UNKNOWN,
-        "Object was discarded");
+  bz_weak_get_or_return_reject (self, &data->self);
 
   locker = g_mutex_locker_new (&self->texture_mutex);
-  dex_clear (self->retry_future);
+  dex_clear (&self->retry_future);
 
   maybe_load (self);
   return NULL;

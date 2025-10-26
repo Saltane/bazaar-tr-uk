@@ -185,7 +185,7 @@ make_async_texture (GVariant *parse);
 
 static DexFuture *
 icon_paintable_future_then (DexFuture *future,
-                            BzEntry   *entry);
+                            GWeakRef  *wr);
 
 BZ_DEFINE_DATA (
     load_mini_icon,
@@ -938,17 +938,19 @@ bz_entry_real_serialize (BzSerializable  *serializable,
         {
           g_autoptr (GVariantBuilder) sub_builder = NULL;
 
-          sub_builder = g_variant_builder_new (G_VARIANT_TYPE ("a(ss)"));
+          sub_builder = g_variant_builder_new (G_VARIANT_TYPE ("a(sss)"));
           for (guint i = 0; i < n_items; i++)
             {
               g_autoptr (BzUrl) url = NULL;
               const char *name      = NULL;
               const char *url_str   = NULL;
+              const char *icon_name = NULL;
 
               url     = g_list_model_get_item (priv->share_urls, i);
               name    = bz_url_get_name (url);
               url_str = bz_url_get_url (url);
-              g_variant_builder_add (sub_builder, "(ss)", name, url_str);
+              icon_name = bz_url_get_icon_name (url);
+              g_variant_builder_add (sub_builder, "(sss)", name, url_str, icon_name ? icon_name : "");
             }
           g_variant_builder_add (builder, "{sv}", "share-urls", g_variant_builder_end (sub_builder));
         }
@@ -1200,12 +1202,14 @@ bz_entry_real_deserialize (BzSerializable *serializable,
               g_autofree char *name    = NULL;
               g_autofree char *url_str = NULL;
               g_autoptr (BzUrl) url    = NULL;
+              g_autofree char *icon_name = NULL;
 
-              if (!g_variant_iter_next (url_iter, "(ss)", &name, &url_str))
+              if (!g_variant_iter_next (url_iter, "(sss)", &name, &url_str, &icon_name))
                 break;
               url = bz_url_new ();
               bz_url_set_name (url, name);
               bz_url_set_url (url, url_str);
+              bz_url_set_icon_name (url, icon_name);
               g_list_store_append (store, url);
             }
 
@@ -1689,7 +1693,7 @@ bz_entry_load_mini_icon (BzEntry *self)
       priv->mini_icon_future = dex_future_then (
           bz_async_texture_dup_future (BZ_ASYNC_TEXTURE (priv->icon_paintable)),
           (DexFutureCallback) icon_paintable_future_then,
-          self, NULL);
+          bz_track_weak (self), bz_weak_release);
       return dex_ref (priv->mini_icon_future);
     }
   else
@@ -2060,12 +2064,14 @@ make_async_texture (GVariant *parse)
 
 static DexFuture *
 icon_paintable_future_then (DexFuture *future,
-                            BzEntry   *self)
+                            GWeakRef  *wr)
 {
+  g_autoptr (BzEntry) self          = NULL;
   BzEntryPrivate *priv              = NULL;
   const char     *icon_path         = NULL;
   g_autoptr (LoadMiniIconData) data = NULL;
 
+  bz_weak_get_or_return_reject (self, wr);
   priv = bz_entry_get_instance_private (self);
 
   /* ? */
