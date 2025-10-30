@@ -282,6 +282,7 @@ template $BzWindow: Adw.ApplicationWindow {
                       child: $BzFullView full_view {
                         state: bind template.state;
                         transaction-manager: bind template.state as <$BzStateInfo>.transaction-manager;
+                        debounce: bind search_split.show-sidebar as <bool>;
                         install => $full_view_install_cb(template);
                         remove => $full_view_remove_cb(template);
                         install-addon => $install_addon_cb(template);
@@ -482,20 +483,22 @@ template $BzWindow: Adw.ApplicationWindow {
 menu primary_menu {
   section {
     item {
-      label: _("_Quit Service");
-      action: "app.quit";
+      label: _("_Donate to Bazaar ❤️");
+      action: "app.donate";
     }
 
     item {
       label: _("_Refresh Content");
       action: "app.refresh";
     }
+  }
 
+  section {
     item {
       label: _("_Preferences");
       action: "app.preferences";
     }
-    
+
     item {
       label: _("_Keyboard Shortcuts");
       action: "app.shortcuts";
@@ -505,10 +508,12 @@ menu primary_menu {
       label: _("_About Bazaar");
       action: "app.about";
     }
+  }
 
+  section {
     item {
-      label: _("_Donate to Bazaar ❤️");
-      action: "app.donate";
+      label: _("_Quit Bazaar");
+      action: "app.quit";
     }
   }
 }
