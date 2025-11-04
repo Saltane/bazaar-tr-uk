@@ -24,6 +24,7 @@
 
 // #include <bazaar-ui.h>
 #include <glib/gi18n.h>
+#include <malloc.h>
 
 #include "bz-application-map-factory.h"
 #include "bz-application.h"
@@ -479,6 +480,7 @@ bz_application_about_action (GSimpleAction *action,
     C_ ("About Dialog Translator Credit", "Marcel Mrówka (Microwave)"),
     C_ ("About Dialog Translator Credit", "Peter Dave Hello"),
     C_ ("About Dialog Translator Credit", "Pietro F."),
+    C_ ("About Dialog Translator Credit", "Sabri Ünal"),
     C_ ("About Dialog Translator Credit", "Shihfu Juan"),
     C_ ("About Dialog Translator Credit", "Shinsei"),
     C_ ("About Dialog Translator Credit", "Vlastimil Dědek"),
@@ -650,6 +652,10 @@ bz_application_init (BzApplication *self)
       GTK_APPLICATION (self),
       "app.quit",
       (const char *[]) { "<primary>q", NULL });
+  gtk_application_set_accels_for_action (
+      GTK_APPLICATION (self),
+      "app.preferences",
+      (const char *[]) { "<primary>comma", NULL });
   gtk_application_set_accels_for_action (
       GTK_APPLICATION (self),
       "app.refresh",
@@ -1037,7 +1043,7 @@ refresh_fiber (BzApplication *self)
           dex_scheduler_get_default (),
           bz_get_dex_stack_size (),
           (DexFiberFunc) watch_backend_notifs_fiber,
-          self, NULL);
+          g_object_ref (self), g_object_unref);
     }
   else
     {
@@ -1151,7 +1157,7 @@ refresh_fiber (BzApplication *self)
 
       if (G_VALUE_HOLDS_OBJECT (value))
         {
-          g_autoptr (BzEntry) entry        = NULL;
+          BzEntry    *entry                = NULL;
           const char *id                   = NULL;
           const char *unique_id            = NULL;
           gboolean    user                 = FALSE;
@@ -1159,7 +1165,7 @@ refresh_fiber (BzApplication *self)
           const char *flatpak_id           = NULL;
           g_autoptr (DexFuture) cache_task = NULL;
 
-          entry     = g_value_dup_object (value);
+          entry     = g_value_get_object (value);
           id        = bz_entry_get_id (entry);
           unique_id = bz_entry_get_unique_id (entry);
           user      = bz_flatpak_entry_is_user (BZ_FLATPAK_ENTRY (entry));
@@ -1272,6 +1278,7 @@ refresh_fiber (BzApplication *self)
       bz_state_info_set_busy_step_label (self->state, busy_step_label);
       bz_state_info_set_busy_progress_label (self->state, busy_progress_label);
       g_clear_pointer (&busy_step_label, g_free);
+      g_clear_pointer (&busy_progress_label, g_free);
     }
   g_clear_pointer (&self->last_installed_set, g_hash_table_unref);
   self->last_installed_set = g_steal_pointer (&installed_set);
@@ -1286,6 +1293,10 @@ refresh_fiber (BzApplication *self)
                  (DexFuture *const *) cache_futures->pdata,
                  cache_futures->len),
              NULL);
+  g_clear_pointer (&cache_futures, g_ptr_array_unref);
+#ifdef __GLIBC__
+  malloc_trim (0);
+#endif
 
   result = dex_await (dex_ref (sync_future), &local_error);
   if (!result)
@@ -1303,6 +1314,7 @@ refresh_fiber (BzApplication *self)
       if (window != NULL)
         bz_show_error_for_widget (GTK_WIDGET (window), warning);
     }
+  dex_clear (&sync_future);
 
   g_debug ("Finished synchronizing with remotes, notifying UI...");
   bz_state_info_set_online (self->state, TRUE);
@@ -1494,7 +1506,7 @@ periodic_timeout_cb (BzApplication *self)
           dex_scheduler_get_default (),
           bz_get_dex_stack_size (),
           (DexFiberFunc) update_check_fiber,
-          self, NULL);
+          g_object_ref (self), g_object_unref);
     }
 
   return G_SOURCE_CONTINUE;
@@ -1521,7 +1533,8 @@ refresh_finally (DexFuture     *future,
   dex_clear (&self->periodic_sync);
   g_clear_handle_id (&self->periodic_timeout, g_source_remove);
   self->periodic_timeout = g_timeout_add_seconds (
-      60, (GSourceFunc) periodic_timeout_cb, self);
+      /* Check every ten minutes*/
+      60 * 10, (GSourceFunc) periodic_timeout_cb, self);
 
   value = dex_future_get_value (future, &local_error);
   if (value != NULL)
@@ -1562,6 +1575,11 @@ refresh_finally (DexFuture     *future,
       open_flatpakref_take (self, g_steal_pointer (&self->waiting_to_open_file));
     }
 
+/* yassss */
+#ifdef __GLIBC__
+  malloc_trim (0);
+#endif
+
   return NULL;
 }
 
@@ -1595,19 +1613,23 @@ refresh (BzApplication *self)
   bz_state_info_set_available_updates (self->state, NULL);
   bz_state_info_set_online (self->state, FALSE);
 
-  g_clear_object (&self->cache);
-  self->cache = bz_entry_cache_manager_new ();
+  if (self->cache == NULL)
+    self->cache = bz_entry_cache_manager_new ();
 
   g_timer_start (self->init_timer);
   future = dex_scheduler_spawn (
       dex_scheduler_get_default (),
       bz_get_dex_stack_size (),
       (DexFiberFunc) refresh_fiber,
-      self, NULL);
+      g_object_ref (self), g_object_unref);
   future = dex_future_finally (
       future, (DexFutureCallback) refresh_finally,
-      self, NULL);
+      g_object_ref (self), g_object_unref);
   self->refresh_task = g_steal_pointer (&future);
+
+#ifdef __GLIBC__
+  malloc_trim (0);
+#endif
 }
 
 static GtkWindow *

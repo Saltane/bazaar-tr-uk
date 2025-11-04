@@ -18,20 +18,20 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "bz-flathub-page.h"
+#include <glib/gi18n.h>
+
 #include "bz-app-tile.h"
 #include "bz-apps-page.h"
-#include "bz-category-tile.h"
 #include "bz-detailed-app-tile.h"
 #include "bz-dynamic-list-view.h"
 #include "bz-entry-group.h"
 #include "bz-featured-carousel.h"
+#include "bz-flathub-category-section.h"
 #include "bz-flathub-category.h"
+#include "bz-flathub-page.h"
 #include "bz-inhibited-scrollable.h"
-#include "bz-patterned-background.h"
 #include "bz-section-view.h"
 #include "bz-window.h"
-#include <glib/gi18n.h>
 
 struct _BzFlathubPage
 {
@@ -63,13 +63,13 @@ enum
 };
 static guint signals[LAST_SIGNAL];
 
+static BzFlathubCategory *
+get_category_by_name (GListModel *categories,
+                      const char *name);
+
 static void
 tile_clicked (BzEntryGroup *group,
               GtkButton    *button);
-
-static void
-category_clicked (BzFlathubCategory *category,
-                  GtkButton         *button);
 
 static void
 show_more_clicked (const char *title,
@@ -84,6 +84,11 @@ apps_page_select_cb (BzFlathubPage *self,
 static void
 apps_page_hiding_cb (BzFlathubPage *self,
                      BzAppsPage    *page);
+
+static void
+category_section_group_selected_cb (BzFlathubPage            *self,
+                                    BzEntryGroup             *group,
+                                    BzFlathubCategorySection *section);
 
 static void
 featured_carousel_group_clicked_cb (BzFlathubPage      *self,
@@ -158,61 +163,55 @@ unbind_widget_cb (BzFlathubPage     *self,
 }
 
 static void
-bind_category_tile_cb (BzFlathubPage     *self,
-                       BzCategoryTile    *tile,
-                       BzFlathubCategory *category,
-                       BzDynamicListView *view)
+show_more_mobile_clicked_cb (BzFlathubPage *self,
+                             GtkButton     *button)
 {
-  g_signal_connect_swapped (tile, "clicked", G_CALLBACK (category_clicked), category);
+  g_autoptr (GListModel) model           = NULL;
+  g_autoptr (BzFlathubCategory) category = NULL;
+
+  category = get_category_by_name (bz_flathub_state_get_categories (self->state), "mobile");
+  if (category == NULL)
+    return;
+
+  model = bz_flathub_category_dup_applications (category);
+  if (model == NULL)
+    return;
+
+  show_more_clicked (_ ("Mobile Apps"), model, button);
 }
 
-static void
-unbind_category_tile_cb (BzFlathubPage     *self,
-                         BzCategoryTile    *tile,
-                         BzFlathubCategory *category,
-                         BzDynamicListView *view)
+static BzFlathubCategory *
+get_category_by_name (GListModel *categories,
+                      const char *name)
 {
-  g_signal_handlers_disconnect_by_func (tile, category_clicked, category);
+  guint n_items;
+  guint i;
+
+  if (categories == NULL)
+    return NULL;
+
+  n_items = g_list_model_get_n_items (categories);
+
+  for (i = 0; i < n_items; i++)
+    {
+      g_autoptr (BzFlathubCategory) category = g_list_model_get_item (categories, i);
+      const char *category_name;
+
+      category_name = bz_flathub_category_get_name (category);
+
+      if (g_strcmp0 (category_name, name) == 0)
+        return g_object_ref (category);
+    }
+
+  return NULL;
 }
 
-static void
-show_more_trending_clicked_cb (BzFlathubPage *self,
-                               GtkButton     *button)
+static gpointer
+get_category_by_name_cb (gpointer    object,
+                         gpointer    categories_obj,
+                         const char *name)
 {
-  g_autoptr (GListModel) model = NULL;
-
-  model = bz_flathub_state_dup_trending (self->state);
-  show_more_clicked (_ ("Trending"), model, button);
-}
-
-static void
-show_more_recently_updated_clicked_cb (BzFlathubPage *self,
-                                       GtkButton     *button)
-{
-  g_autoptr (GListModel) model = NULL;
-
-  model = bz_flathub_state_dup_recently_updated (self->state);
-  show_more_clicked (_ ("Recently Updated"), model, button);
-}
-
-static void
-show_more_recently_added_clicked_cb (BzFlathubPage *self,
-                                     GtkButton     *button)
-{
-  g_autoptr (GListModel) model = NULL;
-
-  model = bz_flathub_state_dup_recently_added (self->state);
-  show_more_clicked (_ ("Recently Added"), model, button);
-}
-
-static void
-show_more_popular_clicked_cb (BzFlathubPage *self,
-                              GtkButton     *button)
-{
-  g_autoptr (GListModel) model = NULL;
-
-  model = bz_flathub_state_dup_popular (self->state);
-  show_more_clicked (_ ("Popular"), model, button);
+  return get_category_by_name (G_LIST_MODEL (categories_obj), name);
 }
 
 static void
@@ -250,8 +249,7 @@ bz_flathub_page_class_init (BzFlathubPageClass *klass)
       g_cclosure_marshal_VOID__OBJECTv);
 
   g_type_ensure (BZ_TYPE_SECTION_VIEW);
-  g_type_ensure (BZ_TYPE_CATEGORY_TILE);
-  g_type_ensure (BZ_TYPE_PATTERNED_BACKGROUND);
+  g_type_ensure (BZ_TYPE_FLATHUB_CATEGORY_SECTION);
   g_type_ensure (BZ_TYPE_DETAILED_APP_TILE);
   g_type_ensure (BZ_TYPE_INHIBITED_SCROLLABLE);
   g_type_ensure (BZ_TYPE_DYNAMIC_LIST_VIEW);
@@ -262,12 +260,9 @@ bz_flathub_page_class_init (BzFlathubPageClass *klass)
   gtk_widget_class_bind_template_child (widget_class, BzFlathubPage, stack);
   gtk_widget_class_bind_template_callback (widget_class, bind_widget_cb);
   gtk_widget_class_bind_template_callback (widget_class, unbind_widget_cb);
-  gtk_widget_class_bind_template_callback (widget_class, bind_category_tile_cb);
-  gtk_widget_class_bind_template_callback (widget_class, unbind_category_tile_cb);
-  gtk_widget_class_bind_template_callback (widget_class, show_more_trending_clicked_cb);
-  gtk_widget_class_bind_template_callback (widget_class, show_more_recently_updated_clicked_cb);
-  gtk_widget_class_bind_template_callback (widget_class, show_more_recently_added_clicked_cb);
-  gtk_widget_class_bind_template_callback (widget_class, show_more_popular_clicked_cb);
+  gtk_widget_class_bind_template_callback (widget_class, category_section_group_selected_cb);
+  gtk_widget_class_bind_template_callback (widget_class, get_category_by_name_cb);
+  gtk_widget_class_bind_template_callback (widget_class, show_more_mobile_clicked_cb);
   gtk_widget_class_bind_template_callback (widget_class, featured_carousel_group_clicked_cb);
 }
 
@@ -320,51 +315,6 @@ tile_clicked (BzEntryGroup *group,
 }
 
 static void
-category_clicked (BzFlathubCategory *category,
-                  GtkButton         *button)
-{
-  GtkWidget         *self               = NULL;
-  GtkWidget         *window             = NULL;
-  GtkWidget         *nav_view           = NULL;
-  AdwNavigationPage *apps_page          = NULL;
-  g_autoptr (GListModel) model          = NULL;
-  g_autoptr (GListModel) carousel_model = NULL;
-  const char *title                     = NULL;
-
-  self = gtk_widget_get_ancestor (GTK_WIDGET (button), BZ_TYPE_FLATHUB_PAGE);
-  g_assert (self != NULL);
-
-  window = GTK_WIDGET (gtk_widget_get_root (GTK_WIDGET (self)));
-
-  nav_view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_NAVIGATION_VIEW);
-  g_assert (nav_view != NULL);
-
-  title          = bz_flathub_category_get_display_name (category);
-  model          = bz_flathub_category_dup_applications (category);
-  carousel_model = bz_flathub_category_dup_quality_applications (category);
-
-  if (carousel_model != NULL && g_list_model_get_n_items (carousel_model) > 0)
-    {
-      apps_page = bz_apps_page_new_with_carousel (title, model, carousel_model);
-    }
-  else
-    {
-      apps_page = bz_apps_page_new (title, model);
-    }
-
-  g_signal_connect_swapped (
-      apps_page, "select",
-      G_CALLBACK (apps_page_select_cb), self);
-  g_signal_connect_swapped (
-      apps_page, "hiding",
-      G_CALLBACK (apps_page_hiding_cb), self);
-
-  adw_navigation_view_push (ADW_NAVIGATION_VIEW (nav_view), apps_page);
-
-  bz_window_set_app_list_view_mode (BZ_WINDOW (window), TRUE);
-}
-
-static void
 show_more_clicked (const char *title,
                    GListModel *model,
                    GtkButton  *button)
@@ -400,6 +350,14 @@ static void
 apps_page_select_cb (BzFlathubPage *self,
                      BzEntryGroup  *group,
                      BzAppsPage    *page)
+{
+  g_signal_emit (self, signals[SIGNAL_GROUP_SELECTED], 0, group);
+}
+
+static void
+category_section_group_selected_cb (BzFlathubPage            *self,
+                                    BzEntryGroup             *group,
+                                    BzFlathubCategorySection *section)
 {
   g_signal_emit (self, signals[SIGNAL_GROUP_SELECTED], 0, group);
 }
