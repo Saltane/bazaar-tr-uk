@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 02:19+0200\n"
-"PO-Revision-Date: 2025-11-05 02:16+0200\n"
+"PO-Revision-Date: 2025-11-05 02:31+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.08.2\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -386,15 +386,17 @@ msgid "No Curation"
 msgstr "Жодного підібраного застосунку"
 
 #: src/bz-browse-widget.blp:16
+#, fuzzy
 msgid ""
 "There is no curation information provided on this system. You can still "
 "browse applications on Flathub"
 msgstr ""
+"Ваша операційна система не надає підібраних застосунків. Ви все ще можете шука"
+"ти застосунки на Flathub"
 
 #: src/bz-browse-widget.blp:18
-#, fuzzy
 msgid "Browse Flathub"
-msgstr "Flathub"
+msgstr "Оглянути Flathub"
 
 #: src/bz-browse-widget.blp:29 src/bz-browse-widget.blp:33
 #: src/bz-flathub-page.blp:30 src/bz-flathub-page.blp:34
@@ -582,14 +584,13 @@ msgid "Recently Added"
 msgstr "Нещодавно додані"
 
 #: src/bz-flathub-category.c:78 src/bz-flathub-page.blp:100
-#, fuzzy
 msgid "New"
-msgstr "Нове"
+msgstr "Нові"
 
 #: src/bz-flathub-category.c:78
 #, fuzzy
 msgid "More New"
-msgstr "Більше дій"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:79 src/bz-flathub-page.blp:130
 msgid "Recently Updated"
@@ -1050,7 +1051,6 @@ msgstr "Скасувати"
 
 # Згідно перекладу на Flathub
 #: src/bz-license-dialog.c:115
-#, fuzzy
 msgid ""
 "This app is not developed in the open, so only its developers know how it "
 "works. It may be insecure in ways that are hard to detect, and it may change "
@@ -1060,8 +1060,9 @@ msgid ""
 msgstr ""
 "Цей застосунок не розробляється у відкритому доступі, тому лише його "
 "розробники знають, як він працює. Він може мати вразливості, які важко "
-"виявити, і може змінюватися без нагляду.Ви можете не мати можливості "
-"долучитися до проєкту."
+"виявити, і може змінюватися без нагляду.\n"
+"\n"
+"Ви можете не мати можливості долучитися до проєкту."
 
 # Згідно перекладу на Flathub
 #: src/bz-license-dialog.c:124
@@ -1070,8 +1071,9 @@ msgid ""
 "\n"
 "You can participate and help make it even better."
 msgstr ""
-"Цей застосунок розробляється у відкритому доступі міжнародною спільнотою.Ви "
-"можете долучитися до проєкту та зробити його ліпшим."
+"Цей застосунок розробляється у відкритому доступі міжнародною спільнотою.\n"
+"\n"
+"Ви можете долучитися до проєкту та зробити його ліпшим."
 
 # Згідно перекладу на Flathub
 #: src/bz-license-dialog.c:135
@@ -1083,7 +1085,9 @@ msgid ""
 "You can participate and help make it even better."
 msgstr ""
 "Цей застосунок розробляється у відкритому доступі міжнародною спільнотою та "
-"випускається під <a href=\"%s\">%s</a>. Ви можете долучитися до проєкту та "
+"випускається під <a href=\"%s\">%s</a>.\n"
+"\n"
+"Ви можете долучитися до проєкту та "
 "зробити його ліпшим."
 
 #: src/bz-preferences-dialog.blp:19
