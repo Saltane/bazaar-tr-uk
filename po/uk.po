@@ -1362,21 +1362,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "Support this application"
-#~ msgstr "Підтримати цей застосунок"
-
-#~ msgid "More actions"
-#~ msgstr "Більше дій"
-
-#~ msgid "Run this application"
-#~ msgstr "Запустити цей застосунок"
-
-#~ msgid "Run"
-#~ msgstr "Запустити"
-
-#~ msgid "View Store Page"
-#~ msgstr "Відкрити сторінку в крамниці"
-
-#~ msgid "Settings & user data will be kept"
-#~ msgstr "Налаштування та користувацькі дані буде збережено"
