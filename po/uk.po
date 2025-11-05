@@ -1322,6 +1322,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "Searching for Blender"
-#~ msgstr "Шукаємо Blender"
