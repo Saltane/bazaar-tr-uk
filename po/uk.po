@@ -588,7 +588,6 @@ msgid "More Updated"
 msgstr "Показати більше"
 
 #: src/bz-flathub-category.c:80
-#, fuzzy
 msgid "Mobile"
 msgstr "Мобільні пристрої"
 
@@ -622,7 +621,6 @@ msgid "More Mobile apps"
 msgstr "Ще"
 
 #: src/bz-flathub-page.c:189
-#, fuzzy
 msgid "Mobile Apps"
 msgstr "Застосунки для мобільних пристроїв"
 
