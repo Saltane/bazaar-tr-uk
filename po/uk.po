@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 02:19+0200\n"
-"PO-Revision-Date: 2025-11-05 03:28+0200\n"
+"PO-Revision-Date: 2025-11-05 03:32+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -442,7 +442,6 @@ msgid "Media"
 msgstr "Медіа"
 
 #: src/bz-flathub-category.c:66
-#, fuzzy
 msgid "More Audio & Video"
 msgstr "Ще"
 
@@ -455,7 +454,6 @@ msgid "Develop"
 msgstr "Розробка"
 
 #: src/bz-flathub-category.c:67
-#, fuzzy
 msgid "More Developer Tools"
 msgstr "Ще"
 
@@ -468,7 +466,6 @@ msgid "Learn"
 msgstr "Освіта"
 
 #: src/bz-flathub-category.c:68
-#, fuzzy
 msgid "More Education"
 msgstr "Ще"
 
@@ -481,7 +478,6 @@ msgid "Play"
 msgstr "Відтворення"
 
 #: src/bz-flathub-category.c:69
-#, fuzzy
 msgid "More Gaming"
 msgstr "Ще"
 
@@ -494,7 +490,6 @@ msgid "Create"
 msgstr "Створення"
 
 #: src/bz-flathub-category.c:70
-#, fuzzy
 msgid "More Graphics & Photography"
 msgstr "Ще"
 
@@ -507,7 +502,6 @@ msgid "Internet"
 msgstr "Інтернет"
 
 #: src/bz-flathub-category.c:71
-#, fuzzy
 msgid "More Networking"
 msgstr "Ще"
 
@@ -520,7 +514,6 @@ msgid "Work"
 msgstr "Робота"
 
 #: src/bz-flathub-category.c:72
-#, fuzzy
 msgid "More Productivity"
 msgstr "Ще"
 
@@ -529,7 +522,6 @@ msgid "Science"
 msgstr "Наука"
 
 #: src/bz-flathub-category.c:73
-#, fuzzy
 msgid "More Science"
 msgstr "Ще"
 
@@ -538,7 +530,6 @@ msgid "System"
 msgstr "Система"
 
 #: src/bz-flathub-category.c:74
-#, fuzzy
 msgid "More System"
 msgstr "Ще"
 
@@ -551,7 +542,6 @@ msgid "Tools"
 msgstr "Утиліти"
 
 #: src/bz-flathub-category.c:75
-#, fuzzy
 msgid "More Utilities"
 msgstr "Ще"
 
@@ -582,7 +572,6 @@ msgid "New"
 msgstr "Нові"
 
 #: src/bz-flathub-category.c:78
-#, fuzzy
 msgid "More New"
 msgstr "Ще"
 
@@ -604,9 +593,8 @@ msgid "Mobile"
 msgstr "Мобільні пристрої"
 
 #: src/bz-flathub-category.c:80
-#, fuzzy
 msgid "More Mobile"
-msgstr "Більше застосунків для мобільних пристроїв"
+msgstr "Ще"
 
 #: src/bz-flathub-category-section.c:134 src/bz-search-widget.c:311
 #, c-format
@@ -630,9 +618,8 @@ msgid "Apps for your Linux phones and tablets"
 msgstr "Застосунки для Ваших смартфонів та планшетів на Linux"
 
 #: src/bz-flathub-page.blp:265 src/bz-flathub-page.blp:300
-#, fuzzy
 msgid "More Mobile apps"
-msgstr "Більше застосунків для мобільних пристроїв"
+msgstr "Ще"
 
 #: src/bz-flathub-page.c:189
 #, fuzzy
