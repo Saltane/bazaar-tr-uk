@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 02:19+0200\n"
-"PO-Revision-Date: 2025-11-05 02:31+0200\n"
+"PO-Revision-Date: 2025-11-05 02:40+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -489,9 +489,8 @@ msgid "More Gaming"
 msgstr "Ігри"
 
 #: src/bz-flathub-category.c:70
-#, fuzzy
 msgid "Graphics & Photography"
-msgstr "Графіка та фотоґрафія"
+msgstr "Графіка та фотографія"
 
 #: src/bz-flathub-category.c:70
 #, fuzzy
@@ -517,7 +516,6 @@ msgid "More Networking"
 msgstr "Мережа"
 
 #: src/bz-flathub-category.c:72
-#, fuzzy
 msgid "Productivity"
 msgstr "Продуктивність"
 
@@ -1119,9 +1117,8 @@ msgid "Delay Search Results"
 msgstr "Чекати вводу"
 
 #: src/bz-preferences-dialog.blp:37
-#, fuzzy
 msgid "Improve results performance by debouncing search terms"
-msgstr "Поліпшити ефективність, затримуючи введення у пошуку"
+msgstr "Поліпшити швидкодію пошуку, затримуючи відправлення пошукових запитів"
 
 #: src/bz-preferences-dialog.blp:42
 msgid "Application Details"
@@ -1132,7 +1129,6 @@ msgid "Display Star Count"
 msgstr "Вподобань на сторінці розробки"
 
 #: src/bz-preferences-dialog.blp:46
-#, fuzzy
 msgid "Show the star count of an application's source code repository"
 msgstr "Показувати кількість уподобань на сторінках розробки застосунків"
 
@@ -1145,15 +1141,15 @@ msgid "Choose a theme for the progress bar!"
 msgstr "Оберіть цікавий зовнішній вигляд для смужки поступу!"
 
 #: src/bz-preferences-dialog.blp:107
-#, fuzzy
 msgid ""
 "Bazaar can fetch and display the star count from an application's source "
 "code repository on a remote Git forge. \n"
 " For projects on GitHub, rate limits may cause them not to appear."
 msgstr ""
-"Базар може витягувати та показувати кількість уподобань зі сторінки розробки "
-"початкового коду на віддаленому сховищі Git. Для проєктів на GitHub, "
-"обмеження запитів може призвести до їхнього незʼявлення."
+"Базар може виявляти та показувати кількість уподобань зі сторінок розробки поч"
+"аткового коду у віддаленому сховищі Git.\n"
+"Для проєктів на GitHub, обмеження запитів (rate limit) може призвести до їхньо"
+"го незʼявлення."
 
 #: src/bz-preferences-dialog.c:32
 msgid "Accent Color"
@@ -1220,9 +1216,8 @@ msgid "No details for this release"
 msgstr "Без подробиць"
 
 #: src/bz-search-widget.blp:105
-#, fuzzy
 msgid "Search Apps, Games, Software"
-msgstr "Шукайте застосунки, ігри та проґрами"
+msgstr "Шукайте застосунки, ігри та програми"
 
 #: src/bz-search-widget.blp:223
 msgid "No Applications Found"
