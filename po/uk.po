@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 02:19+0200\n"
-"PO-Revision-Date: 2025-11-05 03:32+0200\n"
+"PO-Revision-Date: 2025-11-05 03:47+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -382,15 +382,15 @@ msgstr "Порожньо"
 
 #: src/bz-browse-widget.blp:15
 msgid "No Curation"
-msgstr "Жодного підібраного застосунку"
+msgstr "Жодного підібраного вмісту"
 
 #: src/bz-browse-widget.blp:16
 msgid ""
 "There is no curation information provided on this system. You can still "
 "browse applications on Flathub"
 msgstr ""
-"Ваша операційна система не надає підібраних застосунків. Ви все ще можете шука"
-"ти застосунки на Flathub"
+"Ваша операційна система не надає підібранoго вмісту. Ви все ще можете шукати з"
+"астосунки на Flathub"
 
 #: src/bz-browse-widget.blp:18
 msgid "Browse Flathub"
