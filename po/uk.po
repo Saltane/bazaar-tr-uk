@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 02:19+0200\n"
-"PO-Revision-Date: 2025-11-05 02:54+0200\n"
+"PO-Revision-Date: 2025-11-05 03:28+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -381,12 +381,10 @@ msgid "Empty"
 msgstr "Порожньо"
 
 #: src/bz-browse-widget.blp:15
-#, fuzzy
 msgid "No Curation"
 msgstr "Жодного підібраного застосунку"
 
 #: src/bz-browse-widget.blp:16
-#, fuzzy
 msgid ""
 "There is no curation information provided on this system. You can still "
 "browse applications on Flathub"
@@ -446,7 +444,7 @@ msgstr "Медіа"
 #: src/bz-flathub-category.c:66
 #, fuzzy
 msgid "More Audio & Video"
-msgstr "Звук та відео"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:67
 msgid "Developer Tools"
@@ -459,7 +457,7 @@ msgstr "Розробка"
 #: src/bz-flathub-category.c:67
 #, fuzzy
 msgid "More Developer Tools"
-msgstr "Розробка"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:68
 msgid "Education"
@@ -472,35 +470,33 @@ msgstr "Освіта"
 #: src/bz-flathub-category.c:68
 #, fuzzy
 msgid "More Education"
-msgstr "Освіта"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:69
 msgid "Gaming"
 msgstr "Ігри"
 
 #: src/bz-flathub-category.c:69
-#, fuzzy
 msgid "Play"
 msgstr "Відтворення"
 
 #: src/bz-flathub-category.c:69
 #, fuzzy
 msgid "More Gaming"
-msgstr "Ігри"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:70
 msgid "Graphics & Photography"
 msgstr "Графіка та фотографія"
 
 #: src/bz-flathub-category.c:70
-#, fuzzy
 msgid "Create"
-msgstr "Творчість"
+msgstr "Створення"
 
 #: src/bz-flathub-category.c:70
 #, fuzzy
 msgid "More Graphics & Photography"
-msgstr "Графіка та фотоґрафія"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:71
 msgid "Networking"
@@ -513,7 +509,7 @@ msgstr "Інтернет"
 #: src/bz-flathub-category.c:71
 #, fuzzy
 msgid "More Networking"
-msgstr "Мережа"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:72
 msgid "Productivity"
@@ -526,7 +522,7 @@ msgstr "Робота"
 #: src/bz-flathub-category.c:72
 #, fuzzy
 msgid "More Productivity"
-msgstr "Продуктивність"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:73
 msgid "Science"
@@ -535,7 +531,7 @@ msgstr "Наука"
 #: src/bz-flathub-category.c:73
 #, fuzzy
 msgid "More Science"
-msgstr "Наука"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:74
 msgid "System"
@@ -544,7 +540,7 @@ msgstr "Система"
 #: src/bz-flathub-category.c:74
 #, fuzzy
 msgid "More System"
-msgstr "Система"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:75
 msgid "Utilities"
@@ -557,7 +553,7 @@ msgstr "Утиліти"
 #: src/bz-flathub-category.c:75
 #, fuzzy
 msgid "More Utilities"
-msgstr "Утиліти"
+msgstr "Ще"
 
 #: src/bz-flathub-category.c:76 src/bz-flathub-page.blp:90
 #: src/bz-flathub-page.blp:119
@@ -782,7 +778,6 @@ msgid "%d+"
 msgstr "%d+"
 
 #: src/bz-full-view.c:336
-#, fuzzy
 msgid "All Ages"
 msgstr "Без обмежень"
 
@@ -791,12 +786,11 @@ msgid "Age Rating"
 msgstr "Вікове обмеження"
 
 #: src/bz-full-view.c:346
-#, fuzzy
 msgid "Suitable for all ages"
 msgstr "Без обмежень за віком"
 
 #: src/bz-full-view.c:348
-#, fuzzy, c-format
+#, c-format
 msgid "Suitable for ages %d and up"
 msgstr "%d та старше"
 
@@ -809,12 +803,11 @@ msgid "Proprietary Software"
 msgstr "Власницька ліцензія"
 
 #: src/bz-full-view.c:375
-#, fuzzy, c-format
+#, c-format
 msgid "Free software licensed under %s"
 msgstr "Вільне ПЗ за ліцензією %s"
 
 #: src/bz-full-view.c:383
-#, fuzzy
 msgid "Free"
 msgstr "Вільний"
 
@@ -823,12 +816,10 @@ msgid "Proprietary"
 msgstr "Власницька ліцензія"
 
 #: src/bz-full-view.c:403
-#, fuzzy
 msgid "Adaptive"
 msgstr "Адаптивний"
 
 #: src/bz-full-view.c:403
-#, fuzzy
 msgid "Desktop Only"
 msgstr "Лише для стільниць"
 
@@ -837,9 +828,8 @@ msgid "Works on desktop, tablets, and phones"
 msgstr "Працює на стільницях, планшетах і смартфонах"
 
 #: src/bz-full-view.c:410
-#, fuzzy
 msgid "May not work on mobile devices"
-msgstr "Може не працювати на смартфонах"
+msgstr "Може не працювати на мобільних пристроях"
 
 #: src/bz-full-view.c:421
 msgid "No URL"
@@ -874,12 +864,10 @@ msgid "Keyboard support"
 msgstr "Підтримка клавіатури"
 
 #: src/bz-hardware-support-dialog.c:71
-#, fuzzy
 msgid "Requires keyboards"
 msgstr "Вимагає клавіатуру"
 
 #: src/bz-hardware-support-dialog.c:72
-#, fuzzy
 msgid "Recommends keyboards"
 msgstr "Бажана клавіатура"
 
@@ -888,90 +876,76 @@ msgid "Supports keyboards"
 msgstr "Підтримує клавіатуру"
 
 #: src/bz-hardware-support-dialog.c:74
-#, fuzzy
 msgid "Unknown support for keyboards"
 msgstr "Невідома підтримка клавіатури"
 
 #: src/bz-hardware-support-dialog.c:76
-#, fuzzy
 msgid "Mouse support"
 msgstr "Підтримка миші"
 
 #: src/bz-hardware-support-dialog.c:78
-#, fuzzy
 msgid "Requires mice or pointing devices"
 msgstr "Вимагає мишу або вказівний пристрій"
 
 #: src/bz-hardware-support-dialog.c:79
-#, fuzzy
 msgid "Recommends mice or pointing devices"
 msgstr "Бажані миша або вказівний пристрій"
 
 #: src/bz-hardware-support-dialog.c:80
-#, fuzzy
 msgid "Supports mice or pointing devices"
 msgstr "Підтримує мишу або вказівний пристрій"
 
 #: src/bz-hardware-support-dialog.c:81
-#, fuzzy
 msgid "Unknown support for mice or pointing devices"
 msgstr "Невідома підтримка миші або вказівних пристроїв"
 
 #: src/bz-hardware-support-dialog.c:83
-#, fuzzy
 msgid "Touchscreen support"
-msgstr "Підтримка тачскрінів"
+msgstr "Підтримка сенсорних екранів"
 
 #: src/bz-hardware-support-dialog.c:85
-#, fuzzy
 msgid "Requires touchscreens"
 msgstr "Вимагає сенсорний екран"
 
 #: src/bz-hardware-support-dialog.c:86
-#, fuzzy
 msgid "Recommends touchscreens"
 msgstr "Бажаний сенсорний екран"
 
 #: src/bz-hardware-support-dialog.c:87
-#, fuzzy
 msgid "Supports touchscreens"
 msgstr "Підтримує сенсорний екран"
 
 #: src/bz-hardware-support-dialog.c:88
-#, fuzzy
 msgid "Unknown support for touchscreens"
-msgstr "Невідома підтримка сенсорних екранів"
+msgstr "Невідома підтримка сенсорного екрану"
 
 #: src/bz-hardware-support-dialog.c:192
 msgid "Mobile support"
 msgstr "Підтримка мобільних пристроїв"
 
 #: src/bz-hardware-support-dialog.c:193
-#, fuzzy
 msgid "Works on mobile devices"
-msgstr "Працювати на мобільних пристроях"
+msgstr "Працює на мобільних пристроях"
 
 #: src/bz-hardware-support-dialog.c:193
-#, fuzzy
 msgid "May not work well on mobile devices"
-msgstr "Може не працювати добре на смартфонах"
+msgstr "Обмежена підтримка на мобільних пристроях"
 
 #: src/bz-hardware-support-dialog.c:198
 msgid "Desktop support"
 msgstr "Підтримка стільниць"
 
 #: src/bz-hardware-support-dialog.c:199
-#, fuzzy
 msgid "Works well on large screens"
 msgstr "Працює добре на великих екранах"
 
 #: src/bz-hardware-support-dialog.c:233
-#, fuzzy, c-format
+#, c-format
 msgid "%s works best on specific hardware"
 msgstr "%s найліпше працює на певних пристроях"
 
 #: src/bz-hardware-support-dialog.c:240
-#, fuzzy, c-format
+#, c-format
 msgid "%s works on most devices"
 msgstr "%s працює на більшості пристроїв"
 
@@ -1156,7 +1130,6 @@ msgid "Accent Color"
 msgstr "Акцентний колір"
 
 #: src/bz-preferences-dialog.c:33
-#, fuzzy
 msgid "Pride Colors"
 msgstr "Барви Гордості"
 
@@ -1173,12 +1146,10 @@ msgid "Nonbinary Pride Colors"
 msgstr "Небінарний прапор"
 
 #: src/bz-preferences-dialog.c:37
-#, fuzzy
 msgid "Bisexual Pride Colors"
 msgstr "Бісексуальні барви Гордості"
 
 #: src/bz-preferences-dialog.c:38
-#, fuzzy
 msgid "Asexual Pride Colors"
 msgstr "Асексуальні барви Гордості"
 
