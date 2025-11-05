@@ -1352,9 +1352,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#, c-format
-#~ msgid ""
-#~ "Beginning remote entry retrieval while referencing %d blocklist(s)..."
-#~ msgstr ""
-#~ "Отримання віддалених надходжень із застосуванням %d чорних списків..."
