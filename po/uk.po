@@ -1794,27 +1794,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "Constructing Flatpak instance..."
-#~ msgstr "Створення примірника Flatpak..."
-
-#~ msgid "Reusing last Flatpak instance..."
-#~ msgstr "Повторне використання примірника Flatpak..."
-
-#~ msgid "Identifying installed entries..."
-#~ msgstr "Визначення встановлених надходжень..."
-
-#, c-format
-#~ msgid "%'d of %'d"
-#~ msgstr "%'d із %'d"
-
-#, c-format
-#~ msgid "Waiting for background indexing tasks to catch up..."
-#~ msgstr "Очікується завершення індексації..."
-
-#, c-format
-#~ msgid "Completed initialization in %0.2f seconds"
-#~ msgstr "Ініціалізовано за %0.2f сек"
-
-#~ msgid "_Refresh Content"
-#~ msgstr "_Оновити"
