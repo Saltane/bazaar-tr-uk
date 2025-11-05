@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 02:19+0200\n"
-"PO-Revision-Date: 2025-11-05 02:40+0200\n"
+"PO-Revision-Date: 2025-11-05 02:54+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -1240,7 +1240,7 @@ msgstr "Копіювати посилання"
 msgid "Open Link"
 msgstr "Відкрити посилання"
 
-# NOTE: https://slovotvir.org.ua/words/taimlain
+# https://slovotvir.org.ua/words/taimlain
 #: src/bz-stats-dialog.blp:26
 msgid "Timeline"
 msgstr "Часоряд"
