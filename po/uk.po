@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 02:19+0200\n"
-"PO-Revision-Date: 2025-11-05 03:47+0200\n"
+"PO-Revision-Date: 2025-11-05 05:29+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -696,7 +696,7 @@ msgstr "Вміст"
 
 #: src/bz-full-view.blp:194
 msgid "Verified by the original developers"
-msgstr "Цей пакунок затверджено розробниками цієї програми"
+msgstr "Затверджено розробниками цієї програми"
 
 #: src/bz-full-view.blp:221
 msgid "Support"
@@ -728,11 +728,11 @@ msgstr "Розмір завантаження"
 
 #: src/bz-full-view.blp:454
 msgid "Downloads/mo"
-msgstr "--- Завантажень"
+msgstr "зав./міс."
 
 #: src/bz-full-view.c:281
 msgid "---"
-msgstr "--- МБ"
+msgstr "---"
 
 #. Translators: M is the suffix for millions, \xC2\xA0 is a non-breaking space
 #: src/bz-full-view.c:285
@@ -794,7 +794,7 @@ msgstr "Вільне ПЗ за ліцензією %s"
 
 #: src/bz-full-view.c:383
 msgid "Free"
-msgstr "Вільний"
+msgstr "Вільна ліцензія"
 
 #: src/bz-full-view.c:383
 msgid "Proprietary"
