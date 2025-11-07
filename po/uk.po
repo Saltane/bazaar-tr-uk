@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-09 15:07+0200\n"
-"PO-Revision-Date: 2025-11-07 06:24+0200\n"
+"PO-Revision-Date: 2025-11-09 15:18+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
-"Language-Team: Ukrainian <>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.08.2\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -112,7 +112,6 @@ msgstr ""
 "може бути налаштована дистрибутивами, аби створити цілісніший досвід."
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:54
-#, fuzzy
 msgid "The home page displaying Flathub apps"
 msgstr "Домашня сторінка із застосунками з Flathub"
 
@@ -121,13 +120,12 @@ msgid "Nucleus app page"
 msgstr "Сторінка застосунку Nucleus"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:62
-#, fuzzy
 msgid "Search page"
-msgstr "Пошук"
+msgstr "Сторінка пошуку"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:66
 msgid "Category page"
-msgstr ""
+msgstr "Сторінка пошуку з категоріями"
 
 #: src/bz-addons-dialog.blp:14 src/bz-full-view.blp:582
 #: src/bz-installed-page.blp:132
@@ -1090,9 +1088,10 @@ msgstr "Версія %s"
 msgid "No details for this release"
 msgstr "Без подробиць"
 
+# Сирець підказує, що це кнопка завантаження
 #: src/bz-rich-app-tile.blp:103
 msgid "Get"
-msgstr ""
+msgstr "Завантажити"
 
 #: src/bz-search-widget.blp:105
 msgid "Search Apps, Games, Software"
