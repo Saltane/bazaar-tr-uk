@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-07 06:21+0200\n"
-"PO-Revision-Date: 2025-11-05 05:29+0200\n"
+"PO-Revision-Date: 2025-11-07 06:24+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.08.2\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -724,12 +724,11 @@ msgstr "Встановити іншу версію"
 
 #: src/bz-full-view.blp:340
 msgid "Size"
-msgstr ""
+msgstr "Розмір"
 
 #: src/bz-full-view.blp:456
-#, fuzzy
 msgid "Downloads /mo"
-msgstr "зав./міс."
+msgstr "зав/міс"
 
 #: src/bz-full-view.c:284
 msgid "---"
@@ -737,15 +736,15 @@ msgstr "---"
 
 #. Translators: M is the suffix for millions
 #: src/bz-full-view.c:288
-#, fuzzy, c-format
+#, c-format
 msgid "%.2fM"
-msgstr "%.2f млн."
+msgstr "%.2fмлн."
 
 #. Translators: K is the suffix for thousands
 #: src/bz-full-view.c:291
-#, fuzzy, c-format
+#, c-format
 msgid "%.2fK"
-msgstr "%.2f тис."
+msgstr "%.2fтис."
 
 #: src/bz-full-view.c:300
 #, c-format
@@ -839,12 +838,12 @@ msgstr ""
 
 #: src/bz-full-view.c:454
 msgid "Other Apps by this Developer"
-msgstr ""
+msgstr "Більше від розробників"
 
 #: src/bz-full-view.c:456
 #, c-format
 msgid "Other Apps by %s"
-msgstr ""
+msgstr "Більше від %s"
 
 #: src/bz-full-view.c:808
 msgid "Show Less"
