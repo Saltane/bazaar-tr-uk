@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-10 19:54+0200\n"
-"PO-Revision-Date: 2025-11-09 15:18+0200\n"
+"PO-Revision-Date: 2025-11-10 20:18+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
-"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"Language-Team: Ukrainian <>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.08.2\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -38,11 +38,11 @@ msgstr ""
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:6
 msgid "Hide EOL Entries"
-msgstr ""
+msgstr "Сховати осиротілі надходження"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:7
 msgid "Hide EOL entries and entries depending on them"
-msgstr ""
+msgstr "Сховати осиротілі надходження та надходження, котрі залежать від них"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:11
 msgid "Show Git Forge Star Counts"
@@ -863,7 +863,7 @@ msgstr "Зневаджувач"
 
 #: src/bz-inspector.blp:22
 msgid "Enable Global Debug Mode"
-msgstr ""
+msgstr "Увімкнути режим зневадження"
 
 #: src/bz-inspector.blp:29
 msgid "Active Blocklists"
@@ -1023,15 +1023,16 @@ msgstr "Оберіть цікавий зовнішній вигляд для с�
 
 #: src/bz-preferences-dialog.blp:98
 msgid "End of Life Apps"
-msgstr ""
+msgstr "Осиротілі застосунки"
 
 #: src/bz-preferences-dialog.blp:101
 msgid "Hide EOL Apps"
-msgstr ""
+msgstr "Сховати осиротілі застосунки"
 
 #: src/bz-preferences-dialog.blp:102
 msgid "Hide apps which are no longer supported by their developers"
 msgstr ""
+"Сховати застосунки, котрі більше не підтримуються власними розробниками"
 
 #: src/bz-preferences-dialog.blp:116
 msgid ""
@@ -1208,11 +1209,11 @@ msgstr "Крім того, буде оновлено %d середовищ ви�
 
 #: src/bz-window.blp:66
 msgid "Inspect UI Entry"
-msgstr ""
+msgstr "Дослідити рядок інтерфейсу"
 
 #: src/bz-window.blp:73
 msgid "All Debug Actions"
-msgstr ""
+msgstr "Усі дії зневадження"
 
 #: src/bz-window.blp:98
 msgid "Tasks"
@@ -1263,9 +1264,8 @@ msgid "_Quit Bazaar"
 msgstr "_Про Базар"
 
 #: src/bz-window.blp:517
-#, fuzzy
 msgid "Open Bazaar Inspector"
-msgstr "Зневаджувач"
+msgstr "Відкрити зневаджувач"
 
 #: src/bz-window.c:802
 msgid ""
