@@ -1,6 +1,6 @@
-/* bz-url.h
+/* bz-screenshot-page.h
  *
- * Copyright 2025 Adam Masciola
+ * Copyright 2025 Alexander Vanhee
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,37 +20,16 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
+#include "bz-async-texture.h"
+#include <adwaita.h>
 
 G_BEGIN_DECLS
 
-#define BZ_TYPE_URL (bz_url_get_type ())
-G_DECLARE_FINAL_TYPE (BzUrl, bz_url, BZ, URL, GObject)
+#define BZ_TYPE_SCREENSHOT_PAGE (bz_screenshot_page_get_type ())
 
-BzUrl *
-bz_url_new (void);
+G_DECLARE_FINAL_TYPE (BzScreenshotPage, bz_screenshot_page, BZ, SCREENSHOT_PAGE, AdwNavigationPage)
 
-const char *
-bz_url_get_name (BzUrl *self);
-
-const char *
-bz_url_get_url (BzUrl *self);
-
-const char *
-bz_url_get_icon_name (BzUrl *self);
-
-void
-bz_url_set_name (BzUrl      *self,
-                 const char *name);
-
-void
-bz_url_set_url (BzUrl      *self,
-                const char *url);
-
-void
-bz_url_set_icon_name (BzUrl      *self,
-                      const char *icon_name);
+AdwNavigationPage *bz_screenshot_page_new (GListModel *screenshots,
+                                           guint       initial_index);
 
 G_END_DECLS
-
-/* End of bz-url.h */

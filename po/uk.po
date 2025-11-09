@@ -187,7 +187,7 @@ msgstr "--- МБ"
 msgid "Download Size"
 msgstr "Розмір завантаження"
 
-#: src/bz-application.c:400
+#: src/bz-application.c:401
 msgid ""
 "This functionality is currently disabled. It is recommended you download and "
 "install Flatseal to manage app permissions."
@@ -195,72 +195,77 @@ msgstr ""
 "Цю можливість наразі вимкнено. Для керування дозволами застосунків радимо "
 "встановити Flatseal."
 
-#: src/bz-application.c:464
+#: src/bz-application.c:465
 msgctxt "About Dialog Developer Credit"
 msgid "Adam Masciola <kolunmi@posteo.net>"
 msgstr ""
 
-#: src/bz-application.c:465
+#: src/bz-application.c:466
 msgctxt "About Dialog Developer Credit"
 msgid "Alexander Vanhee"
 msgstr ""
 
-#: src/bz-application.c:470
+#. Translators: Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
+#: src/bz-application.c:481
+msgid "translator-credits"
+msgstr "faoquad <faoquad@noreply.codeberg.org>, 2025"
+
+#: src/bz-application.c:471
 msgctxt "About Dialog Translator Credit"
 msgid "Ahmed Najmawi"
 msgstr ""
 
-#: src/bz-application.c:471
+#: src/bz-application.c:472
 msgctxt "About Dialog Translator Credit"
 msgid "AtomHare"
 msgstr ""
 
-#: src/bz-application.c:472
+#: src/bz-application.c:473
 msgctxt "About Dialog Translator Credit"
 msgid "Azenyr"
 msgstr ""
 
-#: src/bz-application.c:473
+#: src/bz-application.c:474
 msgctxt "About Dialog Translator Credit"
 msgid "Goudarz Jafari"
 msgstr ""
 
-#: src/bz-application.c:474
+#: src/bz-application.c:475
 msgctxt "About Dialog Translator Credit"
 msgid "Jill Fiore (Lumaeris)"
 msgstr ""
 
-#: src/bz-application.c:475
+#: src/bz-application.c:476
 msgctxt "About Dialog Translator Credit"
 msgid "João Victor (Leal)"
 msgstr ""
 
-#: src/bz-application.c:476
+#: src/bz-application.c:477
 msgctxt "About Dialog Translator Credit"
 msgid "KiKaraage"
 msgstr ""
 
-#: src/bz-application.c:477
+#: src/bz-application.c:478
 msgctxt "About Dialog Translator Credit"
 msgid "Lucosec"
 msgstr ""
 
-#: src/bz-application.c:478
+#: src/bz-application.c:479
 msgctxt "About Dialog Translator Credit"
 msgid "Léane GRASSER"
 msgstr ""
 
-#: src/bz-application.c:479
+#: src/bz-application.c:480
 msgctxt "About Dialog Translator Credit"
 msgid "Marcel Mrówka (Microwave)"
 msgstr ""
 
-#: src/bz-application.c:480
+#: src/bz-application.c:481
 msgctxt "About Dialog Translator Credit"
 msgid "Peter Dave Hello"
 msgstr ""
 
-#: src/bz-application.c:481
+#: src/bz-application.c:482
 msgctxt "About Dialog Translator Credit"
 msgid "Pietro F."
 msgstr ""

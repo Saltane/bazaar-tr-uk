@@ -211,12 +211,22 @@ template $BzWindow: Adw.ApplicationWindow {
                       Label {
                         styles [
                           "dim-label",
-                          "title-2",
+                          "heading",
                         ]
 
                         halign: center;
                         ellipsize: end;
                         label: bind template.state as <$BzStateInfo>.busy-progress-label;
+                      }
+
+                      Label {
+                        styles [
+                          "title-4",
+                        ]
+
+                        halign: center;
+                        ellipsize: end;
+                        label: bind template.state as <$BzStateInfo>.busy-step-label;
                       }
                     };
                   }
@@ -401,6 +411,7 @@ template $BzWindow: Adw.ApplicationWindow {
           download_bar.expand-size: 60;
           top_header_bar.title-widget: null;
           toolbar_view.reveal-bottom-bars: true;
+          split_view.collapsed: true;
         }
 
         apply => $breakpoint_apply_cb(template);
