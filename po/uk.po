@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-11 20:04+0200\n"
-"PO-Revision-Date: 2025-11-10 20:18+0200\n"
+"PO-Revision-Date: 2025-11-11 20:11+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.08.2\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -518,20 +518,20 @@ msgid "The Flathub remote was not found on any of your Flatpak installations"
 msgstr "Сховище Flathub не було знайдено на жодному з Ваших встановлень"
 
 #: src/bz-flathub-page.blp:48
-#, fuzzy
 msgid "Flathub Unavailable"
-msgstr "Сторінка Flathub"
+msgstr "Flathub недоступний"
 
 #: src/bz-flathub-page.blp:49
 msgid ""
 "We could not connect to Flathub. You can still manage and search for "
 "applications."
 msgstr ""
+"Не вдалося підʼєднатися до Flathub. Ви все ще можете  шукати застосунки та кер"
+"увати ними."
 
 #: src/bz-flathub-page.blp:52
-#, fuzzy
 msgid "Search Apps"
-msgstr "Сторінка пошуку"
+msgstr "Шукати застосунки"
 
 #: src/bz-flathub-page.blp:266
 msgid "On the go"
@@ -1111,13 +1111,12 @@ msgid "Search Apps, Games, Software"
 msgstr "Шукайте застосунки, ігри та програми"
 
 #: src/bz-search-widget.blp:149
-#, fuzzy
 msgid "Categories Unavailable"
-msgstr "Доступні оновлення"
+msgstr "Категорії недоступні"
 
 #: src/bz-search-widget.blp:150
 msgid "Search for apps using the search bar above."
-msgstr ""
+msgstr "Шукайте застосунки за допомогою рядка згори."
 
 #: src/bz-search-widget.blp:233
 msgid "No Applications Found"
@@ -1306,12 +1305,15 @@ msgid "Remove %s?"
 msgstr "Видалити %s?"
 
 #: src/bz-window.c:1096
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "It will not be possible to use %s after it is uninstalled.\n"
 "\n"
 "Settings and user data will be kept."
 msgstr ""
+"%s не можна буде користувати після видалення.\n"
+"\n"
+"Налаштування та користувацькі дані залишаться недоторканими."
 
 #: src/bz-window.c:1262
 msgid "Resume Current Tasks"
