@@ -44,7 +44,6 @@ struct _BzSearchWidget
   GtkSelectionModel *selection_model;
   guint              search_update_timeout;
   DexFuture         *search_query;
-  GSettings         *settings;
 
   /* Template widgets */
   GtkText     *search_bar;
@@ -90,8 +89,8 @@ grid_activate (GtkGridView    *grid_view,
 
 static void
 hide_eol_changed (BzSearchWidget *self,
-                  const char     *key,
-                  GSettings      *settings);
+                  GParamSpec     *pspec,
+                  BzStateInfo    *info);
 
 static DexFuture *
 search_query_then (DexFuture *future,
@@ -110,8 +109,8 @@ bz_search_widget_dispose (GObject *object)
 {
   BzSearchWidget *self = BZ_SEARCH_WIDGET (object);
 
-  if (self->settings != NULL)
-    g_signal_handlers_disconnect_by_func (self->settings, hide_eol_changed, self);
+  if (self->state != NULL)
+    g_signal_handlers_disconnect_by_func (self->state, hide_eol_changed, self);
 
   g_clear_handle_id (&self->search_update_timeout, g_source_remove);
   dex_clear (&self->search_query);
@@ -119,7 +118,6 @@ bz_search_widget_dispose (GObject *object)
   g_clear_object (&self->state);
   g_clear_object (&self->selected);
   g_clear_object (&self->selection_model);
-  g_clear_object (&self->settings);
 
   G_OBJECT_CLASS (bz_search_widget_parent_class)->dispose (object);
 }
@@ -185,6 +183,15 @@ is_null (gpointer object,
          GObject *value)
 {
   return value == NULL;
+}
+
+static gboolean
+is_empty (gpointer    object,
+          GListModel *model)
+{
+  if (model == NULL)
+    return TRUE;
+  return g_list_model_get_n_items (model) == 0;
 }
 
 static gboolean
@@ -415,6 +422,7 @@ bz_search_widget_class_init (BzSearchWidgetClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, invert_boolean);
   gtk_widget_class_bind_template_callback (widget_class, is_zero);
   gtk_widget_class_bind_template_callback (widget_class, is_null);
+  gtk_widget_class_bind_template_callback (widget_class, is_empty);
   gtk_widget_class_bind_template_callback (widget_class, is_valid_string);
   gtk_widget_class_bind_template_callback (widget_class, idx_to_string);
   gtk_widget_class_bind_template_callback (widget_class, score_to_string);
@@ -475,17 +483,16 @@ bz_search_widget_set_state (BzSearchWidget *self,
 {
   g_return_if_fail (BZ_IS_SEARCH_WIDGET (self));
 
-  if (self->settings != NULL)
-    g_signal_handlers_disconnect_by_func (self->settings, hide_eol_changed, self);
+  if (self->state != NULL)
+    g_signal_handlers_disconnect_by_func (self->state, hide_eol_changed, self);
   g_clear_object (&self->state);
-  g_clear_object (&self->settings);
+
   if (state != NULL)
     {
-      self->state    = g_object_ref (state);
-      self->settings = g_object_ref (bz_state_info_get_settings (state));
+      self->state = g_object_ref (state);
       g_signal_connect_swapped (
-          self->settings,
-          "changed::hide-eol",
+          state,
+          "notify::hide-eol",
           G_CALLBACK (hide_eol_changed),
           self);
     }
@@ -606,8 +613,8 @@ grid_activate (GtkGridView    *grid_view,
 
 static void
 hide_eol_changed (BzSearchWidget *self,
-                  const char     *key,
-                  GSettings      *settings)
+                  GParamSpec     *pspec,
+                  BzStateInfo    *info)
 {
   update_filter (self);
 }
