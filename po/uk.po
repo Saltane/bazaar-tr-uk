@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-11 20:04+0200\n"
-"PO-Revision-Date: 2025-11-11 20:16+0200\n"
+"PO-Revision-Date: 2025-11-12 02:02+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -1305,7 +1305,7 @@ msgid "Remove %s?"
 msgstr "Видалити %s?"
 
 #: src/bz-window.c:1096
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "It will not be possible to use %s after it is uninstalled.\n"
 "\n"
