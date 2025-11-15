@@ -32,6 +32,11 @@ G_DECLARE_FINAL_TYPE (BzEntryGroup, bz_entry_group, BZ, ENTRY_GROUP, GObject)
 BzEntryGroup *
 bz_entry_group_new (BzApplicationMapFactory *factory);
 
+/* Only necessary if reading props from another thread, writing is always
+   prohibited */
+GMutexLocker *
+bz_entry_group_lock (BzEntryGroup *self);
+
 GListModel *
 bz_entry_group_get_model (BzEntryGroup *self);
 
@@ -65,7 +70,7 @@ bz_entry_group_get_dark_accent_color (BzEntryGroup *self);
 gboolean
 bz_entry_group_get_is_flathub (BzEntryGroup *self);
 
-GPtrArray *
+const char *
 bz_entry_group_get_search_tokens (BzEntryGroup *self);
 
 const char *

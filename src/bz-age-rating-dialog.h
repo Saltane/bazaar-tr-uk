@@ -1,6 +1,10 @@
-/* bz-country-data-point.h
+/* bz-age-rating-dialog.h
  *
+ * Copyright 2021 Endless OS Foundation LLC
  * Copyright 2025 Alexander Vanhee
+ *
+ * Author: Philip Withnall <pwithnall@endlessos.org> (GNOME Software)
+ * Adapted for Bazaar by Alexander Vanhee
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,29 +24,16 @@
 
 #pragma once
 
+#include "bz-entry.h"
+#include <adwaita.h>
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-#define BZ_TYPE_COUNTRY_DATA_POINT (bz_country_data_point_get_type ())
+#define BZ_TYPE_AGE_RATING_DIALOG (bz_age_rating_dialog_get_type ())
 
-G_DECLARE_FINAL_TYPE (BzCountryDataPoint, bz_country_data_point, BZ, COUNTRY_DATA_POINT, GObject)
+G_DECLARE_FINAL_TYPE (BzAgeRatingDialog, bz_age_rating_dialog, BZ, AGE_RATING_DIALOG, AdwDialog)
 
-BzCountryDataPoint *
-bz_country_data_point_new (void);
-
-const char *
-bz_country_data_point_get_country_code (BzCountryDataPoint *self);
-
-guint
-bz_country_data_point_get_downloads (BzCountryDataPoint *self);
-
-void
-bz_country_data_point_set_country_code (BzCountryDataPoint *self,
-                                        const char         *country_code);
-
-void
-bz_country_data_point_set_downloads (BzCountryDataPoint *self,
-                                     guint               downloads);
+BzAgeRatingDialog *bz_age_rating_dialog_new (BzEntry *entry);
 
 G_END_DECLS

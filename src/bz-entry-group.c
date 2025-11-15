@@ -42,7 +42,7 @@ struct _BzEntryGroup
   char         *light_accent_color;
   char         *dark_accent_color;
   gboolean      is_flathub;
-  GPtrArray    *search_tokens;
+  char         *search_tokens;
   char         *remote_repos_string;
   char         *eol;
 
@@ -57,6 +57,8 @@ struct _BzEntryGroup
   int removable_available;
 
   GWeakRef ui_entry;
+
+  GMutex mutex;
 };
 
 G_DEFINE_FINAL_TYPE (BzEntryGroup, bz_entry_group, G_TYPE_OBJECT)
@@ -119,10 +121,12 @@ bz_entry_group_dispose (GObject *object)
   g_clear_pointer (&self->dark_accent_color, g_free);
   g_clear_object (&self->icon_paintable);
   g_clear_object (&self->mini_icon);
-  g_clear_pointer (&self->search_tokens, g_ptr_array_unref);
+  g_clear_pointer (&self->search_tokens, g_free);
   g_clear_pointer (&self->remote_repos_string, g_free);
   g_clear_pointer (&self->eol, g_free);
+
   g_weak_ref_clear (&self->ui_entry);
+  g_mutex_clear (&self->mutex);
 
   G_OBJECT_CLASS (bz_entry_group_parent_class)->dispose (object);
 }
@@ -320,10 +324,9 @@ bz_entry_group_class_init (BzEntryGroupClass *klass)
           G_PARAM_READABLE);
 
   props[PROP_SEARCH_TOKENS] =
-      g_param_spec_boxed (
+      g_param_spec_string (
           "search-tokens",
-          NULL, NULL,
-          G_TYPE_PTR_ARRAY,
+          NULL, NULL, NULL,
           G_PARAM_READABLE);
 
   props[PROP_EOL] =
@@ -396,6 +399,7 @@ bz_entry_group_init (BzEntryGroup *self)
   self->store          = g_list_store_new (GTK_TYPE_STRING_OBJECT);
   self->max_usefulness = -1;
   g_weak_ref_init (&self->ui_entry, NULL);
+  g_mutex_init (&self->mutex);
 }
 
 BzEntryGroup *
@@ -409,6 +413,13 @@ bz_entry_group_new (BzApplicationMapFactory *factory)
   group->factory = g_object_ref (factory);
 
   return group;
+}
+
+GMutexLocker *
+bz_entry_group_lock (BzEntryGroup *self)
+{
+  g_return_val_if_fail (BZ_IS_ENTRY_GROUP (self), NULL);
+  return g_mutex_locker_new (&self->mutex);
 }
 
 GListModel *
@@ -488,7 +499,7 @@ bz_entry_group_get_is_flathub (BzEntryGroup *self)
   return self->is_flathub;
 }
 
-GPtrArray *
+const char *
 bz_entry_group_get_search_tokens (BzEntryGroup *self)
 {
   g_return_val_if_fail (BZ_IS_ENTRY_GROUP (self), NULL);
@@ -592,6 +603,7 @@ bz_entry_group_add (BzEntryGroup *self,
                     BzEntry      *entry,
                     BzEntry      *runtime)
 {
+  g_autoptr (GMutexLocker) locker              = NULL;
   const char *unique_id                        = NULL;
   g_autoptr (GtkStringObject) unique_id_string = NULL;
   const char *remote_repo                      = NULL;
@@ -600,6 +612,8 @@ bz_entry_group_add (BzEntryGroup *self,
   g_return_if_fail (BZ_IS_ENTRY_GROUP (self));
   g_return_if_fail (BZ_IS_ENTRY (entry));
   g_return_if_fail (runtime == NULL || BZ_IS_ENTRY (runtime));
+
+  locker = g_mutex_locker_new (&self->mutex);
 
   if (self->id == NULL)
     {
@@ -635,7 +649,7 @@ bz_entry_group_add (BzEntryGroup *self,
       const char   *description        = NULL;
       GdkPaintable *icon_paintable     = NULL;
       GIcon        *mini_icon          = NULL;
-      GPtrArray    *search_tokens      = NULL;
+      const char   *search_tokens      = NULL;
       gboolean      is_floss           = FALSE;
       const char   *light_accent_color = NULL;
       const char   *dark_accent_color  = NULL;
@@ -692,8 +706,8 @@ bz_entry_group_add (BzEntryGroup *self,
         }
       if (search_tokens != NULL)
         {
-          g_clear_pointer (&self->search_tokens, g_ptr_array_unref);
-          self->search_tokens = g_ptr_array_ref (search_tokens);
+          g_clear_pointer (&self->search_tokens, g_free);
+          self->search_tokens = g_strdup (search_tokens);
           g_object_notify_by_pspec (G_OBJECT (self), props[PROP_SEARCH_TOKENS]);
         }
       if (is_floss != self->is_floss)
@@ -728,7 +742,7 @@ bz_entry_group_add (BzEntryGroup *self,
       const char   *description        = NULL;
       GdkPaintable *icon_paintable     = NULL;
       GIcon        *mini_icon          = NULL;
-      GPtrArray    *search_tokens      = NULL;
+      const char   *search_tokens      = NULL;
       const char   *light_accent_color = NULL;
       const char   *dark_accent_color  = NULL;
 
@@ -770,7 +784,7 @@ bz_entry_group_add (BzEntryGroup *self,
         }
       if (search_tokens != NULL && self->search_tokens == NULL)
         {
-          self->search_tokens = g_ptr_array_ref (search_tokens);
+          self->search_tokens = g_strdup (search_tokens);
           g_object_notify_by_pspec (G_OBJECT (self), props[PROP_SEARCH_TOKENS]);
         }
       if (light_accent_color != NULL && self->light_accent_color == NULL)
@@ -841,8 +855,12 @@ void
 bz_entry_group_connect_living (BzEntryGroup *self,
                                BzEntry      *entry)
 {
+  g_autoptr (GMutexLocker) locker = NULL;
+
   g_return_if_fail (BZ_IS_ENTRY_GROUP (self));
   g_return_if_fail (BZ_IS_ENTRY (entry));
+
+  locker = g_mutex_locker_new (&self->mutex);
 
   g_signal_handlers_disconnect_by_func (entry, installed_changed, self);
   g_signal_handlers_disconnect_by_func (entry, holding_changed, self);
@@ -871,6 +889,10 @@ installed_changed (BzEntryGroup *self,
                    GParamSpec   *pspec,
                    BzEntry      *entry)
 {
+  g_autoptr (GMutexLocker) locker = NULL;
+
+  locker = g_mutex_locker_new (&self->mutex);
+
   if (bz_entry_is_installed (entry))
     {
       self->installable--;
@@ -906,6 +928,10 @@ holding_changed (BzEntryGroup *self,
                  GParamSpec   *pspec,
                  BzEntry      *entry)
 {
+  g_autoptr (GMutexLocker) locker = NULL;
+
+  locker = g_mutex_locker_new (&self->mutex);
+
   if (bz_entry_is_holding (entry))
     {
       if (bz_entry_is_installed (entry))

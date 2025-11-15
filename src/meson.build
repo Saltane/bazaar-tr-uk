@@ -52,6 +52,7 @@ gdbus_src = gnome.gdbus_codegen(
 )
 
 bz_sources = [
+  'bz-age-rating-dialog.c',
   'bz-addons-dialog.c',
   'bz-app-size-dialog.c',
   'bz-app-tile.c',
@@ -65,15 +66,10 @@ bz_sources = [
   'bz-browse-widget.c',
   'bz-category-tile.c',
   'bz-comet-overlay.c',
-  'bz-comet.c',
   'bz-content-provider.c',
-  'bz-content-section.c',
   'bz-context-tile.c',
-  'bz-country-data-point.c',
-  'bz-country.c',
   'bz-curated-app-tile.c',
   'bz-data-graph.c',
-  'bz-data-point.c',
   'bz-decorated-screenshot.c',
   'bz-detailed-app-tile.c',
   'bz-download-worker.c',
@@ -169,6 +165,12 @@ gen_gobject_code = generator(
 gobject_specs = files(
   'bz-backend-transaction-op-payload.txt',
   'bz-backend-transaction-op-progress-payload.txt',
+  'bz-comet.txt',
+  'bz-content-section.txt',
+  'bz-curated-row.txt',
+  'bz-country-data-point.txt',
+  'bz-country.txt',
+  'bz-data-point.txt',
   'bz-issue.txt',
   'bz-release.txt',
   'bz-search-result.txt',
@@ -191,6 +193,7 @@ bz_deps += [ generated_gobjects ]
 
 blueprints = custom_target('blueprints',
   input: files(
+    'bz-age-rating-dialog.blp',
     'bz-addons-dialog.blp',
     'bz-app-size-dialog.blp',
     'bz-app-tile.blp',
