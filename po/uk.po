@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-16 22:05+0200\n"
+"PO-Revision-Date: 2025-11-19 18:05+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.08.2\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -154,121 +154,151 @@ msgstr "Встановити"
 msgid "Age Rating"
 msgstr "Вікове обмеження"
 
+# хто я
 #: src/bz-age-rating-dialog.blp:40 src/bz-age-rating-dialog.c:790
+#, fuzzy
 msgid "?"
-msgstr ""
+msgstr "?"
 
 #: src/bz-age-rating-dialog.c:139
+#, fuzzy
 msgid "Cartoon Violence"
-msgstr ""
+msgstr "Анімована жорстокість"
 
 #: src/bz-age-rating-dialog.c:140
+#, fuzzy
 msgid "No information regarding cartoon violence"
-msgstr ""
+msgstr "Без даних щодо анімованої жорстокости"
 
 #: src/bz-age-rating-dialog.c:143
+#, fuzzy
 msgid "Fantasy Violence"
-msgstr ""
+msgstr "Вигадана жорстокість"
 
 #: src/bz-age-rating-dialog.c:144
+#, fuzzy
 msgid "No information regarding fantasy violence"
-msgstr ""
+msgstr "Без даних щодо вигаданої жорстокости"
 
 #: src/bz-age-rating-dialog.c:147
+#, fuzzy
 msgid "Realistic Violence"
-msgstr ""
+msgstr "Реалістична жорстокість"
 
 #: src/bz-age-rating-dialog.c:148
+#, fuzzy
 msgid "No information regarding realistic violence"
-msgstr ""
+msgstr "Без даних щодо реалістичної жорстокости"
 
 #: src/bz-age-rating-dialog.c:151
+#, fuzzy
 msgid "Violence Depicting Bloodshed"
-msgstr ""
+msgstr "Жорстокість із зображенням кровопролиття"
 
 #: src/bz-age-rating-dialog.c:152
+#, fuzzy
 msgid "No information regarding bloodshed"
-msgstr ""
+msgstr "Без даних щодо кровопролиття"
 
 #: src/bz-age-rating-dialog.c:155
+#, fuzzy
 msgid "Sexual Violence"
-msgstr ""
+msgstr "Ґвалт"
 
 #: src/bz-age-rating-dialog.c:156
+#, fuzzy
 msgid "No information regarding sexual violence"
-msgstr ""
+msgstr "Без даних щодо ґвалту"
 
 #: src/bz-age-rating-dialog.c:159
+#, fuzzy
 msgid "Alcohol"
-msgstr ""
+msgstr "Алкоголь"
 
 #: src/bz-age-rating-dialog.c:160
+#, fuzzy
 msgid "No information regarding references to alcohol"
-msgstr ""
+msgstr "Без даних щодо згадок алкоголю"
 
 #: src/bz-age-rating-dialog.c:163
+#, fuzzy
 msgid "Narcotics"
-msgstr ""
+msgstr "Інші наркотики"
 
 #: src/bz-age-rating-dialog.c:164
+#, fuzzy
 msgid "No information regarding references to illicit drugs"
-msgstr ""
+msgstr "Без даних щодо інших наркотиків"
 
 #: src/bz-age-rating-dialog.c:167
+#, fuzzy
 msgid "Tobacco"
-msgstr ""
+msgstr "Тютюн"
 
 #: src/bz-age-rating-dialog.c:168
+#, fuzzy
 msgid "No information regarding references to tobacco products"
-msgstr ""
+msgstr "Без даних щодо згадок тютюнових виробів"
 
 #: src/bz-age-rating-dialog.c:171 src/bz-age-rating-dialog.c:358
+#, fuzzy
 msgid "Nudity"
-msgstr ""
+msgstr "Оголення"
 
 #: src/bz-age-rating-dialog.c:172
+#, fuzzy
 msgid "No information regarding nudity of any sort"
-msgstr ""
+msgstr "Без даних щодо оголення"
 
 #: src/bz-age-rating-dialog.c:175
+#, fuzzy
 msgid "Sexual Themes"
-msgstr ""
+msgstr "Сексуальні теми"
 
 #: src/bz-age-rating-dialog.c:176
+#, fuzzy
 msgid "No information regarding references to or depictions of sexual nature"
-msgstr ""
+msgstr "Без даних щодо згадок або зображення сексуального вмісту"
 
 #: src/bz-age-rating-dialog.c:179
+#, fuzzy
 msgid "Profanity"
-msgstr ""
+msgstr "Матюки"
 
 #: src/bz-age-rating-dialog.c:180
+#, fuzzy
 msgid "No information regarding profanity of any kind"
-msgstr ""
+msgstr "Без даних щодо матюків"
 
 #: src/bz-age-rating-dialog.c:183
+#, fuzzy
 msgid "Inappropriate Humor"
-msgstr ""
+msgstr "Недоречний гумор"
 
 #: src/bz-age-rating-dialog.c:184
+#, fuzzy
 msgid "No information regarding inappropriate humor"
-msgstr ""
+msgstr "Без даних щодо недоречного гумору"
 
 #: src/bz-age-rating-dialog.c:187
+#, fuzzy
 msgid "Discrimination"
-msgstr ""
+msgstr "Дискримінація"
 
 #: src/bz-age-rating-dialog.c:188
+#, fuzzy
 msgid "No information regarding discriminatory language of any kind"
-msgstr ""
+msgstr "Без даних щодо використання дискримінаційної мови"
 
 #: src/bz-age-rating-dialog.c:191
+#, fuzzy
 msgid "Advertising"
-msgstr ""
+msgstr "Реклама"
 
 #: src/bz-age-rating-dialog.c:192
+#, fuzzy
 msgid "No information regarding advertising of any kind"
-msgstr ""
+msgstr "Без даних щодо реклами"
 
 #: src/bz-age-rating-dialog.c:195
 msgid "Gambling"
@@ -279,28 +309,35 @@ msgid "No information regarding gambling of any kind"
 msgstr ""
 
 #: src/bz-age-rating-dialog.c:199
+#, fuzzy
 msgid "Purchasing"
-msgstr ""
+msgstr "Покупки"
 
 #: src/bz-age-rating-dialog.c:200
+#, fuzzy
 msgid "No information regarding the ability to spend money"
-msgstr ""
+msgstr "Без даних щодо можливості витрачати гроші"
 
 #: src/bz-age-rating-dialog.c:203
+#, fuzzy
 msgid "Chat Between Users"
-msgstr ""
+msgstr "Розмови між користувачами"
 
 #: src/bz-age-rating-dialog.c:204
+#, fuzzy
 msgid "No information regarding ways to chat with other users"
-msgstr ""
+msgstr "Без даних щодо можливості спілкуватися з іншими користувачами"
 
 #: src/bz-age-rating-dialog.c:207
+#, fuzzy
 msgid "Audio Chat Between Users"
-msgstr ""
+msgstr "Голосові розмови між користувачами"
 
 #: src/bz-age-rating-dialog.c:208
+#, fuzzy
 msgid "No information regarding ways to talk with other users"
 msgstr ""
+"Без даних щодо можливості спілкуватися з голосом з іншими користувачами"
 
 #: src/bz-age-rating-dialog.c:211
 #, fuzzy
@@ -346,88 +383,107 @@ msgid "No information regarding references to adultery"
 msgstr ""
 
 #: src/bz-age-rating-dialog.c:231
+#, fuzzy
 msgid "Sexualized Characters"
-msgstr ""
+msgstr "Сексуалізовані персонажі"
 
 #: src/bz-age-rating-dialog.c:232
+#, fuzzy
 msgid "No information regarding sexualized characters"
-msgstr ""
+msgstr "Без даних щодо сексуалізованих персонажів"
 
 #: src/bz-age-rating-dialog.c:235
 #, fuzzy
 msgid "Desecration"
-msgstr "Освіта"
+msgstr "Кощунство"
 
 #: src/bz-age-rating-dialog.c:236
+#, fuzzy
 msgid "No information regarding references to desecration"
-msgstr ""
+msgstr "Без даних щодо кощунства"
 
 #: src/bz-age-rating-dialog.c:239
+#, fuzzy
 msgid "Human Remains"
-msgstr ""
+msgstr "Людські рештки"
 
 #: src/bz-age-rating-dialog.c:240
+#, fuzzy
 msgid "No information regarding visible dead human remains"
-msgstr ""
+msgstr "Без даних щодо видимих людських решток"
 
 #: src/bz-age-rating-dialog.c:243
+#, fuzzy
 msgid "Slavery"
-msgstr ""
+msgstr "Рабство"
 
 #: src/bz-age-rating-dialog.c:244
+#, fuzzy
 msgid "No information regarding references to slavery"
-msgstr ""
+msgstr "Без даних щодо зображення рабства"
 
 #: src/bz-age-rating-dialog.c:307
+#, fuzzy
 msgid "Does not include references to drugs"
-msgstr ""
+msgstr "Не містить згадок речовин"
 
 #: src/bz-age-rating-dialog.c:309
+#, fuzzy
 msgid ""
 "Does not include swearing, profanity, and other kinds of strong language"
-msgstr ""
+msgstr "Не містить лайливої мови"
 
 #: src/bz-age-rating-dialog.c:311
+#, fuzzy
 msgid "Does not include ads or monetary transactions"
-msgstr ""
+msgstr "Не містить реклами або грошових операцій"
 
 #: src/bz-age-rating-dialog.c:313
+#, fuzzy
 msgid "Does not include sex or nudity"
-msgstr ""
+msgstr "Не містить оголености або сексу"
 
 #: src/bz-age-rating-dialog.c:315
+#, fuzzy
 msgid "Does not include uncontrolled chat functionality"
-msgstr ""
+msgstr "Не містить можливості спілкуватися з іншими користувачами"
 
 #: src/bz-age-rating-dialog.c:317
+#, fuzzy
 msgid "Does not include violence"
-msgstr ""
+msgstr "Не містить жорстокости"
 
 #: src/bz-age-rating-dialog.c:352
+#, fuzzy
 msgid "Drugs"
-msgstr ""
+msgstr "Речовини"
 
+# Як розумію, це включає лайливу мову та інші форми міцної мови.
 #: src/bz-age-rating-dialog.c:354
+#, fuzzy
 msgid "Strong Language"
-msgstr ""
+msgstr "Лайлива мова"
 
 #: src/bz-age-rating-dialog.c:356
+#, fuzzy
 msgid "Money"
-msgstr ""
+msgstr "Гроші"
 
 #: src/bz-age-rating-dialog.c:360
+#, fuzzy
 msgid "Social"
-msgstr ""
+msgstr "Соцмережі"
 
 #: src/bz-age-rating-dialog.c:362
 #, fuzzy
 msgid "Violence"
-msgstr "Наука"
+msgstr "Жорстокість"
 
+# Що це? Зʼясувати.
 #: src/bz-age-rating-dialog.c:564
-#, c-format
+#, fuzzy, c-format
 msgid "%s • %s"
-msgstr ""
+msgstr "%s • %s"
 
 #. Translators: Age rating format, e.g. "12+" for ages 12 and up
 #: src/bz-age-rating-dialog.c:752 src/bz-full-view.c:352
@@ -436,49 +492,50 @@ msgid "%d+"
 msgstr "%d+"
 
 #: src/bz-age-rating-dialog.c:782
+#, fuzzy
 msgctxt "Age rating"
 msgid "All"
-msgstr ""
+msgstr "Без обмежень"
 
 #: src/bz-age-rating-dialog.c:846
-#, c-format
+#, fuzzy, c-format
 msgid "%s has an unknown age rating"
-msgstr ""
+msgstr "%s не вказує вікове обмеження"
 
 #: src/bz-age-rating-dialog.c:854
-#, c-format
+#, fuzzy, c-format
 msgid "%s is suitable for everyone"
-msgstr ""
+msgstr "%s пасує всім"
 
 #: src/bz-age-rating-dialog.c:857
 #, fuzzy, c-format
 msgid "%s is suitable for toddlers"
-msgstr "Без обмежень за віком"
+msgstr "%s пасує немовлятам"
 
 #: src/bz-age-rating-dialog.c:860
-#, c-format
+#, fuzzy, c-format
 msgid "%s is suitable for young children"
-msgstr ""
+msgstr "%s пасує малим дітям"
 
 #: src/bz-age-rating-dialog.c:863
-#, c-format
+#, fuzzy, c-format
 msgid "%s is suitable for children"
-msgstr ""
+msgstr "%s пасує дітям"
 
 #: src/bz-age-rating-dialog.c:866
 #, fuzzy, c-format
 msgid "%s is suitable for teenagers"
-msgstr "Без обмежень за віком"
+msgstr "%s пасує підліткам"
 
 #: src/bz-age-rating-dialog.c:869
 #, fuzzy, c-format
 msgid "%s is suitable for adults"
-msgstr "Без обмежень за віком"
+msgstr "%s пасує дорослим"
 
 #: src/bz-age-rating-dialog.c:872
 #, fuzzy, c-format
 msgid "%s is suitable for %s"
-msgstr "Без обмежень за віком"
+msgstr "%s пасує %s"
 
 #: src/bz-app-size-dialog.blp:43
 msgid "--- MB"
@@ -557,8 +614,9 @@ msgid "translator-credits"
 msgstr "faoquad <faoquad@noreply.codeberg.org>, 2025"
 
 #: src/bz-application.c:996
+#, fuzzy
 msgid "Performing setup..."
-msgstr ""
+msgstr "Налаштовуємо…"
 
 #: src/bz-application.c:1027
 msgid "Flathub is not registered on this system"
@@ -583,7 +641,7 @@ msgstr "Додати Flathub"
 #: src/bz-application.c:1139 src/bz-application.c:1294
 #, fuzzy, c-format
 msgid "Receiving %d entries..."
-msgstr "Отримуємо надходження"
+msgstr "Отримуємо %d надходжень…"
 
 #: src/bz-application.c:1144 src/bz-application.c:1299
 msgid "Checking for updates..."
@@ -966,18 +1024,23 @@ msgid "Downloads /mo"
 msgstr "зав/міс"
 
 #: src/bz-full-view.blp:583
+#, fuzzy
 msgid "Stopped Receiving Core Updates"
-msgstr ""
+msgstr "Більше не отримує оновлень середовища виконання"
 
 #: src/bz-full-view.blp:597
+#, fuzzy
 msgid ""
 "This app uses a runtime that no longer recieves updates or security fixes. "
 "It may become unsafe to use."
 msgstr ""
+"Цей застосунок використовує середовище виконання, котре більше не отримує онов"
+"лень. Він може стати небезпечним до використання."
 
 #: src/bz-full-view.blp:769
+#, fuzzy
 msgid "Tags:"
-msgstr ""
+msgstr "Мітки:"
 
 #: src/bz-full-view.c:297
 msgid "---"
@@ -1012,7 +1075,7 @@ msgstr "Без обмежень"
 #: src/bz-full-view.c:379
 #, fuzzy
 msgid "Age rating information unavailable"
-msgstr "Категорії недоступні"
+msgstr "Дані щодо вікового обмеження недоступні"
 
 #: src/bz-full-view.c:384
 msgid "Suitable for all ages"
@@ -1083,7 +1146,7 @@ msgstr ""
 #: src/bz-full-view.c:496
 #, fuzzy
 msgid "More Apps"
-msgstr "Застосунки для мобільних пристроїв"
+msgstr "Більше застосунків"
 
 #: src/bz-full-view.c:497
 #, fuzzy, c-format
@@ -1102,14 +1165,14 @@ msgstr "Більше від %s"
 #: src/bz-full-view.c:608
 #, fuzzy
 msgid "Other Apps"
-msgstr "Більше від %s"
+msgstr "Інші застосунки"
 
 #: src/bz-full-view.c:610
 #, fuzzy, c-format
 msgid "%d application"
 msgid_plural "%d applications"
-msgstr[0] "%d застосунків"
-msgstr[1] "%d застосунків"
+msgstr[0] "%d застосунок"
+msgstr[1] "%d застосунки"
 msgstr[2] "%d застосунків"
 
 #: src/bz-full-view.c:951
@@ -1267,12 +1330,14 @@ msgid "Cancel"
 msgstr "Скасувати"
 
 #: src/bz-license-dialog.blp:77
+#, fuzzy
 msgid "Community Built"
-msgstr ""
+msgstr "Розроблено спільнотою"
 
 #: src/bz-license-dialog.blp:176
+#, fuzzy
 msgid "Get Involved"
-msgstr ""
+msgstr "Долучитися"
 
 # Згідно перекладу на Flathub
 #: src/bz-license-dialog.c:115
@@ -1454,7 +1519,7 @@ msgstr "Без подробиць"
 #: src/bz-rich-app-tile.blp:107
 #, fuzzy
 msgid "Stopped Receiving Updates"
-msgstr "Отримуємо надходження"
+msgstr "Більш не отримує оновлень"
 
 # Сирець підказує, що це кнопка завантаження
 #: src/bz-rich-app-tile.blp:124
@@ -1512,15 +1577,16 @@ msgstr "Світ"
 msgid "No Results Found"
 msgstr "Нічого не знайдено"
 
+# Буквальний переклад дещо задовгий.
 #: src/bz-tag-list.c:109
-#, c-format
+#, fuzzy, c-format
 msgid "Apps Tagged \"%s\""
-msgstr ""
+msgstr "Мітка «%s»"
 
 #: src/bz-tag-list.c:125
 #, fuzzy
 msgid "Search failed"
-msgstr "Сторінка пошуку"
+msgstr "Невдалий пошук"
 
 #: src/bz-transaction-manager.c:1137
 #, c-format
