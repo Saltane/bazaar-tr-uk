@@ -1,4 +1,4 @@
-/* bz-global-state.h
+/* bz-curated-view.h
  *
  * Copyright 2025 Adam Masciola
  *
@@ -20,25 +20,23 @@
 
 #pragma once
 
-#include <libdex.h>
-#include <libsoup/soup.h>
+#include <adwaita.h>
+
+#include "bz-content-provider.h"
 
 G_BEGIN_DECLS
 
-DexFuture *
-bz_send_with_global_http_session (SoupMessage *message);
+#define BZ_TYPE_CURATED_VIEW (bz_curated_view_get_type ())
+G_DECLARE_FINAL_TYPE (BzCuratedView, bz_curated_view, BZ, CURATED_VIEW, AdwBin)
 
-DexFuture *
-bz_send_with_global_http_session_then_splice_into (SoupMessage   *message,
-                                                   GOutputStream *output);
+GtkWidget *
+bz_curated_view_new (void);
 
-DexFuture *
-bz_https_query_json (const char *uri);
+void
+bz_curated_view_set_content_provider (BzCuratedView    *self,
+                                      BzContentProvider *provider);
 
-DexFuture *
-bz_query_flathub_v2_json (const char *request);
-
-DexFuture *
-bz_query_flathub_v2_json_take (char *request);
+BzContentProvider *
+bz_curated_view_get_content_provider (BzCuratedView *self);
 
 G_END_DECLS

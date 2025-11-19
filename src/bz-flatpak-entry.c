@@ -399,6 +399,8 @@ bz_flatpak_entry_new_for_ref (FlatpakRef    *ref,
   gint        max_display_length               = 0;
   gboolean    is_mobile_friendly               = FALSE;
   g_autoptr (AsContentRating) content_rating   = NULL;
+  GPtrArray *as_keywords                       = NULL;
+  g_autoptr (GListStore) keywords              = NULL;
 
   g_return_val_if_fail (FLATPAK_IS_REF (ref), NULL);
   g_return_val_if_fail (FLATPAK_IS_REMOTE_REF (ref) || FLATPAK_IS_BUNDLE_REF (ref), NULL);
@@ -935,7 +937,24 @@ bz_flatpak_entry_new_for_ref (FlatpakRef    *ref,
       strv          = g_strv_builder_end (builder);
       search_tokens = g_strjoinv (" ", strv);
     }
+  if (component != NULL)
+    {
+      as_keywords = as_component_get_keywords (component);
+      if (as_keywords != NULL && as_keywords->len > 0)
+        {
+          keywords = g_list_store_new (GTK_TYPE_STRING_OBJECT);
 
+          for (guint i = 0; i < as_keywords->len; i++)
+            {
+              const char *keyword                     = NULL;
+              g_autoptr (GtkStringObject) keyword_obj = NULL;
+
+              keyword     = g_ptr_array_index (as_keywords, i);
+              keyword_obj = gtk_string_object_new (keyword);
+              g_list_store_append (keywords, keyword_obj);
+            }
+        }
+    }
   g_object_set (
       self,
       "kinds", kinds,
@@ -975,9 +994,21 @@ bz_flatpak_entry_new_for_ref (FlatpakRef    *ref,
       "max-display-length", max_display_length,
       "is-mobile-friendly", is_mobile_friendly,
       "content-rating", content_rating,
+      "keywords", keywords,
       NULL);
 
   return g_steal_pointer (&self);
+}
+
+char *
+bz_flatpak_ref_parts_format_unique (const char *origin,
+                                    const char *fmt,
+                                    gboolean    user)
+{
+  return g_strdup_printf (
+      "FLATPAK-%s::%s::%s",
+      user ? "USER" : "SYSTEM",
+      origin, fmt);
 }
 
 char *
@@ -996,10 +1027,7 @@ bz_flatpak_ref_format_unique (FlatpakRef *ref,
   else if (FLATPAK_IS_INSTALLED_REF (ref))
     origin = flatpak_installed_ref_get_origin (FLATPAK_INSTALLED_REF (ref));
 
-  return g_strdup_printf (
-      "FLATPAK-%s::%s::%s",
-      user ? "USER" : "SYSTEM",
-      origin, fmt);
+  return bz_flatpak_ref_parts_format_unique (origin, fmt, user);
 }
 
 FlatpakRef *
@@ -1011,6 +1039,19 @@ bz_flatpak_entry_get_ref (BzFlatpakEntry *self)
     self->ref = flatpak_ref_parse (self->flatpak_id, NULL);
 
   return self->ref;
+}
+
+char *
+bz_flatpak_id_format_unique (const char *flatpak_id,
+                             gboolean    user)
+{
+  g_autoptr (FlatpakRef) ref = NULL;
+
+  ref = flatpak_ref_parse (flatpak_id, NULL);
+  if (ref == NULL)
+    return NULL;
+
+  return bz_flatpak_ref_format_unique (ref, user);
 }
 
 gboolean
@@ -1067,28 +1108,6 @@ bz_flatpak_entry_get_addon_extension_of_ref (BzFlatpakEntry *self)
 {
   g_return_val_if_fail (BZ_IS_FLATPAK_ENTRY (self), NULL);
   return self->addon_extension_of_ref;
-}
-
-char *
-bz_flatpak_entry_extract_id_from_unique_id (const char *unique_id)
-{
-  g_auto (GStrv) tokens      = NULL;
-  g_autoptr (FlatpakRef) ref = NULL;
-  const char *name           = NULL;
-
-  tokens = g_strsplit (unique_id, "::", 3);
-  if (g_strv_length (tokens) != 3)
-    return NULL;
-
-  ref = flatpak_ref_parse (tokens[2], NULL);
-  if (ref == NULL)
-    return NULL;
-
-  name = flatpak_ref_get_name (ref);
-  if (name == NULL)
-    return NULL;
-
-  return g_strdup (name);
 }
 
 gboolean

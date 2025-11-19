@@ -118,7 +118,7 @@ template $BzFullView: Adw.Bin {
                   spacing: 20;
 
                   Adw.Clamp {
-                    maximum-size: 800;
+                    maximum-size: 860;
                     tightening-threshold: 1000;
 
                     child: Box top_box {
@@ -281,7 +281,7 @@ template $BzFullView: Adw.Bin {
                             spacing: 10;
                             valign: center;
 
-                            Button {
+                            Button wide_open_button {
                               styles [
                                 "pill",
                               ]
@@ -293,7 +293,7 @@ template $BzFullView: Adw.Bin {
                               clicked => $run_cb(template);
                             }
 
-                            Button {
+                            Button wide_install_button {
                               styles [
                                 "suggested-action",
                                 "pill",
@@ -511,7 +511,7 @@ template $BzFullView: Adw.Bin {
                           spacing: 8;
                           hexpand: true;
 
-                          Button {
+                          Button narrow_install_button {
                             styles [
                               "suggested-action",
                               "pill",
@@ -539,7 +539,7 @@ template $BzFullView: Adw.Bin {
                             clicked => $remove_cb(template);
                           }
 
-                          Button {
+                          Button narrow_open_button {
                             styles [
                               "pill",
                             ]
@@ -625,7 +625,7 @@ template $BzFullView: Adw.Bin {
                   }
 
                   Adw.Clamp {
-                    maximum-size: 766;
+                    maximum-size: 860;
                     tightening-threshold: 1000;
 
                     child: Box {
@@ -714,34 +714,65 @@ template $BzFullView: Adw.Bin {
                         orientation: vertical;
                         margin-start: 17;
                         margin-end: 17;
-                        visible: bind $has_other_apps(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>) as <bool>;
 
-                        Label {
-                          styles [
-                            "heading",
-                            "h4",
-                          ]
+                        Box {
+                          orientation: vertical;
+                          visible: bind $has_other_apps(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>) as <bool>;
+                          Label {
+                            styles [
+                              "heading",
+                              "h4",
+                            ]
 
-                          label: bind $format_other_apps_label(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer) as <string>;
-                          xalign: 0;
-                          margin-bottom: 6;
-                          margin-start: 12;
+                            label: bind $format_other_apps_label(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer) as <string>;
+                            xalign: 0;
+                            margin-bottom: 6;
+                            margin-start: 12;
+                          }
+
+                          $BzDynamicListView {
+                            hexpand: true;
+                            scroll: false;
+                            noscroll-kind: flow-box;
+                            child-type: "BzAppTile";
+                            child-prop: "group";
+                            max-children-per-line: 3;
+                            bind-widget => $bind_app_tile_cb(template);
+                            unbind-widget => $unbind_app_tile_cb(template);
+
+                            model: SliceListModel {
+                              offset: 0;
+                              size: 6;
+                              model: bind $get_developer_apps_entries(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>) as <Gio.ListModel>;
+                            };
+                          }
+                          Button {
+                            visible: bind $is_longer(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, 6) as <bool>;
+                            label: bind $format_more_other_apps_label(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer) as <string>;
+                            clicked => $more_apps_button_clicked_cb(template);
+                            halign: center;
+                            margin-top: 6;
+                            margin-bottom: 8;
+
+                            styles ["pill"]
+                          }
                         }
+                        $BzTagList {
+                          margin-start: 12;
+                          margin-end: 12;
+                          margin-top: 8;
 
-                        $BzDynamicListView {
-                          hexpand: true;
-                          scroll: false;
-                          noscroll-kind: flow-box;
-                          child-type: "BzAppTile";
-                          child-prop: "group";
-                          max-children-per-line: 2;
-                          bind-widget => $bind_app_tile_cb(template);
-                          unbind-widget => $unbind_app_tile_cb(template);
+                          flathub-state: bind template.state as <$BzStateInfo>.flathub;
+                          select => $tag_list_select_cb(template);
+
+                          prefix: Label {
+                            label: _("Tags:");
+                            styles ["dimmed"]
+                          };
 
                           model: SliceListModel {
-                            offset: 0;
-                            size: 100;
-                            model: bind $get_developer_apps_entries(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>) as <Gio.ListModel>;
+                            size: 5;
+                            model: bind template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.keywords;
                           };
                         }
                       }

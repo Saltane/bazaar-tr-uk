@@ -1,6 +1,6 @@
-/* bz-application.h
+/* bz-tag-list.h
  *
- * Copyright 2025 Adam Masciola
+ * Copyright 2025 Alexander Vanhee
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,16 +20,30 @@
 
 #pragma once
 
+#include "bz-flathub-state.h"
 #include <adwaita.h>
-
-#include "bz-state-info.h"
 
 G_BEGIN_DECLS
 
-#define BZ_TYPE_APPLICATION (bz_application_get_type ())
-G_DECLARE_FINAL_TYPE (BzApplication, bz_application, BZ, APPLICATION, AdwApplication)
+#define BZ_TYPE_TAG_LIST (bz_tag_list_get_type ())
 
-BzStateInfo *
-bz_state_info_get_default (void);
+G_DECLARE_FINAL_TYPE (BzTagList, bz_tag_list, BZ, TAG_LIST, GtkBox)
+
+GtkWidget *bz_tag_list_new (void);
+
+GListModel *bz_tag_list_get_model (BzTagList *self);
+
+void bz_tag_list_set_model (BzTagList  *self,
+                            GListModel *model);
+
+GtkWidget *bz_tag_list_get_prefix (BzTagList *self);
+
+void bz_tag_list_set_prefix (BzTagList *self,
+                             GtkWidget *prefix);
+
+BzFlathubState *bz_tag_list_get_flathub_state (BzTagList *self);
+
+void bz_tag_list_set_flathub_state (BzTagList      *self,
+                                    BzFlathubState *flathub_state);
 
 G_END_DECLS

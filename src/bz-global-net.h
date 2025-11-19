@@ -1,4 +1,4 @@
-/* bz-browse-widget.h
+/* bz-global-net.h
  *
  * Copyright 2025 Adam Masciola
  *
@@ -20,23 +20,25 @@
 
 #pragma once
 
-#include <adwaita.h>
-
-#include "bz-content-provider.h"
+#include <libdex.h>
+#include <libsoup/soup.h>
 
 G_BEGIN_DECLS
 
-#define BZ_TYPE_BROWSE_WIDGET (bz_browse_widget_get_type ())
-G_DECLARE_FINAL_TYPE (BzBrowseWidget, bz_browse_widget, BZ, BROWSE_WIDGET, AdwBin)
+DexFuture *
+bz_send_with_global_http_session (SoupMessage *message);
 
-GtkWidget *
-bz_browse_widget_new (void);
+DexFuture *
+bz_send_with_global_http_session_then_splice_into (SoupMessage   *message,
+                                                   GOutputStream *output);
 
-void
-bz_browse_widget_set_content_provider (BzBrowseWidget    *self,
-                                       BzContentProvider *provider);
+DexFuture *
+bz_https_query_json (const char *uri);
 
-BzContentProvider *
-bz_browse_widget_get_content_provider (BzBrowseWidget *self);
+DexFuture *
+bz_query_flathub_v2_json (const char *request);
+
+DexFuture *
+bz_query_flathub_v2_json_take (char *request);
 
 G_END_DECLS
