@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-22 18:27+0200\n"
+"PO-Revision-Date: 2025-11-22 18:34+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -300,12 +300,14 @@ msgid "No information regarding advertising of any kind"
 msgstr "Без даних щодо реклами"
 
 #: src/bz-age-rating-dialog.c:195
+#, fuzzy
 msgid "Gambling"
-msgstr ""
+msgstr "Азартні ігри"
 
 #: src/bz-age-rating-dialog.c:196
+#, fuzzy
 msgid "No information regarding gambling of any kind"
-msgstr ""
+msgstr "Без даних щодо азартних ігор"
 
 #: src/bz-age-rating-dialog.c:199
 #, fuzzy
@@ -344,34 +346,43 @@ msgid "Contact Details"
 msgstr "Звʼязок"
 
 #: src/bz-age-rating-dialog.c:212
+#, fuzzy
 msgid ""
 "No information regarding sharing of social network usernames or email "
 "addresses"
 msgstr ""
+"Без даних щодо розголошення облікових даних у соцмережах або адрес електронної"
+" пошти"
 
 #: src/bz-age-rating-dialog.c:215
+#, fuzzy
 msgid "Identifying Information"
-msgstr ""
+msgstr "Виявні дані"
 
 #: src/bz-age-rating-dialog.c:216
+#, fuzzy
 msgid "No information regarding sharing of user information with third parties"
-msgstr ""
+msgstr "Без даних щодо розголошення користувацьких даних із сторонніми"
 
 #: src/bz-age-rating-dialog.c:219
+#, fuzzy
 msgid "Location Sharing"
-msgstr ""
+msgstr "Місцезнаходження"
 
 #: src/bz-age-rating-dialog.c:220
+#, fuzzy
 msgid "No information regarding sharing of physical location with other users"
-msgstr ""
+msgstr "Без даних щодо розголошення розташування іншим користувачам"
 
 #: src/bz-age-rating-dialog.c:223
+#, fuzzy
 msgid "Prostitution"
-msgstr ""
+msgstr "Проституція"
 
 #: src/bz-age-rating-dialog.c:224
+#, fuzzy
 msgid "No information regarding references to prostitution"
-msgstr ""
+msgstr "Без даних щодо згадок проституції"
 
 #: src/bz-age-rating-dialog.c:227
 msgid "Adultery"
