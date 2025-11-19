@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-22 18:37+0200\n"
+"PO-Revision-Date: 2025-11-23 15:00+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -385,12 +385,14 @@ msgid "No information regarding references to prostitution"
 msgstr "Без даних щодо згадок проституції"
 
 #: src/bz-age-rating-dialog.c:227
+#, fuzzy
 msgid "Adultery"
-msgstr ""
+msgstr "Подружня зрада"
 
 #: src/bz-age-rating-dialog.c:228
+#, fuzzy
 msgid "No information regarding references to adultery"
-msgstr ""
+msgstr "Без даних щодо подружньої зради"
 
 #: src/bz-age-rating-dialog.c:231
 #, fuzzy
