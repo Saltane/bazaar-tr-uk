@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-27 02:02+0200\n"
-"PO-Revision-Date: 2025-11-27 01:30+0200\n"
+"PO-Revision-Date: 2025-11-27 02:10+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.08.2\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -61,9 +61,8 @@ msgid "Only Show Free Software"
 msgstr "Показувати лише вільні застосунки"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:17
-#, fuzzy
 msgid "Hide proprietary software"
-msgstr "Власницька ліцензія"
+msgstr "Ховати власницькі застосунки"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:21
 msgid "Show Only Flathub Content"
@@ -877,7 +876,6 @@ msgid "Search Apps"
 msgstr "Шукати застосунки"
 
 #: src/bz-flathub-page.blp:261
-#, fuzzy
 msgid "On the Go"
 msgstr "На ходу"
 
@@ -886,7 +884,6 @@ msgid "Apps for your Linux phones and tablets"
 msgstr "Застосунки для Ваших смартфонів та планшетів на Linux"
 
 #: src/bz-flathub-page.blp:284
-#, fuzzy
 msgid "More Mobile Apps"
 msgstr "Показати більше"
 
@@ -903,7 +900,6 @@ msgid "Games and apps to run your favorite titles"
 msgstr ""
 
 #: src/bz-flathub-page.blp:426
-#, fuzzy
 msgid "More Games"
 msgstr "Показати більше"
 
@@ -1014,13 +1010,12 @@ msgid "Stopped Receiving Core Updates"
 msgstr "Більше не отримує оновлень середовища виконання"
 
 #: src/bz-full-view.blp:564
-#, fuzzy
 msgid ""
 "This app uses a runtime that no longer receives updates or security fixes. "
 "It may become unsafe to use."
 msgstr ""
-"Цей застосунок використовує середовище виконання, котре більше не отримує "
-"оновлень. Він може стати небезпечним до використання."
+"Цей застосунок використовує середовище виконання, котре більше не отримує онов"
+"лень або безпекових виправлень. Він може стати небезпечним до використання."
 
 #: src/bz-full-view.blp:732
 msgid "Tags:"
@@ -1149,7 +1144,7 @@ msgid "Other Apps"
 msgstr "Інші застосунки"
 
 #: src/bz-full-view.c:611
-#, fuzzy, c-format
+#, c-format
 msgid "%d Application"
 msgid_plural "%d Applications"
 msgstr[0] "%d застосунок"
@@ -1376,9 +1371,8 @@ msgid "Free Software Only"
 msgstr "Вільна ліцензія"
 
 #: src/bz-preferences-dialog.blp:27
-#, fuzzy
 msgid "Hide proprietary applications when browsing and searching"
-msgstr "Ховати власницькі (пропрієтарні) застосунки з пошуку"
+msgstr "Ховати власницькі (пропрієтарні) застосунки з огляду та пошуку"
 
 #: src/bz-preferences-dialog.blp:31
 msgid "Flathub Results Only"
@@ -1569,7 +1563,7 @@ msgid "Apps Tagged \"%s\""
 msgstr "Мітка «%s»"
 
 #: src/bz-tag-list.c:110
-#, fuzzy, c-format
+#, c-format
 msgid "%d Applications"
 msgstr "%d застосунків"
 
