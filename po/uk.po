@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-22 18:34+0200\n"
+"PO-Revision-Date: 2025-11-22 18:37+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -222,12 +222,12 @@ msgstr "Без даних щодо згадок алкоголю"
 #: src/bz-age-rating-dialog.c:163
 #, fuzzy
 msgid "Narcotics"
-msgstr "Інші наркотики"
+msgstr "Заборонені речовини"
 
 #: src/bz-age-rating-dialog.c:164
 #, fuzzy
 msgid "No information regarding references to illicit drugs"
-msgstr "Без даних щодо інших наркотиків"
+msgstr "Без даних щодо заборонених речовин"
 
 #: src/bz-age-rating-dialog.c:167
 #, fuzzy
@@ -302,12 +302,12 @@ msgstr "Без даних щодо реклами"
 #: src/bz-age-rating-dialog.c:195
 #, fuzzy
 msgid "Gambling"
-msgstr "Азартні ігри"
+msgstr "Азартний вміст"
 
 #: src/bz-age-rating-dialog.c:196
 #, fuzzy
 msgid "No information regarding gambling of any kind"
-msgstr "Без даних щодо азартних ігор"
+msgstr "Без даних щодо азартного вмісту"
 
 #: src/bz-age-rating-dialog.c:199
 #, fuzzy
