@@ -624,7 +624,7 @@ msgstr "faoquad <faoquad@noreply.codeberg.org>, 2025"
 
 #: src/bz-application.c:996
 msgid "Performing setup..."
-msgstr "Налаштовуємося…"
+msgstr "Налаштовуємо…"
 
 #: src/bz-application.c:1027
 msgid "Flathub is not registered on this system"
