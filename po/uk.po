@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-26 16:00+0200\n"
+"PO-Revision-Date: 2025-11-27 01:11+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -202,12 +202,12 @@ msgstr "Без даних щодо зображення кровопролитт
 #: src/bz-age-rating-dialog.c:155
 #, fuzzy
 msgid "Sexual Violence"
-msgstr "Зґвалтування"
+msgstr "Сексуальне насилля"
 
 #: src/bz-age-rating-dialog.c:156
 #, fuzzy
 msgid "No information regarding sexual violence"
-msgstr "Без даних щодо згадок або зображення зґвалтувань"
+msgstr "Без даних щодо згадок або зображення сексуального насилля"
 
 #: src/bz-age-rating-dialog.c:159
 #, fuzzy
@@ -263,12 +263,12 @@ msgstr "Без даних щодо згадок або зображення се
 #: src/bz-age-rating-dialog.c:179
 #, fuzzy
 msgid "Profanity"
-msgstr "Матюки"
+msgstr "Лайка"
 
 #: src/bz-age-rating-dialog.c:180
 #, fuzzy
 msgid "No information regarding profanity of any kind"
-msgstr "Без даних щодо використання матюків"
+msgstr "Без даних щодо використання лайливої мови"
 
 #: src/bz-age-rating-dialog.c:183
 #, fuzzy
@@ -344,7 +344,7 @@ msgstr ""
 #: src/bz-age-rating-dialog.c:211
 #, fuzzy
 msgid "Contact Details"
-msgstr "Звʼязок"
+msgstr "Контактні дані"
 
 #: src/bz-age-rating-dialog.c:212
 #, fuzzy
