@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-27 01:22+0200\n"
+"PO-Revision-Date: 2025-11-27 01:30+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -192,14 +192,12 @@ msgid "No information regarding bloodshed"
 msgstr "Без даних щодо зображення кровопролиття"
 
 #: src/bz-age-rating-dialog.c:155
-#, fuzzy
 msgid "Sexual Violence"
-msgstr "Сексуальне насилля"
+msgstr "Сексуальне насильство"
 
 #: src/bz-age-rating-dialog.c:156
-#, fuzzy
 msgid "No information regarding sexual violence"
-msgstr "Без даних щодо згадок або зображення сексуального насилля"
+msgstr "Без даних щодо згадок або зображення сексуального насильства"
 
 #: src/bz-age-rating-dialog.c:159
 msgid "Alcohol"
@@ -360,13 +358,11 @@ msgstr "Без даних щодо зображення сексуалізова
 
 # По-нашому не «кощунство».
 #: src/bz-age-rating-dialog.c:235
-#, fuzzy
 msgid "Desecration"
 msgstr "Блюзнірство"
 
 # По-нашому не «кощунство».
 #: src/bz-age-rating-dialog.c:236
-#, fuzzy
 msgid "No information regarding references to desecration"
 msgstr "Без даних щодо блюзнірства"
 
@@ -425,10 +421,10 @@ msgstr "Лайлива мова"
 msgid "Money"
 msgstr "Гроші"
 
+# Тут мається на увазі чат та інші види звʼязку з іншими людьми.
 #: src/bz-age-rating-dialog.c:360
-#, fuzzy
 msgid "Social"
-msgstr "Соцмережі"
+msgstr "Спілкування"
 
 #: src/bz-age-rating-dialog.c:362
 msgid "Violence"
