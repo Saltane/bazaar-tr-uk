@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-23 15:06+0200\n"
+"PO-Revision-Date: 2025-11-23 15:14+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -509,42 +509,42 @@ msgid "All"
 msgstr "Без обмежень"
 
 #: src/bz-age-rating-dialog.c:846
-#, fuzzy, c-format
+#, c-format
 msgid "%s has an unknown age rating"
 msgstr "%s не вказує вікове обмеження"
 
 #: src/bz-age-rating-dialog.c:854
-#, fuzzy, c-format
+#, c-format
 msgid "%s is suitable for everyone"
 msgstr "%s пасує всім"
 
 #: src/bz-age-rating-dialog.c:857
-#, fuzzy, c-format
+#, c-format
 msgid "%s is suitable for toddlers"
 msgstr "%s пасує немовлям"
 
 #: src/bz-age-rating-dialog.c:860
-#, fuzzy, c-format
+#, c-format
 msgid "%s is suitable for young children"
 msgstr "%s пасує малим дітям"
 
 #: src/bz-age-rating-dialog.c:863
-#, fuzzy, c-format
+#, c-format
 msgid "%s is suitable for children"
 msgstr "%s пасує дітям"
 
 #: src/bz-age-rating-dialog.c:866
-#, fuzzy, c-format
+#, c-format
 msgid "%s is suitable for teenagers"
 msgstr "%s пасує підліткам"
 
 #: src/bz-age-rating-dialog.c:869
-#, fuzzy, c-format
+#, c-format
 msgid "%s is suitable for adults"
 msgstr "%s пасує дорослим"
 
 #: src/bz-age-rating-dialog.c:872
-#, fuzzy, c-format
+#, c-format
 msgid "%s is suitable for %s"
 msgstr "%s пасує %s"
 
