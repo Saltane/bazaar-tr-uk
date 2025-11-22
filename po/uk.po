@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-23 15:00+0200\n"
+"PO-Revision-Date: 2025-11-23 15:03+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -1080,7 +1080,6 @@ msgid "All Ages"
 msgstr "Без обмежень"
 
 #: src/bz-full-view.c:379
-#, fuzzy
 msgid "Age rating information unavailable"
 msgstr "Дані щодо вікового обмеження недоступні"
 
@@ -1585,9 +1584,8 @@ msgid "Apps Tagged \"%s\""
 msgstr "Мітка «%s»"
 
 #: src/bz-tag-list.c:125
-#, fuzzy
 msgid "Search failed"
-msgstr "Невдалий пошук"
+msgstr "Пошук завершився невдало"
 
 #: src/bz-transaction-manager.c:1137
 #, c-format
