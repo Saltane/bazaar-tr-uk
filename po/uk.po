@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-23 15:49+0200\n"
+"PO-Revision-Date: 2025-11-26 16:00+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -409,13 +409,13 @@ msgstr "Без даних щодо зображення сексуалізова
 #: src/bz-age-rating-dialog.c:235
 #, fuzzy
 msgid "Desecration"
-msgstr "Кощунство"
+msgstr "Блюзнірство"
 
 # По-нашому не «кощунство».
 #: src/bz-age-rating-dialog.c:236
 #, fuzzy
 msgid "No information regarding references to desecration"
-msgstr "Без даних щодо кощунства"
+msgstr "Без даних щодо блюзнірства"
 
 #: src/bz-age-rating-dialog.c:239
 #, fuzzy
