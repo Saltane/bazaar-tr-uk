@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-19 18:05+0200\n"
+"PO-Revision-Date: 2025-11-22 18:27+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -156,7 +156,6 @@ msgstr "Вікове обмеження"
 
 # хто я
 #: src/bz-age-rating-dialog.blp:40 src/bz-age-rating-dialog.c:790
-#, fuzzy
 msgid "?"
 msgstr "?"
 
@@ -481,7 +480,7 @@ msgstr "Жорстокість"
 
 # Що це? Зʼясувати.
 #: src/bz-age-rating-dialog.c:564
-#, fuzzy, c-format
+#, c-format
 msgid "%s • %s"
 msgstr "%s • %s"
 
@@ -492,7 +491,6 @@ msgid "%d+"
 msgstr "%d+"
 
 #: src/bz-age-rating-dialog.c:782
-#, fuzzy
 msgctxt "Age rating"
 msgid "All"
 msgstr "Без обмежень"
@@ -614,9 +612,8 @@ msgid "translator-credits"
 msgstr "faoquad <faoquad@noreply.codeberg.org>, 2025"
 
 #: src/bz-application.c:996
-#, fuzzy
 msgid "Performing setup..."
-msgstr "Налаштовуємо…"
+msgstr "Налаштовуємося…"
 
 #: src/bz-application.c:1027
 msgid "Flathub is not registered on this system"
@@ -639,7 +636,7 @@ msgid "Add Flathub"
 msgstr "Додати Flathub"
 
 #: src/bz-application.c:1139 src/bz-application.c:1294
-#, fuzzy, c-format
+#, c-format
 msgid "Receiving %d entries..."
 msgstr "Отримуємо %d надходжень…"
 
@@ -1024,12 +1021,10 @@ msgid "Downloads /mo"
 msgstr "зав/міс"
 
 #: src/bz-full-view.blp:583
-#, fuzzy
 msgid "Stopped Receiving Core Updates"
 msgstr "Більше не отримує оновлень середовища виконання"
 
 #: src/bz-full-view.blp:597
-#, fuzzy
 msgid ""
 "This app uses a runtime that no longer recieves updates or security fixes. "
 "It may become unsafe to use."
@@ -1038,7 +1033,6 @@ msgstr ""
 "лень. Він може стати небезпечним до використання."
 
 #: src/bz-full-view.blp:769
-#, fuzzy
 msgid "Tags:"
 msgstr "Мітки:"
 
@@ -1144,12 +1138,11 @@ msgstr ""
 "код не є публічно доступним і не може бути перевіреним на безпечність."
 
 #: src/bz-full-view.c:496
-#, fuzzy
 msgid "More Apps"
 msgstr "Більше застосунків"
 
 #: src/bz-full-view.c:497
-#, fuzzy, c-format
+#, c-format
 msgid "More Apps by %s"
 msgstr "Більше від %s"
 
@@ -1163,12 +1156,11 @@ msgid "Other Apps by %s"
 msgstr "Більше від %s"
 
 #: src/bz-full-view.c:608
-#, fuzzy
 msgid "Other Apps"
 msgstr "Інші застосунки"
 
 #: src/bz-full-view.c:610
-#, fuzzy, c-format
+#, c-format
 msgid "%d application"
 msgid_plural "%d applications"
 msgstr[0] "%d застосунок"
@@ -1330,12 +1322,10 @@ msgid "Cancel"
 msgstr "Скасувати"
 
 #: src/bz-license-dialog.blp:77
-#, fuzzy
 msgid "Community Built"
 msgstr "Розроблено спільнотою"
 
 #: src/bz-license-dialog.blp:176
-#, fuzzy
 msgid "Get Involved"
 msgstr "Долучитися"
 
@@ -1517,9 +1507,8 @@ msgid "No details for this release"
 msgstr "Без подробиць"
 
 #: src/bz-rich-app-tile.blp:107
-#, fuzzy
 msgid "Stopped Receiving Updates"
-msgstr "Більш не отримує оновлень"
+msgstr "Більшe не отримує оновлень"
 
 # Сирець підказує, що це кнопка завантаження
 #: src/bz-rich-app-tile.blp:124
@@ -1573,13 +1562,12 @@ msgid "World"
 msgstr "Світ"
 
 #: src/bz-tag-list.c:97
-#, fuzzy
 msgid "No Results Found"
 msgstr "Нічого не знайдено"
 
 # Буквальний переклад дещо задовгий.
 #: src/bz-tag-list.c:109
-#, fuzzy, c-format
+#, c-format
 msgid "Apps Tagged \"%s\""
 msgstr "Мітка «%s»"
 
