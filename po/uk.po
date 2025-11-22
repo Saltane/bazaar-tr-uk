@@ -653,11 +653,11 @@ msgstr "Отримуємо %d надходжень…"
 
 #: src/bz-application.c:1144 src/bz-application.c:1299
 msgid "Checking for updates..."
-msgstr "Шукаємо оновлення"
+msgstr "Шукаємо оновлення…"
 
 #: src/bz-application.c:1393
 msgid "Synchronizing..."
-msgstr "Синхронізуємо..."
+msgstr "Синхронізуємо…"
 
 #: src/bz-curated-view.blp:11 src/bz-flathub-page.blp:19
 #: src/bz-full-view.blp:53 src/bz-installed-page.blp:15 src/bz-window.blp:174
@@ -1302,7 +1302,7 @@ msgstr "Усі групи надходжень"
 
 #: src/bz-inspector.blp:72
 msgid "Filter..."
-msgstr "Відсіяти..."
+msgstr "Відсіяти…"
 
 #: src/bz-inspector.blp:113
 msgid "Decache and Inspect"
