@@ -1188,7 +1188,7 @@ msgstr "Розгорнути"
 
 #: src/bz-hardware-support-dialog.blp:6 src/bz-hardware-support-dialog.blp:47
 msgid "Hardware Support"
-msgstr "Підтримати"
+msgstr "Підтримка пристроїв"
 
 #: src/bz-hardware-support-dialog.c:69
 msgid "Keyboard support"
