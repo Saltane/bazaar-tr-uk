@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-23 15:14+0200\n"
+"PO-Revision-Date: 2025-11-23 15:15+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -432,7 +432,7 @@ msgstr "Рабство"
 #: src/bz-age-rating-dialog.c:244
 #, fuzzy
 msgid "No information regarding references to slavery"
-msgstr "Без даних щодо зображення рабства"
+msgstr "Без даних щодо згадок рабства"
 
 #: src/bz-age-rating-dialog.c:307
 #, fuzzy
