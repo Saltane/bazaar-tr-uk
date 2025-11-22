@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-23 15:03+0200\n"
+"PO-Revision-Date: 2025-11-23 15:06+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -521,7 +521,7 @@ msgstr "%s пасує всім"
 #: src/bz-age-rating-dialog.c:857
 #, fuzzy, c-format
 msgid "%s is suitable for toddlers"
-msgstr "%s пасує немовлятам"
+msgstr "%s пасує немовлям"
 
 #: src/bz-age-rating-dialog.c:860
 #, fuzzy, c-format
