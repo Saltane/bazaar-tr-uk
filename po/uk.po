@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-23 15:39+0200\n"
+"PO-Revision-Date: 2025-11-23 15:46+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -224,6 +224,7 @@ msgstr "Без даних щодо згадок або зображення ал
 msgid "Narcotics"
 msgstr "Заборонені речовини"
 
+# «Drugs» включає, але не обмежується «наркотиками».
 #: src/bz-age-rating-dialog.c:164
 #, fuzzy
 msgid "No information regarding references to illicit drugs"
@@ -436,6 +437,7 @@ msgstr "Рабство"
 msgid "No information regarding references to slavery"
 msgstr "Без даних щодо згадок або зображення рабства"
 
+# «Drugs» включає, але не обмежується «наркотиками».
 #: src/bz-age-rating-dialog.c:307
 #, fuzzy
 msgid "Does not include references to drugs"
