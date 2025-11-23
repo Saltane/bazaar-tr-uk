@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-19 16:57+0200\n"
-"PO-Revision-Date: 2025-11-23 15:15+0200\n"
+"PO-Revision-Date: 2025-11-23 15:39+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -167,7 +167,7 @@ msgstr "Анімована жорстокість"
 #: src/bz-age-rating-dialog.c:140
 #, fuzzy
 msgid "No information regarding cartoon violence"
-msgstr "Без даних щодо анімованої жорстокости"
+msgstr "Без даних щодо зображення анімованої жорстокости"
 
 #: src/bz-age-rating-dialog.c:143
 #, fuzzy
@@ -177,7 +177,7 @@ msgstr "Вигадана жорстокість"
 #: src/bz-age-rating-dialog.c:144
 #, fuzzy
 msgid "No information regarding fantasy violence"
-msgstr "Без даних щодо вигаданої жорстокости"
+msgstr "Без даних щодо зображення вигаданої жорстокости"
 
 #: src/bz-age-rating-dialog.c:147
 #, fuzzy
@@ -187,7 +187,7 @@ msgstr "Реалістична жорстокість"
 #: src/bz-age-rating-dialog.c:148
 #, fuzzy
 msgid "No information regarding realistic violence"
-msgstr "Без даних щодо реалістичної жорстокости"
+msgstr "Без даних щодо зображення реалістичної жорстокости"
 
 #: src/bz-age-rating-dialog.c:151
 #, fuzzy
@@ -197,17 +197,17 @@ msgstr "Жорстокість із зображенням кровопроли�
 #: src/bz-age-rating-dialog.c:152
 #, fuzzy
 msgid "No information regarding bloodshed"
-msgstr "Без даних щодо кровопролиття"
+msgstr "Без даних щодо зображення кровопролиття"
 
 #: src/bz-age-rating-dialog.c:155
 #, fuzzy
 msgid "Sexual Violence"
-msgstr "Ґвалт"
+msgstr "Зґвалтування"
 
 #: src/bz-age-rating-dialog.c:156
 #, fuzzy
 msgid "No information regarding sexual violence"
-msgstr "Без даних щодо ґвалту"
+msgstr "Без даних щодо згадок або зображення зґвалтувань"
 
 #: src/bz-age-rating-dialog.c:159
 #, fuzzy
@@ -217,7 +217,7 @@ msgstr "Алкоголь"
 #: src/bz-age-rating-dialog.c:160
 #, fuzzy
 msgid "No information regarding references to alcohol"
-msgstr "Без даних щодо згадок алкоголю"
+msgstr "Без даних щодо згадок або зображення алкоголю"
 
 #: src/bz-age-rating-dialog.c:163
 #, fuzzy
@@ -227,7 +227,7 @@ msgstr "Заборонені речовини"
 #: src/bz-age-rating-dialog.c:164
 #, fuzzy
 msgid "No information regarding references to illicit drugs"
-msgstr "Без даних щодо заборонених речовин"
+msgstr "Без даних щодо згадок або зображення заборонених речовин"
 
 #: src/bz-age-rating-dialog.c:167
 #, fuzzy
@@ -237,7 +237,7 @@ msgstr "Тютюн"
 #: src/bz-age-rating-dialog.c:168
 #, fuzzy
 msgid "No information regarding references to tobacco products"
-msgstr "Без даних щодо згадок тютюнових виробів"
+msgstr "Без даних щодо згадок або зображення тютюнових виробів"
 
 #: src/bz-age-rating-dialog.c:171 src/bz-age-rating-dialog.c:358
 #, fuzzy
@@ -247,7 +247,7 @@ msgstr "Оголення"
 #: src/bz-age-rating-dialog.c:172
 #, fuzzy
 msgid "No information regarding nudity of any sort"
-msgstr "Без даних щодо оголення"
+msgstr "Без даних щодо зображення оголення"
 
 #: src/bz-age-rating-dialog.c:175
 #, fuzzy
@@ -267,7 +267,7 @@ msgstr "Матюки"
 #: src/bz-age-rating-dialog.c:180
 #, fuzzy
 msgid "No information regarding profanity of any kind"
-msgstr "Без даних щодо матюків"
+msgstr "Без даних щодо використання матюків"
 
 #: src/bz-age-rating-dialog.c:183
 #, fuzzy
@@ -277,7 +277,7 @@ msgstr "Недоречний гумор"
 #: src/bz-age-rating-dialog.c:184
 #, fuzzy
 msgid "No information regarding inappropriate humor"
-msgstr "Без даних щодо недоречного гумору"
+msgstr "Без даних щодо використання недоречного гумору"
 
 #: src/bz-age-rating-dialog.c:187
 #, fuzzy
@@ -297,7 +297,7 @@ msgstr "Реклама"
 #: src/bz-age-rating-dialog.c:192
 #, fuzzy
 msgid "No information regarding advertising of any kind"
-msgstr "Без даних щодо реклами"
+msgstr "Без даних щодо рекламного вмісту"
 
 #: src/bz-age-rating-dialog.c:195
 #, fuzzy
@@ -351,8 +351,8 @@ msgid ""
 "No information regarding sharing of social network usernames or email "
 "addresses"
 msgstr ""
-"Без даних щодо розголошення облікових даних у соцмережах або адрес електронної"
-" пошти"
+"Без даних щодо розголошення облікових даних соцмереж або адрес електронної пош"
+"ти"
 
 #: src/bz-age-rating-dialog.c:215
 #, fuzzy
@@ -362,7 +362,7 @@ msgstr "Виявні дані"
 #: src/bz-age-rating-dialog.c:216
 #, fuzzy
 msgid "No information regarding sharing of user information with third parties"
-msgstr "Без даних щодо розголошення користувацьких даних із сторонніми"
+msgstr "Без даних щодо розголошення користувацьких даних третім особам"
 
 #: src/bz-age-rating-dialog.c:219
 #, fuzzy
@@ -382,7 +382,7 @@ msgstr "Проституція"
 #: src/bz-age-rating-dialog.c:224
 #, fuzzy
 msgid "No information regarding references to prostitution"
-msgstr "Без даних щодо згадок проституції"
+msgstr "Без даних щодо згадок або зображення проституції"
 
 #: src/bz-age-rating-dialog.c:227
 #, fuzzy
@@ -392,7 +392,7 @@ msgstr "Подружня зрада"
 #: src/bz-age-rating-dialog.c:228
 #, fuzzy
 msgid "No information regarding references to adultery"
-msgstr "Без даних щодо подружньої зради"
+msgstr "Без даних щодо згадок або зображення подружньої зради"
 
 #: src/bz-age-rating-dialog.c:231
 #, fuzzy
@@ -402,13 +402,15 @@ msgstr "Сексуалізовані персонажі"
 #: src/bz-age-rating-dialog.c:232
 #, fuzzy
 msgid "No information regarding sexualized characters"
-msgstr "Без даних щодо сексуалізованих персонажів"
+msgstr "Без даних щодо зображення сексуалізованих персонажів"
 
+# По-нашому не «кощунство».
 #: src/bz-age-rating-dialog.c:235
 #, fuzzy
 msgid "Desecration"
 msgstr "Кощунство"
 
+# По-нашому не «кощунство».
 #: src/bz-age-rating-dialog.c:236
 #, fuzzy
 msgid "No information regarding references to desecration"
@@ -422,7 +424,7 @@ msgstr "Людські рештки"
 #: src/bz-age-rating-dialog.c:240
 #, fuzzy
 msgid "No information regarding visible dead human remains"
-msgstr "Без даних щодо видимих людських решток"
+msgstr "Без даних щодо зображення людських решток"
 
 #: src/bz-age-rating-dialog.c:243
 #, fuzzy
@@ -432,7 +434,7 @@ msgstr "Рабство"
 #: src/bz-age-rating-dialog.c:244
 #, fuzzy
 msgid "No information regarding references to slavery"
-msgstr "Без даних щодо згадок рабства"
+msgstr "Без даних щодо згадок або зображення рабства"
 
 #: src/bz-age-rating-dialog.c:307
 #, fuzzy
