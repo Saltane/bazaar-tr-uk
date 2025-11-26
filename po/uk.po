@@ -430,7 +430,6 @@ msgstr "Спілкування"
 msgid "Violence"
 msgstr "Жорстокість"
 
-# Що це? Зʼясувати.
 #: src/bz-age-rating-dialog.c:564
 #, c-format
 msgid "%s • %s"
