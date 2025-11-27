@@ -5,7 +5,8 @@
     <file alias="style.css">gtk/style.css</file>
 
     <file preprocess="xml-stripblanks">main-config-schema.xml</file>
-    <file preprocess="xml-stripblanks">bz-content-provider-config-schema.xml</file>
+    <file preprocess="xml-stripblanks">blocklist-schema.xml</file>
+    <file preprocess="xml-stripblanks">curated-config-schema.xml</file>
     <file>release-notes.xml</file>
 
     <file>countries.json</file>
@@ -22,6 +23,7 @@
     <file preprocess="xml-stripblanks">bz-curated-app-tile.ui</file>
     <file preprocess="xml-stripblanks">bz-decorated-screenshot.ui</file>
     <file preprocess="xml-stripblanks">bz-detailed-app-tile.ui</file>
+    <file preprocess="xml-stripblanks">bz-developer-badge.ui</file>
     <file preprocess="xml-stripblanks">bz-entry-inspector.ui</file>
     <file preprocess="xml-stripblanks">bz-featured-carousel.ui</file>
     <file preprocess="xml-stripblanks">bz-featured-tile.ui</file>
@@ -137,6 +139,7 @@
     <file alias="icons/scalable/actions/violence-none-symbolic.svg" preprocess="xml-stripblanks">icons/scalable/actions/ratings/violence-none-symbolic.svg</file>
 
     <file preprocess="xml-stripblanks">icons/scalable/actions/on-the-go-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/we-love-games-symbolic.svg</file>
 
     <file preprocess="xml-stripblanks">icons/io.github.kolumni.Bazaar.Create.svg</file>
     <file preprocess="xml-stripblanks">icons/io.github.kolumni.Bazaar.Develop.svg</file>

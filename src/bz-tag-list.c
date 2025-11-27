@@ -18,14 +18,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "bz-tag-list.h"
-#include "bz-apps-page.h"
-#include "bz-flathub-state.h"
-#include "bz-util.h"
-#include "bz-window.h"
-
 #include <glib/gi18n.h>
 #include <libdex.h>
+
+#include "bz-apps-page.h"
+#include "bz-flathub-state.h"
+#include "bz-tag-list.h"
+#include "bz-util.h"
+#include "bz-window.h"
 
 struct _BzTagList
 {
@@ -107,7 +107,7 @@ search_finally (DexFuture *future,
 
           tag      = g_object_get_data (G_OBJECT (self), "current-tag");
           title    = g_strdup_printf (_ ("Apps Tagged \"%s\""), tag);
-          subtitle = g_strdup_printf (_ ("%d applications"), n_items);
+          subtitle = g_strdup_printf (_ ("%d Applications"), n_items);
 
           apps_page = bz_apps_page_new (title, model);
           bz_apps_page_set_subtitle (BZ_APPS_PAGE (apps_page), subtitle);

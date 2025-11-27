@@ -33,7 +33,7 @@ G_DECLARE_FINAL_TYPE (BzFlathubState, bz_flathub_state, BZ, FLATHUB_STATE, GObje
 BzFlathubState *
 bz_flathub_state_new (void);
 
-void
+DexFuture *
 bz_flathub_state_set_for_day (BzFlathubState *self,
                               const char     *for_day);
 
@@ -59,7 +59,10 @@ bz_flathub_state_dup_apps_of_the_week (BzFlathubState *self);
 GListModel *
 bz_flathub_state_get_categories (BzFlathubState *self);
 
-void
+gboolean
+bz_flathub_state_get_has_connection_error (BzFlathubState *self);
+
+DexFuture *
 bz_flathub_state_update_to_today (BzFlathubState *self);
 
 BzResult *

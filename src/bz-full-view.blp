@@ -92,8 +92,6 @@ template $BzFullView: Adw.Bin {
                 top_box.margin-end: 10;
                 bottom_box.margin-start: 10;
                 bottom_box.margin-end: 10;
-                other_apps_box.margin-start: 2;
-                other_apps_box.margin-end: 2;
                 wide_install_controls.visible: false;
                 narrow_install_controls.visible: true;
                 app_icon.valign: start;
@@ -181,40 +179,8 @@ template $BzFullView: Adw.Bin {
                               label: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.title;
                             }
 
-                            Box {
-                              orientation: horizontal;
-                              spacing: 10;
-
-                              Label {
-                                styles [
-                                  "accent",
-                                  "app-developer",
-                                ]
-
-                                visible: bind $invert_boolean($is_null(template.ui-entry as <$BzResult>.object as <$BzEntry>.developer) as <bool>) as <bool>;
-                                xalign: 0.0;
-                                wrap: true;
-                                wrap-mode: word_char;
-                                natural-wrap-mode: word;
-                                label: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.developer;
-                              }
-
-                              Revealer {
-                                transition-type: crossfade;
-                                reveal-child: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.verified;
-                                visible: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.verified;
-
-                                child: Image {
-                                  styles [
-                                    "accent",
-                                  ]
-
-                                  has-tooltip: true;
-                                  tooltip-text: _("Verified by the original developers");
-                                  icon-name: "verified-checkmark-symbolic";
-                                  icon-size: normal;
-                                };
-                              }
+                            $BzDeveloperBadge {
+                              entry: bind template.ui-entry as <$BzResult>.object as <$BzEntry>;
                             }
 
                             Box {
@@ -455,8 +421,9 @@ template $BzFullView: Adw.Bin {
                             lozenge-style: bind $get_age_rating_style(template.ui-entry as <$BzResult>.object as <$BzEntry>.content-rating) as <string>;
 
                             lozenge-child: Label {
-                                label: bind $format_age_rating(template.ui-entry as <$BzResult>.object as <$BzEntry>.content-rating) as <string>;
-                              };
+                              label: bind $format_age_rating(template.ui-entry as <$BzResult>.object as <$BzEntry>.content-rating) as <string>;
+                              hexpand: true;
+                            };
                           }
 
                           $BzContextTile {
@@ -594,7 +561,7 @@ template $BzFullView: Adw.Bin {
                         }
 
                         Label {
-                          label: _("This app uses a runtime that no longer recieves updates or security fixes. It may become unsafe to use.");
+                          label: _("This app uses a runtime that no longer receives updates or security fixes. It may become unsafe to use.");
                           margin-bottom: 8;
                           margin-start: 8;
                           margin-end: 8;
@@ -708,16 +675,11 @@ template $BzFullView: Adw.Bin {
                         $BzReleasesList releases_list {
                           version-history: bind template.debounced-ui-entry as <$BzResult>.object as <$BzEntry>.version-history;
                         }
-                      }
-
-                      Box other_apps_box {
-                        orientation: vertical;
-                        margin-start: 17;
-                        margin-end: 17;
 
                         Box {
                           orientation: vertical;
                           visible: bind $has_other_apps(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>) as <bool>;
+
                           Label {
                             styles [
                               "heading",
@@ -727,7 +689,7 @@ template $BzFullView: Adw.Bin {
                             label: bind $format_other_apps_label(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer) as <string>;
                             xalign: 0;
                             margin-bottom: 6;
-                            margin-start: 12;
+                            margin-start: 3;
                           }
 
                           $BzDynamicListView {
@@ -746,28 +708,32 @@ template $BzFullView: Adw.Bin {
                               model: bind $get_developer_apps_entries(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>) as <Gio.ListModel>;
                             };
                           }
+
                           Button {
                             visible: bind $is_longer(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, 6) as <bool>;
                             label: bind $format_more_other_apps_label(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer) as <string>;
                             clicked => $more_apps_button_clicked_cb(template);
                             halign: center;
-                            margin-top: 6;
+                            margin-top: 11;
                             margin-bottom: 8;
 
-                            styles ["pill"]
+                            styles [
+                              "pill",
+                            ]
                           }
                         }
-                        $BzTagList {
-                          margin-start: 12;
-                          margin-end: 12;
-                          margin-top: 8;
 
+                        $BzTagList {
+                          margin-top: 8;
                           flathub-state: bind template.state as <$BzStateInfo>.flathub;
                           select => $tag_list_select_cb(template);
 
                           prefix: Label {
                             label: _("Tags:");
-                            styles ["dimmed"]
+
+                            styles [
+                              "dimmed",
+                            ]
                           };
 
                           model: SliceListModel {

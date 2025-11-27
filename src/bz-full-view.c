@@ -30,6 +30,7 @@
 #include "bz-apps-page.h"
 #include "bz-appstream-description-render.h"
 #include "bz-context-tile.h"
+#include "bz-developer-badge.h"
 #include "bz-dynamic-list-view.h"
 #include "bz-env.h"
 #include "bz-error.h"
@@ -607,7 +608,7 @@ more_apps_button_clicked_cb (BzFullView *self,
   else
     title = g_strdup (_ ("Other Apps"));
 
-  subtitle = g_strdup_printf (ngettext ("%d application", "%d applications", n_items), n_items);
+  subtitle = g_strdup_printf (ngettext ("%d Application", "%d Applications", n_items), n_items);
 
   apps_page = bz_apps_page_new (title, model);
   bz_apps_page_set_subtitle (BZ_APPS_PAGE (apps_page), subtitle);
@@ -1078,6 +1079,7 @@ bz_full_view_class_init (BzFullViewClass *klass)
       g_cclosure_marshal_VOID__OBJECTv);
 
   g_type_ensure (BZ_TYPE_APPSTREAM_DESCRIPTION_RENDER);
+  g_type_ensure (BZ_TYPE_DEVELOPER_BADGE);
   g_type_ensure (BZ_TYPE_DYNAMIC_LIST_VIEW);
   g_type_ensure (BZ_TYPE_ENTRY);
   g_type_ensure (BZ_TYPE_ENTRY_GROUP);
