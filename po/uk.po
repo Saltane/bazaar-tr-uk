@@ -1789,31 +1789,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "Hide proprietary software when searching"
-#~ msgstr "Ховати власницькі (пропрієтарні) застосунки з пошуку"
-
-#~ msgid "Filter search results to only show applications available on Flathub"
-#~ msgstr "Відсіювати надходження, що не походять з Flathub"
-
-#~ msgid "Flathub is not registered on this system"
-#~ msgstr "Flathub не зареєстровано на цій системі"
-
-#~ msgid ""
-#~ "Would you like to add Flathub as a remote? If you decline, the Flathub "
-#~ "page will not be available. You can change this later."
-#~ msgstr ""
-#~ "Бажаєте додати Flathub до переліку віддалених сховищ? В іншому разі, "
-#~ "сторінка Flathub буде недоступна. Ви можете змінити це пізніше."
-
-#~ msgid "Add Flathub"
-#~ msgstr "Додати Flathub"
-
-#~ msgid "Mobile Apps"
-#~ msgstr "Застосунки для мобільних пристроїв"
-
-#~ msgid "Verified by the original developers"
-#~ msgstr "Затверджено розробниками цієї програми"
-
-#~ msgid "End of Life Apps"
-#~ msgstr "Осиротілі застосунки"
