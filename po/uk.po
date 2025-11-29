@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-29 16:03+0200\n"
-"PO-Revision-Date: 2025-11-29 19:27+0200\n"
+"PO-Revision-Date: 2025-11-30 00:31+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -69,7 +69,6 @@ msgid "Show Only Flathub Content"
 msgstr "Показувати лише вміст з Flathub"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:22
-#, fuzzy
 msgid "Hide applications which do not originate from Flathub"
 msgstr "Ховати застосунки, що не походять із Flathub"
 
@@ -568,12 +567,10 @@ msgid "Performing setup..."
 msgstr "Налаштовуємо…"
 
 #: src/bz-application.c:822 src/bz-application.c:831
-#, fuzzy
 msgid "Set Up Flathub"
 msgstr "Налаштувати Flathub"
 
 #: src/bz-application.c:825
-#, fuzzy
 msgid ""
 "Flathub is not set up on this system. You will not be able to browse and "
 "install applications in Bazaar if its unavailable.\n"
@@ -632,12 +629,11 @@ msgid "Browser"
 msgstr "Оглядач"
 
 #: src/bz-developer-badge.c:131
-#, fuzzy
 msgid "Developer information not available."
 msgstr "Дані щодо розробників недоступні"
 
 #: src/bz-developer-badge.c:137 src/bz-developer-badge.c:151
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The ownership of the %s app ID has not been verified and it may be a "
 "community package."
@@ -646,7 +642,7 @@ msgstr ""
 "пакунок було вивантажено спільнотою."
 
 #: src/bz-developer-badge.c:155
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The ownership of the %s app ID has been manually verified by the Flathub "
 "team."
@@ -654,18 +650,18 @@ msgstr ""
 "Володіння ідентифікатором %s було підтверджено власноруч командою Flathub."
 
 #: src/bz-developer-badge.c:161
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The ownership of the %s app ID has been verified by <b>%s</b> on <b>%s</b>."
 msgstr "Володіння ідентифікатором %s було підтверджено <b>%s</b> на <b>%s</b>."
 
 #: src/bz-developer-badge.c:168
-#, fuzzy, c-format
+#, c-format
 msgid "The ownership of the %s app ID has been verified using %s."
 msgstr "Володіння ідентифікатором %s було підтверджено з допомогою %s."
 
 #: src/bz-developer-badge.c:172
-#, fuzzy, c-format
+#, c-format
 msgid "The ownership of the %s app ID has been verified."
 msgstr "Володіння ідентифікатором %s було підтверджено."
 
@@ -900,12 +896,10 @@ msgid "More Mobile apps"
 msgstr "Показати більше"
 
 #: src/bz-flathub-page.blp:379
-#, fuzzy
 msgid "We ♥ Games"
 msgstr "Ми ♥ ігри"
 
 #: src/bz-flathub-page.blp:392
-#, fuzzy
 msgid "Games and apps to run your favorite titles"
 msgstr "Улюблені ігри та застосунки для них"
 
@@ -1269,7 +1263,6 @@ msgid "Bazaar Inspector"
 msgstr "Зневаджувач"
 
 #: src/bz-inspector.blp:33
-#, fuzzy
 msgid "Background Task Info:"
 msgstr "Відомості про задачі у тлі:"
 
@@ -1374,7 +1367,6 @@ msgid "Preferences"
 msgstr "Налаштування"
 
 #: src/bz-preferences-dialog.blp:23
-#, fuzzy
 msgid "Content Filters"
 msgstr "Відсіяти вміст"
 
@@ -1391,7 +1383,6 @@ msgid "Flathub Results Only"
 msgstr "Надходження лише з Flathub"
 
 #: src/bz-preferences-dialog.blp:32
-#, fuzzy
 msgid ""
 "Limit search and browse results to applications only available on Flathub"
 msgstr ""
@@ -1667,7 +1658,6 @@ msgid "No Tasks Yet"
 msgstr "Жодних дій"
 
 #: src/bz-window.blp:258
-#, fuzzy
 msgid "Refreshing Store Content"
 msgstr "Оновлюємо вміст крамниці"
 
@@ -1680,7 +1670,6 @@ msgid "Flathub"
 msgstr "Flathub"
 
 #: src/bz-window.blp:330
-#, fuzzy
 msgid "Sync"
 msgstr "Освіжити"
 
