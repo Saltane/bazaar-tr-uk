@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-29 16:03+0200\n"
-"PO-Revision-Date: 2025-11-27 02:10+0200\n"
+"PO-Revision-Date: 2025-11-29 19:27+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.08.2\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -69,8 +69,9 @@ msgid "Show Only Flathub Content"
 msgstr "Показувати лише вміст з Flathub"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:22
+#, fuzzy
 msgid "Hide applications which do not originate from Flathub"
-msgstr ""
+msgstr "Ховати застосунки, що не походять із Flathub"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:26
 msgid "Debounce Search Inputs"
@@ -569,15 +570,19 @@ msgstr "Налаштовуємо…"
 #: src/bz-application.c:822 src/bz-application.c:831
 #, fuzzy
 msgid "Set Up Flathub"
-msgstr "Flathub"
+msgstr "Налаштувати Flathub"
 
 #: src/bz-application.c:825
+#, fuzzy
 msgid ""
 "Flathub is not set up on this system. You will not be able to browse and "
 "install applications in Bazaar if its unavailable.\n"
 "\n"
 "You can still use Bazaar to browse and remove already installed apps."
 msgstr ""
+"Flathub не налаштовано на цій системі. Ви не зможете шукати та встановлювати з"
+"астосунки в Базарі. Проте, Ви зможете користати Базар для огляду та керування "
+"вже встановленими застосунками."
 
 #: src/bz-application.c:830 src/bz-update-dialog.blp:6
 msgid "Later"
@@ -629,37 +634,40 @@ msgstr "Оглядач"
 #: src/bz-developer-badge.c:131
 #, fuzzy
 msgid "Developer information not available."
-msgstr "Дані щодо вікового обмеження недоступні"
+msgstr "Дані щодо розробників недоступні"
 
 #: src/bz-developer-badge.c:137 src/bz-developer-badge.c:151
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "The ownership of the %s app ID has not been verified and it may be a "
 "community package."
 msgstr ""
+"Володіння ідентифікатором цього застосунку не було підтверджено. Можливо, цей "
+"пакунок було вивантажено спільнотою."
 
 #: src/bz-developer-badge.c:155
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "The ownership of the %s app ID has been manually verified by the Flathub "
 "team."
 msgstr ""
+"Володіння ідентифікатором %s було підтверджено власноруч командою Flathub."
 
 #: src/bz-developer-badge.c:161
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "The ownership of the %s app ID has been verified by <b>%s</b> on <b>%s</b>."
-msgstr ""
+msgstr "Володіння ідентифікатором %s було підтверджено <b>%s</b> на <b>%s</b>."
 
 #: src/bz-developer-badge.c:168
-#, c-format
+#, fuzzy, c-format
 msgid "The ownership of the %s app ID has been verified using %s."
-msgstr ""
+msgstr "Володіння ідентифікатором %s було підтверджено з допомогою %s."
 
 #: src/bz-developer-badge.c:172
-#, c-format
+#, fuzzy, c-format
 msgid "The ownership of the %s app ID has been verified."
-msgstr ""
+msgstr "Володіння ідентифікатором %s було підтверджено."
 
 #: src/bz-entry-inspector.blp:5
 msgid "Entry Inspector"
@@ -892,10 +900,12 @@ msgid "More Mobile apps"
 msgstr "Показати більше"
 
 #: src/bz-flathub-page.blp:379
+#, fuzzy
 msgid "We ♥ Games"
-msgstr ""
+msgstr "Ми ♥ ігри"
 
 #: src/bz-flathub-page.blp:392
+#, fuzzy
 msgid "Games and apps to run your favorite titles"
 msgstr ""
 
@@ -1259,8 +1269,9 @@ msgid "Bazaar Inspector"
 msgstr "Зневаджувач"
 
 #: src/bz-inspector.blp:33
+#, fuzzy
 msgid "Background Task Info:"
-msgstr ""
+msgstr "Відомості про задачі у тлі:"
 
 #: src/bz-inspector.blp:43
 msgid "Enable Global Debug Mode"
@@ -1365,7 +1376,7 @@ msgstr "Налаштування"
 #: src/bz-preferences-dialog.blp:23
 #, fuzzy
 msgid "Content Filters"
-msgstr "Вміст"
+msgstr "Відсіяти вміст"
 
 #: src/bz-preferences-dialog.blp:26
 msgid "Free Software Only"
@@ -1383,7 +1394,8 @@ msgstr "Надходження лише з Flathub"
 #, fuzzy
 msgid ""
 "Limit search and browse results to applications only available on Flathub"
-msgstr "Відсіювати надходження, що не походять з Flathub"
+msgstr ""
+"Обмежити надходження у пошуку та огляді лише до тих, що походять з Flathub"
 
 #: src/bz-preferences-dialog.blp:36
 msgid "Hide EOL Apps"
@@ -1655,8 +1667,9 @@ msgid "No Tasks Yet"
 msgstr "Жодних дій"
 
 #: src/bz-window.blp:258
+#, fuzzy
 msgid "Refreshing Store Content"
-msgstr ""
+msgstr "Оновлюємо вміст крамниці"
 
 #: src/bz-window.blp:273
 msgid "Curated"
@@ -1667,8 +1680,9 @@ msgid "Flathub"
 msgstr "Flathub"
 
 #: src/bz-window.blp:330
+#, fuzzy
 msgid "Sync"
-msgstr ""
+msgstr "Освіжити"
 
 #: src/bz-window.blp:464
 msgid "_Donate to Bazaar ❤️"
