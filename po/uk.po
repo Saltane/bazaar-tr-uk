@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-29 16:03+0200\n"
-"PO-Revision-Date: 2025-11-30 00:31+0200\n"
+"PO-Revision-Date: 2025-11-30 00:49+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -630,7 +630,7 @@ msgstr "Оглядач"
 
 #: src/bz-developer-badge.c:131
 msgid "Developer information not available."
-msgstr "Дані щодо розробників недоступні"
+msgstr "Відомості щодо розробників недоступні"
 
 #: src/bz-developer-badge.c:137 src/bz-developer-badge.c:151
 #, c-format
