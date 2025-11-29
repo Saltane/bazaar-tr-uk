@@ -907,7 +907,7 @@ msgstr "Ми ♥ ігри"
 #: src/bz-flathub-page.blp:392
 #, fuzzy
 msgid "Games and apps to run your favorite titles"
-msgstr ""
+msgstr "Ігри та застосунки для гри у Ваші улюблені франшизи"
 
 #: src/bz-flathub-page.blp:426
 msgid "More Games"
