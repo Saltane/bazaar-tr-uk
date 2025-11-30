@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-29 16:03+0200\n"
+"POT-Creation-Date: 2025-11-30 22:07+0200\n"
 "PO-Revision-Date: 2025-11-30 00:49+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
-"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.08.2\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -80,19 +80,19 @@ msgstr "Чекати вводу"
 msgid "Add a delay before searching to prevent instant replies while typing"
 msgstr "Чекати на закінчення вводу, аби попередити миттєві надходження."
 
-#: data/io.github.kolunmi.Bazaar.gschema.xml:45
+#: data/io.github.kolunmi.Bazaar.gschema.xml:51
 msgid "Global Progress Bar Theme"
 msgstr "Загальний вигляд смужки поступу"
 
-#: data/io.github.kolunmi.Bazaar.gschema.xml:46
+#: data/io.github.kolunmi.Bazaar.gschema.xml:52
 msgid "Describes the look of the global progress bar"
 msgstr "Описує вигляд загальної смужки поступу"
 
-#: data/io.github.kolunmi.Bazaar.gschema.xml:50
+#: data/io.github.kolunmi.Bazaar.gschema.xml:56
 msgid "Saved Window Dimensions"
 msgstr "Збережені розміри вікна"
 
-#: data/io.github.kolunmi.Bazaar.gschema.xml:51
+#: data/io.github.kolunmi.Bazaar.gschema.xml:57
 msgid "The window dimensions to be used by the next Bazaar window"
 msgstr "Розміри, що їх користуватиме наступне вікно Базару"
 
@@ -135,7 +135,7 @@ msgstr "Сторінка пошуку"
 msgid "Category page"
 msgstr "Сторінка пошуку з категоріями"
 
-#: src/bz-addons-dialog.blp:14 src/bz-full-view.blp:665
+#: src/bz-addons-dialog.blp:14 src/bz-full-view.blp:668
 msgid "Manage Add-ons"
 msgstr "Керувати розширеннями"
 
@@ -144,13 +144,13 @@ msgstr "Керувати розширеннями"
 msgid "Remove"
 msgstr "Видалити"
 
-#: src/bz-addons-dialog.c:95 src/bz-full-view.blp:272 src/bz-full-view.blp:492
+#: src/bz-addons-dialog.c:95 src/bz-full-view.blp:277 src/bz-full-view.blp:492
 #: src/bz-transaction-view.blp:186 src/bz-window.c:1084
 msgid "Install"
 msgstr "Встановити"
 
 #: src/bz-age-rating-dialog.blp:7 src/bz-age-rating-dialog.blp:50
-#: src/bz-full-view.c:363 src/bz-full-view.c:370
+#: src/bz-full-view.c:385 src/bz-full-view.c:392
 msgid "Age Rating"
 msgstr "Вікове обмеження"
 
@@ -436,7 +436,7 @@ msgid "%s • %s"
 msgstr "%s • %s"
 
 #. Translators: Age rating format, e.g. "12+" for ages 12 and up
-#: src/bz-age-rating-dialog.c:752 src/bz-full-view.c:353
+#: src/bz-age-rating-dialog.c:752 src/bz-full-view.c:375
 #, c-format
 msgid "%d+"
 msgstr "%d+"
@@ -577,29 +577,29 @@ msgid ""
 "\n"
 "You can still use Bazaar to browse and remove already installed apps."
 msgstr ""
-"Flathub не налаштовано на цій системі. Ви не зможете шукати та встановлювати з"
-"астосунки в Базарі. Проте, Ви зможете користати Базар для огляду та керування "
-"вже встановленими застосунками."
+"Flathub не налаштовано на цій системі. Ви не зможете шукати та встановлювати "
+"застосунки в Базарі. Проте, Ви зможете користати Базар для огляду та "
+"керування вже встановленими застосунками."
 
 #: src/bz-application.c:830 src/bz-update-dialog.blp:6
 msgid "Later"
 msgstr "Пізніше"
 
-#: src/bz-application.c:1229
+#: src/bz-application.c:1230
 msgid "Synchronizing..."
 msgstr "Синхронізуємо…"
 
-#: src/bz-application.c:1368
+#: src/bz-application.c:1369
 #, c-format
 msgid "Receiving %d entries..."
 msgstr "Отримуємо %d надходжень…"
 
-#: src/bz-application.c:1373
+#: src/bz-application.c:1374
 msgid "Checking for updates..."
 msgstr "Шукаємо оновлення…"
 
 #: src/bz-curated-view.blp:11 src/bz-flathub-page.blp:19
-#: src/bz-full-view.blp:53 src/bz-installed-page.blp:15 src/bz-window.blp:183
+#: src/bz-full-view.blp:54 src/bz-installed-page.blp:15 src/bz-window.blp:183
 msgid "Empty"
 msgstr "Порожньо"
 
@@ -638,8 +638,8 @@ msgid ""
 "The ownership of the %s app ID has not been verified and it may be a "
 "community package."
 msgstr ""
-"Володіння ідентифікатором цього застосунку не було підтверджено. Можливо, цей "
-"пакунок було вивантажено спільнотою."
+"Володіння ідентифікатором цього застосунку не було підтверджено. Можливо, "
+"цей пакунок було вивантажено спільнотою."
 
 #: src/bz-developer-badge.c:155
 #, c-format
@@ -896,8 +896,8 @@ msgid "More Mobile apps"
 msgstr "Показати більше"
 
 #: src/bz-flathub-page.blp:379
-msgid "We ♥ Games"
-msgstr "Ми ♥ ігри"
+msgid "We​ ♥​ Games"
+msgstr ""
 
 #: src/bz-flathub-page.blp:392
 msgid "Games and apps to run your favorite titles"
@@ -957,51 +957,51 @@ msgctxt "Project URL Type"
 msgid "Contribute"
 msgstr "Долучитися"
 
-#: src/bz-full-view.blp:20 src/bz-window.blp:126 src/bz-window.blp:378
+#: src/bz-full-view.blp:21 src/bz-window.blp:126 src/bz-window.blp:378
 msgid "Toggle transaction sidebar"
 msgstr "Перемкнути віконце дій над застосунками"
 
-#: src/bz-full-view.blp:43 src/bz-window.blp:401
+#: src/bz-full-view.blp:44 src/bz-window.blp:401
 msgid "Main Menu"
 msgstr "Головне меню"
 
-#: src/bz-full-view.blp:57
+#: src/bz-full-view.blp:58
 msgid "No Results"
 msgstr "Нічого не знайдено"
 
-#: src/bz-full-view.blp:58
+#: src/bz-full-view.blp:59
 msgid "Try a different search query"
 msgstr "Спробуйте інший запит"
 
-#: src/bz-full-view.blp:64 src/bz-window.blp:193
+#: src/bz-full-view.blp:65 src/bz-window.blp:193
 msgid "Content"
 msgstr "Вміст"
 
-#: src/bz-full-view.blp:206
+#: src/bz-full-view.blp:211
 msgid "Support"
 msgstr "Підтримати"
 
-#: src/bz-full-view.blp:226
+#: src/bz-full-view.blp:231
 msgid "Repository Star Count"
 msgstr "Вподобань на сторінці розробки"
 
-#: src/bz-full-view.blp:256 src/bz-full-view.blp:516
+#: src/bz-full-view.blp:261 src/bz-full-view.blp:516
 msgid "Open"
 msgstr "Запустити"
 
-#: src/bz-full-view.blp:269 src/bz-full-view.blp:489
+#: src/bz-full-view.blp:274 src/bz-full-view.blp:489
 msgid "Download & Install Application"
 msgstr "Завантажити й встановити цей застосунок"
 
-#: src/bz-full-view.blp:284
+#: src/bz-full-view.blp:289
 msgid "Uninstall Application"
 msgstr "Видалити цей застосунок"
 
-#: src/bz-full-view.blp:299 src/bz-full-view.blp:531
+#: src/bz-full-view.blp:304 src/bz-full-view.blp:531
 msgid "Install Other Version"
 msgstr "Встановити іншу версію"
 
-#: src/bz-full-view.blp:323
+#: src/bz-full-view.blp:328
 msgid "Size"
 msgstr "Розмір"
 
@@ -1022,95 +1022,95 @@ msgstr ""
 "оновлень або безпекових виправлень. Він може стати небезпечним до "
 "використання."
 
-#: src/bz-full-view.blp:732
+#: src/bz-full-view.blp:735
 msgid "Tags:"
 msgstr "Мітки:"
 
-#: src/bz-full-view.c:298
+#: src/bz-full-view.c:301
 msgid "---"
 msgstr "---"
 
 #. Translators: M is the suffix for millions
-#: src/bz-full-view.c:302
+#: src/bz-full-view.c:308
 #, c-format
-msgid "%.2fM"
-msgstr "%.2fмлн."
+msgid "%.*fM"
+msgstr ""
 
 #. Translators: K is the suffix for thousands
-#: src/bz-full-view.c:305
+#: src/bz-full-view.c:315
 #, c-format
-msgid "%.2fK"
-msgstr "%.2fтис."
+msgid "%.*fK"
+msgstr ""
 
-#: src/bz-full-view.c:314
+#: src/bz-full-view.c:325
 #, c-format
 msgid "%d downloads in the last 30 days"
 msgstr "%d завантажень протягом останніх 30 днів"
 
-#: src/bz-full-view.c:335
+#: src/bz-full-view.c:357
 #, c-format
 msgid "Download size of %s"
 msgstr "Розмір завантаження"
 
-#: src/bz-full-view.c:368
+#: src/bz-full-view.c:390
 msgid "All Ages"
 msgstr "Без обмежень"
 
-#: src/bz-full-view.c:380
+#: src/bz-full-view.c:402
 msgid "Age rating information unavailable"
 msgstr "Дані щодо вікового обмеження недоступні"
 
-#: src/bz-full-view.c:385
+#: src/bz-full-view.c:407
 msgid "Suitable for all ages"
 msgstr "Без обмежень за віком"
 
-#: src/bz-full-view.c:387
+#: src/bz-full-view.c:409
 #, c-format
 msgid "Suitable for ages %d and up"
 msgstr "%d та старше"
 
-#: src/bz-full-view.c:418
+#: src/bz-full-view.c:440
 msgid "Unknown"
 msgstr "Невідомо"
 
-#: src/bz-full-view.c:421
+#: src/bz-full-view.c:443
 msgid "Proprietary Software"
 msgstr "Власницька ліцензія"
 
-#: src/bz-full-view.c:425
+#: src/bz-full-view.c:447
 #, c-format
 msgid "Free software licensed under %s"
 msgstr "Вільне ПЗ за ліцензією %s"
 
-#: src/bz-full-view.c:433
+#: src/bz-full-view.c:455
 msgid "Free"
 msgstr "Вільна ліцензія"
 
-#: src/bz-full-view.c:433 src/bz-license-dialog.blp:135
+#: src/bz-full-view.c:455 src/bz-license-dialog.blp:135
 msgid "Proprietary"
 msgstr "Власницька ліцензія"
 
-#: src/bz-full-view.c:453
+#: src/bz-full-view.c:475
 msgid "Adaptive"
 msgstr "Адаптивний"
 
-#: src/bz-full-view.c:453
+#: src/bz-full-view.c:475
 msgid "Desktop Only"
 msgstr "Лише для стільниць"
 
-#: src/bz-full-view.c:459
+#: src/bz-full-view.c:481
 msgid "Works on desktop, tablets, and phones"
 msgstr "Працює на стільницях, планшетах і смартфонах"
 
-#: src/bz-full-view.c:460
+#: src/bz-full-view.c:482
 msgid "May not work on mobile devices"
 msgstr "Може не працювати на мобільних пристроях"
 
-#: src/bz-full-view.c:471
+#: src/bz-full-view.c:493
 msgid "No URL"
 msgstr "Без URL"
 
-#: src/bz-full-view.c:489
+#: src/bz-full-view.c:511
 msgid ""
 "This application has a FLOSS license, meaning the source code can be audited "
 "for safety."
@@ -1118,7 +1118,7 @@ msgstr ""
 "Цей застосунок має вільну ліцензію. Це означає, що початковий код може бути "
 "перевірено на безпечність."
 
-#: src/bz-full-view.c:490
+#: src/bz-full-view.c:512
 msgid ""
 "This application has a proprietary license, meaning the source code is "
 "developed privately and cannot be audited by an independent third party."
@@ -1126,29 +1126,29 @@ msgstr ""
 "Цей застосунок має невільну (власницьку) ліцензію. Це означає, що початковий "
 "код не є публічно доступним і не може бути перевіреним на безпечність."
 
-#: src/bz-full-view.c:497
+#: src/bz-full-view.c:519
 msgid "More Apps"
 msgstr "Більше застосунків"
 
-#: src/bz-full-view.c:498
+#: src/bz-full-view.c:520
 #, c-format
 msgid "More Apps by %s"
 msgstr "Більше від %s"
 
-#: src/bz-full-view.c:505
+#: src/bz-full-view.c:527
 msgid "Other Apps by this Developer"
 msgstr "Більше від розробників"
 
-#: src/bz-full-view.c:507 src/bz-full-view.c:607
+#: src/bz-full-view.c:529 src/bz-full-view.c:629
 #, c-format
 msgid "Other Apps by %s"
 msgstr "Більше від %s"
 
-#: src/bz-full-view.c:609
+#: src/bz-full-view.c:631
 msgid "Other Apps"
 msgstr "Інші застосунки"
 
-#: src/bz-full-view.c:611
+#: src/bz-full-view.c:633
 #, c-format
 msgid "%d Application"
 msgid_plural "%d Applications"
@@ -1156,11 +1156,11 @@ msgstr[0] "%d застосунок"
 msgstr[1] "%d застосунки"
 msgstr[2] "%d застосунків"
 
-#: src/bz-full-view.c:952
+#: src/bz-full-view.c:972
 msgid "Show Less"
 msgstr "Згорнути"
 
-#: src/bz-full-view.c:952
+#: src/bz-full-view.c:972
 msgid "Show More"
 msgstr "Розгорнути"
 
@@ -1488,6 +1488,36 @@ msgstr "Полісексуальний прапор"
 msgid "Omnisexual Pride Colors"
 msgstr "Омнісексуальний прапор"
 
+#: src/bz-preferences-dialog.c:44
+#, fuzzy
+msgid "Aroace Pride Colors"
+msgstr "Аромантичний прапор"
+
+#: src/bz-preferences-dialog.c:45
+#, fuzzy
+msgid "Agender Pride Colors"
+msgstr "Трансґендерний прапор"
+
+#: src/bz-preferences-dialog.c:46
+#, fuzzy
+msgid "Genderqueer Pride Colors"
+msgstr "Ґендерфлюїдний прапор"
+
+#: src/bz-preferences-dialog.c:47
+#, fuzzy
+msgid "Intersex Pride Colors"
+msgstr "Пансексуальний прапор"
+
+#: src/bz-preferences-dialog.c:48
+#, fuzzy
+msgid "Demigender Pride Colors"
+msgstr "Трансґендерний прапор"
+
+#: src/bz-preferences-dialog.c:49
+#, fuzzy
+msgid "Biromantic Pride Colors"
+msgstr "Аромантичний прапор"
+
 #: src/bz-releases-dialog.blp:5 src/bz-releases-list.blp:26
 msgid "Version History"
 msgstr "Історія версій"
@@ -1544,15 +1574,15 @@ msgid "Open Link"
 msgstr "Відкрити посилання"
 
 # https://slovotvir.org.ua/words/taimlain
-#: src/bz-stats-dialog.blp:26
+#: src/bz-stats-dialog.blp:28
 msgid "Timeline"
 msgstr "Часоряд"
 
-#: src/bz-stats-dialog.blp:44
+#: src/bz-stats-dialog.blp:46
 msgid "Installs:"
 msgstr "Встановлень:"
 
-#: src/bz-stats-dialog.blp:53
+#: src/bz-stats-dialog.blp:55
 msgid "World"
 msgstr "Світ"
 
@@ -1789,3 +1819,14 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
+
+#~ msgid "We ♥ Games"
+#~ msgstr "Ми ♥ ігри"
+
+#, c-format
+#~ msgid "%.2fM"
+#~ msgstr "%.2fмлн."
+
+#, c-format
+#~ msgid "%.2fK"
+#~ msgstr "%.2fтис."
