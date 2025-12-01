@@ -1819,14 +1819,3 @@ msgstr "Показати клавіатурні скорочення"
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Вийти"
-
-#~ msgid "We ♥ Games"
-#~ msgstr "Ми ♥ ігри"
-
-#, c-format
-#~ msgid "%.2fM"
-#~ msgstr "%.2fмлн."
-
-#, c-format
-#~ msgid "%.2fK"
-#~ msgstr "%.2fтис."
