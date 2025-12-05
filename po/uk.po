@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-05 06:51+0200\n"
-"PO-Revision-Date: 2025-12-05 07:16+0200\n"
+"PO-Revision-Date: 2025-12-06 07:25+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -1080,7 +1080,6 @@ msgid "Free software licensed under %s"
 msgstr "Вільне ПЗ за ліцензією %s"
 
 #: src/bz-full-view.c:457
-#, fuzzy
 msgid "Free software"
 msgstr "Вільне ПЗ"
 
@@ -1089,7 +1088,7 @@ msgid "Proprietary Software"
 msgstr "Власницька ліцензія"
 
 #: src/bz-full-view.c:463
-#, fuzzy, c-format
+#, c-format
 msgid "Special License: %s"
 msgstr "Власна ліцензія: %s"
 
@@ -1102,7 +1101,6 @@ msgid "Proprietary"
 msgstr "Власницька ліцензія"
 
 #: src/bz-full-view.c:488 src/bz-license-dialog.c:120
-#, fuzzy
 msgid "Special License"
 msgstr "Власна ліцензія"
 
@@ -1335,7 +1333,6 @@ msgid "Get Involved"
 msgstr "Долучитися"
 
 #: src/bz-license-dialog.c:107 src/bz-license-dialog.c:112
-#, fuzzy
 msgid "Unknown License"
 msgstr "Невідома ліцензія"
 
@@ -1345,7 +1342,7 @@ msgstr "Розроблено спільнотою"
 
 # Згідно перекладу на Flathub
 #: src/bz-license-dialog.c:148
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "This app is developed in the open by an international community, and "
 "released under the %s license.\n"
@@ -1369,13 +1366,11 @@ msgstr ""
 "Ви можете долучитися до проєкту та зробити його ліпшим."
 
 #: src/bz-license-dialog.c:161
-#, fuzzy
 msgid "The license of this app is not known"
 msgstr "Ліцензія цього застосунку невідома"
 
 # Згідно перекладу на Flathub
 #: src/bz-license-dialog.c:165
-#, fuzzy
 msgid ""
 "This app is not developed in the open, so only its developers know how it "
 "works. It may be insecure in ways that are hard to detect, and it may change "
@@ -1390,7 +1385,7 @@ msgstr ""
 "Ви можете не мати можливості долучитися до проєкту."
 
 #: src/bz-license-dialog.c:174
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "This app is developed under the special license %s.\n"
 "\n"
@@ -1732,17 +1727,14 @@ msgid "Flathub"
 msgstr "Flathub"
 
 #: src/bz-window.blp:407
-#, fuzzy
 msgid "Network connection is metered — automatic store data sync is paused"
 msgstr "Платне зʼєднання — автоматичне освіження вмісту крамниці призупинено"
 
 #: src/bz-window.blp:408 src/bz-window.blp:417
-#, fuzzy
 msgid "Sync Manually"
 msgstr "Освіжити власноруч"
 
 #: src/bz-window.blp:416
-#, fuzzy
 msgid ""
 "You have a network connection but are viewing a cached version of Flathub"
 msgstr "Ви маєте зʼєднання з мережею, але переглядаєте кешовану версію Flathub"
