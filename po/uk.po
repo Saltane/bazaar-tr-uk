@@ -2218,3 +2218,6 @@ msgstr "Вийти"
 #, c-format
 #~ msgid "%.2fK"
 #~ msgstr "%.2fтис."
+
+#~ msgid "Sync"
+#~ msgstr "Освіжити"
