@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-05 06:51+0200\n"
-"PO-Revision-Date: 2025-12-01 05:49+0200\n"
+"PO-Revision-Date: 2025-12-05 07:16+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 25.08.2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 25.08.3\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:7 src/bz-window.blp:5
@@ -1082,16 +1082,16 @@ msgstr "Вільне ПЗ за ліцензією %s"
 #: src/bz-full-view.c:457
 #, fuzzy
 msgid "Free software"
-msgstr "Вільна ліцензія"
+msgstr "Вільне ПЗ"
 
 #: src/bz-full-view.c:460
 msgid "Proprietary Software"
 msgstr "Власницька ліцензія"
 
 #: src/bz-full-view.c:463
-#, c-format
+#, fuzzy, c-format
 msgid "Special License: %s"
-msgstr ""
+msgstr "Власна ліцензія: %s"
 
 #: src/bz-full-view.c:480
 msgid "Free"
@@ -1102,8 +1102,9 @@ msgid "Proprietary"
 msgstr "Власницька ліцензія"
 
 #: src/bz-full-view.c:488 src/bz-license-dialog.c:120
+#, fuzzy
 msgid "Special License"
-msgstr ""
+msgstr "Власна ліцензія"
 
 #: src/bz-full-view.c:508
 msgid "Adaptive"
@@ -1336,7 +1337,7 @@ msgstr "Долучитися"
 #: src/bz-license-dialog.c:107 src/bz-license-dialog.c:112
 #, fuzzy
 msgid "Unknown License"
-msgstr "Невідомо"
+msgstr "Невідома ліцензія"
 
 #: src/bz-license-dialog.c:115
 msgid "Community Built"
@@ -1352,7 +1353,7 @@ msgid ""
 "You can participate and help make it even better."
 msgstr ""
 "Цей застосунок розробляється у відкритому доступі міжнародною спільнотою та "
-"випускається під <a href=\"%s\">%s</a>.\n"
+"випускається під %s.\n"
 "\n"
 "Ви можете долучитися до проєкту та зробити його ліпшим."
 
@@ -1368,8 +1369,9 @@ msgstr ""
 "Ви можете долучитися до проєкту та зробити його ліпшим."
 
 #: src/bz-license-dialog.c:161
+#, fuzzy
 msgid "The license of this app is not known"
-msgstr ""
+msgstr "Ліцензія цього застосунку невідома"
 
 # Згідно перекладу на Flathub
 #: src/bz-license-dialog.c:165
@@ -1388,12 +1390,15 @@ msgstr ""
 "Ви можете не мати можливості долучитися до проєкту."
 
 #: src/bz-license-dialog.c:174
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "This app is developed under the special license %s.\n"
 "\n"
 "You may or may not be able to contribute to this app."
 msgstr ""
+"Цей застосунок розробляється на умовах власної ліцензії %s.\n"
+"\n"
+"Ви можете не мати можливості долучитися до проєкту."
 
 #: src/bz-preferences-dialog.blp:19
 msgid "Preferences"
@@ -1727,17 +1732,20 @@ msgid "Flathub"
 msgstr "Flathub"
 
 #: src/bz-window.blp:407
+#, fuzzy
 msgid "Network connection is metered — automatic store data sync is paused"
-msgstr ""
+msgstr "Платне зʼєднання — автоматичне освіження вмісту крамниці призупинено"
 
 #: src/bz-window.blp:408 src/bz-window.blp:417
+#, fuzzy
 msgid "Sync Manually"
-msgstr ""
+msgstr "Освіжити власноруч"
 
 #: src/bz-window.blp:416
+#, fuzzy
 msgid ""
 "You have a network connection but are viewing a cached version of Flathub"
-msgstr ""
+msgstr "Ви маєте зʼєднання з мережею, але переглядаєте кешовану версію Flathub"
 
 #: src/bz-window.blp:480
 msgid "_Donate to Bazaar ❤️"
