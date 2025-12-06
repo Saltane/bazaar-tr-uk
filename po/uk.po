@@ -595,7 +595,6 @@ msgid "Receiving %d entries..."
 msgstr "Отримуємо %d надходжень…"
 
 #: src/bz-application.c:1369
-#, fuzzy
 msgid "Checking for updates"
 msgstr "Шукаємо оновлення"
 
@@ -1024,7 +1023,6 @@ msgstr ""
 "використання."
 
 #: src/bz-full-view.blp:643 src/bz-window.c:1209
-#, fuzzy
 msgid "Delete Data"
 msgstr "Видалити дані"
 
@@ -1166,7 +1164,7 @@ msgstr "Більше від %s"
 
 # Трохи довший переклад, аби зберегти статеву нейтральність назви самого застосунку.
 #: src/bz-full-view.c:568
-#, fuzzy, c-format
+#, c-format
 msgid "%s is not installed, but it still has data present."
 msgstr "Застосунок %s не встановлений, проте він має залишкові дані."
 
@@ -1776,7 +1774,7 @@ msgid "Open Bazaar Inspector"
 msgstr "Відкрити зневаджувач"
 
 #: src/bz-window.c:473
-#, fuzzy, c-format
+#, c-format
 msgid "%d Update Available"
 msgid_plural "%d Updates Available"
 msgstr[0] "Доступне %s оновлення"
@@ -1806,17 +1804,14 @@ msgstr "Наразі цього не можна зробити!"
 
 # Виглядає як заголовок «пташечки» у діалозі при видаленні застосунку.
 #: src/bz-window.c:1200
-#, fuzzy
 msgid "Keep Data"
 msgstr "Залишити дані"
 
 #: src/bz-window.c:1201
-#, fuzzy
 msgid "Allow restoring settings and content"
 msgstr "Залишити можливість відновити налаштування та вміст у майбутньому"
 
 #: src/bz-window.c:1210
-#, fuzzy
 msgid "Permanently remove app data to save space"
 msgstr "Назавжди видалити дані застосунку"
 
@@ -1835,7 +1830,7 @@ msgid "Remove %s?"
 msgstr "Видалити %s?"
 
 #: src/bz-window.c:1259
-#, fuzzy, c-format
+#, c-format
 msgid "It will not be possible to use %s after it is uninstalled."
 msgstr "%s не можна буде користати після видалення."
 
