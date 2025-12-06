@@ -597,7 +597,7 @@ msgstr "Отримуємо %d надходжень…"
 #: src/bz-application.c:1369
 #, fuzzy
 msgid "Checking for updates"
-msgstr "Шукаємо оновлення…"
+msgstr "Шукаємо оновлення"
 
 #: src/bz-curated-view.blp:11 src/bz-flathub-page.blp:19
 #: src/bz-full-view.blp:53 src/bz-installed-page.blp:15 src/bz-window.blp:183
@@ -1024,8 +1024,9 @@ msgstr ""
 "використання."
 
 #: src/bz-full-view.blp:643 src/bz-window.c:1209
+#, fuzzy
 msgid "Delete Data"
-msgstr ""
+msgstr "Видалити дані"
 
 #: src/bz-full-view.blp:777
 msgid "Tags:"
@@ -1163,10 +1164,11 @@ msgstr "Більше від розробників"
 msgid "Other Apps by %s"
 msgstr "Більше від %s"
 
+# Трохи довший переклад, аби зберегти статеву нейтральність назви самого застосунку.
 #: src/bz-full-view.c:568
-#, c-format
+#, fuzzy, c-format
 msgid "%s is not installed, but it still has data present."
-msgstr ""
+msgstr "Застосунок %s не встановлений, проте він має залишкові дані."
 
 #: src/bz-full-view.c:670
 msgid "Other Apps"
@@ -1777,10 +1779,11 @@ msgstr "Відкрити зневаджувач"
 #, fuzzy, c-format
 msgid "%d Update Available"
 msgid_plural "%d Updates Available"
-msgstr[0] "Доступні оновлення"
-msgstr[1] "Доступні оновлення"
-msgstr[2] "Доступні оновлення"
+msgstr[0] "Доступне %s оновлення"
+msgstr[1] "Доступні %s оновлення"
+msgstr[2] "Доступні %s оновлень"
 
+#: src/bz-window.c:960
 #: src/bz-window.c:951
 msgid ""
 "The ability to inspect and install local .flatpak bundle files is coming "
@@ -1801,17 +1804,21 @@ msgstr ""
 msgid "Can't do that right now!"
 msgstr "Наразі цього не можна зробити!"
 
+# Виглядає як заголовок «пташечки» у діалозі при видаленні застосунку.
 #: src/bz-window.c:1200
+#, fuzzy
 msgid "Keep Data"
-msgstr ""
+msgstr "Залишити дані"
 
 #: src/bz-window.c:1201
+#, fuzzy
 msgid "Allow restoring settings and content"
-msgstr ""
+msgstr "Залишити можливість відновити налаштування та вміст у майбутньому"
 
 #: src/bz-window.c:1210
+#, fuzzy
 msgid "Permanently remove app data to save space"
-msgstr ""
+msgstr "Назавжди видалити дані застосунку"
 
 #: src/bz-window.c:1233
 #, c-format
@@ -1830,10 +1837,7 @@ msgstr "Видалити %s?"
 #: src/bz-window.c:1259
 #, fuzzy, c-format
 msgid "It will not be possible to use %s after it is uninstalled."
-msgstr ""
-"%s не можна буде користати після видалення.\n"
-"\n"
-"Налаштування та користувацькі дані буде збережено."
+msgstr "%s не можна буде користати після видалення."
 
 #: src/bz-window.c:1322
 msgid "Resume Current Tasks"
