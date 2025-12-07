@@ -2221,3 +2221,6 @@ msgstr "Вийти"
 
 #~ msgid "Sync"
 #~ msgstr "Освіжити"
+
+#~ msgid "Delete local data as well"
+#~ msgstr "Також видалити збережені дані"
