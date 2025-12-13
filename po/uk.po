@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 00:44+0200\n"
-"PO-Revision-Date: 2025-12-14 05:21+0200\n"
+"PO-Revision-Date: 2025-12-14 05:22+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -547,7 +547,6 @@ msgid "_Donate to Bazaar ❤️"
 msgstr "_Пожертувати Базару ❤️"
 
 #: src/bz-apps-page.blp:18 src/bz-user-data-page.blp:19
-#, fuzzy
 msgid "_Refresh Content"
 msgstr "_Освіжити вміст"
 
@@ -724,12 +723,10 @@ msgid "Copy and Close"
 msgstr "Копіювати та вийти"
 
 #: src/bz-featured-carousel.blp:31
-#, fuzzy
 msgid "Previous"
 msgstr "Назад"
 
 #: src/bz-featured-carousel.blp:53
-#, fuzzy
 msgid "Next"
 msgstr "Далі"
 
@@ -908,12 +905,10 @@ msgid "The Flathub remote was not found on any of your Flatpak installations"
 msgstr "Сховище Flathub не було знайдено на жодному з Ваших встановлень"
 
 #: src/bz-flathub-page.blp:35
-#, fuzzy
 msgid "Flathub returned an error"
 msgstr "Помилка Flathub"
 
 #: src/bz-flathub-page.blp:41
-#, fuzzy
 msgid "Retry Flathub Connection"
 msgstr "Спробувати зʼєднатися з Flathub іще раз"
 
@@ -1214,7 +1209,7 @@ msgstr "Більше від %s"
 
 # Трохи довший переклад, аби зберегти статеву нейтральність назви самого застосунку.
 #: src/bz-full-view.c:570
-#, fuzzy, c-format
+#, c-format
 msgid "%s is not installed, but it still has <b>%s</b> of data present."
 msgstr ""
 "Застосунок %s не встановлено, проте він має <b>%s</b> залишкових даних."
@@ -1394,7 +1389,6 @@ msgid "Stopped Receiving Updates"
 msgstr "Більшe не отримує оновлень"
 
 #: src/bz-installed-tile.blp:75
-#, fuzzy
 msgid "Support this application"
 msgstr "Підтримати цей застосунок"
 
@@ -1634,47 +1628,38 @@ msgid "Get"
 msgstr "Завантажити"
 
 #: src/bz-screenshot-page.blp:5
-#, fuzzy
 msgid "Screenshots"
 msgstr "Знімки"
 
 #: src/bz-screenshot-page.blp:61
-#, fuzzy
 msgid "Previous Screenshot"
 msgstr "Попередній знімок"
 
 #: src/bz-screenshot-page.blp:71
-#, fuzzy
 msgid "Next Screenshot"
 msgstr "Наступний знімок"
 
 #: src/bz-screenshot-page.blp:87
-#, fuzzy
 msgid "Copy Image"
 msgstr "Копіювати знімок"
 
 #: src/bz-screenshot-page.blp:147
-#, fuzzy
 msgid "Reset View"
 msgstr "Відновити масштаб"
 
 #: src/bz-screenshot-page.blp:158
-#, fuzzy
 msgid "Zoom Out"
 msgstr "Віддалити"
 
 #: src/bz-screenshot-page.blp:168
-#, fuzzy
 msgid "Zoom In"
 msgstr "Наблизити"
 
 #: src/bz-screenshots-carousel.blp:6
-#, fuzzy
 msgid "Screenshots Carousel"
 msgstr "Карусель знімків"
 
 #: src/bz-screenshots-carousel.blp:104
-#, fuzzy
 msgid "Open Screenshot Viewer"
 msgstr "Відкрити переглядач знімків"
 
@@ -1802,27 +1787,23 @@ msgid "Additionally, %d runtimes and/or addons will be updated."
 msgstr "Крім того, буде оновлено %d середовищ виконання та/або розширень."
 
 #: src/bz-user-data-page.blp:5
-#, fuzzy
 msgid "Manage Leftover User Data"
 msgstr "Керувати залишковими даними"
 
 #: src/bz-user-data-page.blp:55
-#, fuzzy
 msgid "No User Data"
 msgstr "Користувацькі дані відсутні"
 
 #: src/bz-user-data-page.blp:60
-#, fuzzy
 msgid "User Data"
 msgstr "Користувацькі дані"
 
 #: src/bz-user-data-tile.c:144
-#, fuzzy, c-format
+#, c-format
 msgid "Removed User Data for %s"
 msgstr "Користувацькі дані %s було видалено"
 
 #: src/bz-user-data-tile.blp:74
-#, fuzzy
 msgid "Remove User Data"
 msgstr "Видалити користувацькі дані"
 
@@ -1876,7 +1857,6 @@ msgid ""
 msgstr "Ви маєте зʼєднання з мережею, але переглядаєте кешовану версію Flathub"
 
 #: src/bz-window.blp:518
-#, fuzzy
 msgid "_Manage Leftover User Data"
 msgstr "_Керувати залишковими даними"
 
