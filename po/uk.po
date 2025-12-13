@@ -1955,7 +1955,7 @@ msgstr "Налаштування"
 #: src/gtk/shortcuts-dialog.blp:19
 msgctxt "shortcut window"
 msgid "Refresh"
-msgstr "Оновити"
+msgstr "Освіжити"
 
 #: src/gtk/shortcuts-dialog.blp:24
 msgctxt "shortcut window"
