@@ -1809,7 +1809,7 @@ msgstr "Керувати залишковими даними"
 #: src/bz-user-data-page.blp:55
 #, fuzzy
 msgid "No User Data"
-msgstr "<alt>"
+msgstr "Без користувацьких даних"
 
 #: src/bz-user-data-page.blp:60
 #, fuzzy
