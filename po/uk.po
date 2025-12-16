@@ -2224,3 +2224,35 @@ msgstr "Вийти"
 
 #~ msgid "Delete local data as well"
 #~ msgstr "Також видалити збережені дані"
+
+#~ msgid "Show Git Forge Star Counts"
+#~ msgstr "Показувати вподобання зі сторінки розробки"
+
+#~ msgid ""
+#~ "Whether to attempt to detect and show \"star counts\" for projects in the "
+#~ "full view"
+#~ msgstr ""
+#~ "Намагатися віднаходити та показувати кількість уподобань на сторінках "
+#~ "застосунків"
+
+#~ msgid "Repository Star Count"
+#~ msgstr "Вподобань на сторінці розробки"
+
+#~ msgid "Application Details"
+#~ msgstr "Докладнощі застосунку"
+
+#~ msgid "Display Star Count"
+#~ msgstr "Вподобань на сторінці розробки"
+
+#~ msgid "Show the star count of an application's source code repository"
+#~ msgstr "Показувати кількість уподобань на сторінках розробки застосунків"
+
+#~ msgid ""
+#~ "Bazaar can fetch and display the star count from an application's source "
+#~ "code repository on a remote Git forge. \n"
+#~ " For projects on GitHub, rate limits may cause them not to appear."
+#~ msgstr ""
+#~ "Базар може виявляти та показувати кількість уподобань зі сторінок "
+#~ "розробки початкового коду у віддаленому сховищі Git.\n"
+#~ "Для проєктів на GitHub, обмеження запитів (rate limit) може призвести до "
+#~ "їхнього незʼявлення."
