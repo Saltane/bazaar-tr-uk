@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-16 11:35+0200\n"
-"PO-Revision-Date: 2025-12-16 11:48+0200\n"
+"PO-Revision-Date: 2025-12-16 11:56+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -1014,7 +1014,6 @@ msgid "Support"
 msgstr "Підтримати"
 
 #: src/bz-full-view.blp:226
-#, fuzzy
 msgid "Favorite Count"
 msgstr "Кількість уподобань"
 
@@ -1756,12 +1755,10 @@ msgid "Manage Leftover User Data"
 msgstr "Керувати залишковими даними"
 
 #: src/bz-user-data-page.blp:41
-#, fuzzy
 msgid "Loading"
 msgstr "Шукаємо"
 
 #: src/bz-user-data-page.blp:55
-#, fuzzy
 msgid "No User Data found"
 msgstr "Користувацьких даних не знайдено"
 
