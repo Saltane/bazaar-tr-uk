@@ -1758,7 +1758,7 @@ msgstr "Керувати залишковими даними"
 #: src/bz-user-data-page.blp:41
 #, fuzzy
 msgid "Loading"
-msgstr ""
+msgstr "Завантажуємо"
 
 #: src/bz-user-data-page.blp:55
 #, fuzzy
