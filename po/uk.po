@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-18 12:49+0200\n"
-"PO-Revision-Date: 2025-12-18 14:11+0200\n"
+"PO-Revision-Date: 2025-12-19 08:24+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
@@ -201,10 +201,10 @@ msgstr "Без даних щодо згадок або зображення ал
 msgid "Narcotics"
 msgstr "Заборонені речовини"
 
-# «Drugs» включає, але не обмежується «наркотиками».
+# Тут поняття включає як заборонені, так і незаборонені речовини (алкоголь, тютюн тощо)
 #: src/bz-age-rating-dialog.c:164
 msgid "No information regarding references to illicit drugs"
-msgstr "Без даних щодо згадок або зображення заборонених речовин"
+msgstr "Без даних щодо згадок або зображення пʼянких речовин"
 
 #: src/bz-age-rating-dialog.c:167
 msgid "Tobacco"
@@ -236,7 +236,7 @@ msgstr "Лайка"
 
 #: src/bz-age-rating-dialog.c:180
 msgid "No information regarding profanity of any kind"
-msgstr "Без даних щодо використання лайливої мови"
+msgstr "Без даних щодо грубощів або недоречного гумору"
 
 #: src/bz-age-rating-dialog.c:183
 msgid "Inappropriate Humor"
@@ -372,15 +372,15 @@ msgstr "Рабство"
 msgid "No information regarding references to slavery"
 msgstr "Без даних щодо згадок або зображення рабства"
 
-# «Drugs» включає, але не обмежується «наркотиками».
+# Тут поняття включає як заборонені, так і незаборонені речовини (алкоголь, тютюн тощо)
 #: src/bz-age-rating-dialog.c:307
 msgid "Does not include references to drugs"
-msgstr "Не містить згадок або зображення заборонених речовин"
+msgstr "Не містить згадок або зображення пʼянких речовин"
 
 #: src/bz-age-rating-dialog.c:309
 msgid ""
 "Does not include swearing, profanity, and other kinds of strong language"
-msgstr "Не містить лайливої мови"
+msgstr "Не містить грубощів або недоречного гумору"
 
 #: src/bz-age-rating-dialog.c:311
 msgid "Does not include ads or monetary transactions"
@@ -392,20 +392,21 @@ msgstr "Не містить оголености або сексу"
 
 #: src/bz-age-rating-dialog.c:315
 msgid "Does not include uncontrolled chat functionality"
-msgstr "Не містить можливості спілкуватися з іншими користувачами"
+msgstr "Не має можливості спілкуватися з іншими користувачами"
 
 #: src/bz-age-rating-dialog.c:317
 msgid "Does not include violence"
 msgstr "Не містить жорстокости"
 
+# Тут поняття включає як заборонені, так і незаборонені речовини (алкоголь, тютюн тощо)
 #: src/bz-age-rating-dialog.c:352
 msgid "Drugs"
-msgstr "Заборонені речовини"
+msgstr "Речовини"
 
 # Як розумію, це включає лайливу мову та інші форми міцної мови.
 #: src/bz-age-rating-dialog.c:354
 msgid "Strong Language"
-msgstr "Лайлива мова"
+msgstr "Грубощі"
 
 #: src/bz-age-rating-dialog.c:356
 msgid "Money"
@@ -1241,6 +1242,8 @@ msgstr "Підтримка клавіатури"
 msgid "Requires keyboards"
 msgstr "Вимагає клавіатуру"
 
+# Позначає, що застосунок ліпше працює з такими пристроями
+# Стан підтримки загалом описується іншим рядком
 #: src/bz-hardware-support-dialog.c:72
 msgid "Recommends keyboards"
 msgstr "Бажана клавіатура"
@@ -1251,7 +1254,7 @@ msgstr "Підтримує клавіатуру"
 
 #: src/bz-hardware-support-dialog.c:74
 msgid "Unknown support for keyboards"
-msgstr "Невідома підтримка клавіатури"
+msgstr "Сумісність із клавіатурами на вказана"
 
 #: src/bz-hardware-support-dialog.c:76
 msgid "Mouse support"
@@ -1261,6 +1264,8 @@ msgstr "Підтримка миші"
 msgid "Requires mice or pointing devices"
 msgstr "Вимагає мишу або вказівний пристрій"
 
+# Позначає, що застосунок ліпше працює з такими пристроями
+# Стан підтримки загалом описується іншим рядком
 #: src/bz-hardware-support-dialog.c:79
 msgid "Recommends mice or pointing devices"
 msgstr "Бажані миша або вказівний пристрій"
@@ -1271,7 +1276,7 @@ msgstr "Підтримує мишу або вказівний пристрій"
 
 #: src/bz-hardware-support-dialog.c:81
 msgid "Unknown support for mice or pointing devices"
-msgstr "Невідома підтримка миші або вказівних пристроїв"
+msgstr "Сумісність із мишами або вказівними пристроями не вказана"
 
 #: src/bz-hardware-support-dialog.c:83
 msgid "Touchscreen support"
@@ -1281,6 +1286,8 @@ msgstr "Підтримка сенсорних екранів"
 msgid "Requires touchscreens"
 msgstr "Вимагає сенсорний екран"
 
+# Позначає, що застосунок ліпше працює з такими пристроями
+# Стан підтримки загалом описується іншим рядком
 #: src/bz-hardware-support-dialog.c:86
 msgid "Recommends touchscreens"
 msgstr "Бажаний сенсорний екран"
@@ -1291,7 +1298,7 @@ msgstr "Підтримує сенсорний екран"
 
 #: src/bz-hardware-support-dialog.c:88
 msgid "Unknown support for touchscreens"
-msgstr "Невідома підтримка сенсорного екрану"
+msgstr "Сумісність із сенсорними екранами на вказана"
 
 #: src/bz-hardware-support-dialog.c:192
 msgid "Mobile support"
