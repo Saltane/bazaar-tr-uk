@@ -30,6 +30,7 @@
 
 #include "bz-application-map-factory.h"
 #include "bz-application.h"
+#include "bz-auth-state.h"
 #include "bz-backend-notification.h"
 #include "bz-content-provider.h"
 #include "bz-entry-cache-manager.h"
@@ -43,6 +44,7 @@
 #include "bz-hash-table-object.h"
 #include "bz-inspector.h"
 #include "bz-io.h"
+#include "bz-login-page.h"
 #include "bz-newline-parser.h"
 #include "bz-parser.h"
 #include "bz-preferences-dialog.h"
@@ -80,6 +82,7 @@ struct _BzApplication
   DexChannel                 *flatpak_notifs;
   DexFuture                  *notif_watch;
   DexFuture                  *sync;
+  DexPromise                 *ready_to_open_files;
   GHashTable                 *eol_runtimes;
   GHashTable                 *ids_to_groups;
   GHashTable                 *installed_set;
@@ -134,11 +137,21 @@ BZ_DEFINE_DATA (
     open_flatpakref,
     OpenFlatpakref,
     {
-      BzApplication *self;
-      GFile         *file;
+      GWeakRef *self;
+      GFile    *file;
     },
     BZ_RELEASE_DATA (self, g_object_unref);
     BZ_RELEASE_DATA (file, g_object_unref))
+
+BZ_DEFINE_DATA (
+    open_appstream,
+    OpenAppstream,
+    {
+      GWeakRef *self;
+      char     *id;
+    },
+    BZ_RELEASE_DATA (self, g_object_unref);
+    BZ_RELEASE_DATA (id, g_free))
 
 static DexFuture *
 init_fiber (GWeakRef *wr);
@@ -150,6 +163,9 @@ static DexFuture *
 respond_to_flatpak_fiber (RespondToFlatpakData *data);
 
 static DexFuture *
+open_appstream_fiber (OpenAppstreamData *data);
+
+static DexFuture *
 open_flatpakref_fiber (OpenFlatpakrefData *data);
 
 static DexFuture *
@@ -157,8 +173,8 @@ backend_sync_finally (DexFuture *future,
                       GWeakRef  *wr);
 
 static DexFuture *
-init_finally (DexFuture *future,
-              GWeakRef  *wr);
+init_fiber_finally (DexFuture *future,
+                    GWeakRef  *wr);
 
 static DexFuture *
 init_sync_finally (DexFuture *future,
@@ -167,6 +183,10 @@ init_sync_finally (DexFuture *future,
 static DexFuture *
 flathub_update_finally (DexFuture *future,
                         GWeakRef  *wr);
+
+static DexFuture *
+sync_then (DexFuture *future,
+           GWeakRef  *wr);
 
 static DexFuture *
 watch_backend_notifs_then_loop_cb (DexFuture *future,
@@ -285,9 +305,10 @@ bz_application_dispose (GObject *object)
 {
   BzApplication *self = BZ_APPLICATION (object);
 
-  dex_clear (&self->sync);
-  dex_clear (&self->notif_watch);
   dex_clear (&self->flatpak_notifs);
+  dex_clear (&self->notif_watch);
+  dex_clear (&self->ready_to_open_files);
+  dex_clear (&self->sync);
   g_clear_handle_id (&self->periodic_timeout_source, g_source_remove);
   g_clear_object (&self->appid_filter);
   g_clear_object (&self->application_factory);
@@ -451,7 +472,7 @@ bz_application_command_line (GApplication            *app,
           bz_weak_release);
       init = dex_future_finally (
           init,
-          (DexFutureCallback) init_finally,
+          (DexFutureCallback) init_fiber_finally,
           bz_track_weak (self),
           bz_weak_release);
       dex_future_disown (g_steal_pointer (&init));
@@ -691,6 +712,44 @@ bz_application_preferences_action (GSimpleAction *action,
 }
 
 static void
+bz_application_flathub_login_action (GSimpleAction *action,
+                                     GVariant      *parameter,
+                                     gpointer       user_data)
+{
+  BzApplication     *self       = user_data;
+  GtkWindow         *window     = NULL;
+  BzAuthState       *auth_state = NULL;
+  AdwNavigationPage *login_page = NULL;
+
+  g_assert (BZ_IS_APPLICATION (self));
+
+  window = gtk_application_get_active_window (GTK_APPLICATION (self));
+
+  auth_state = bz_state_info_get_auth_state (self->state);
+  login_page = bz_login_page_new (auth_state);
+
+  bz_window_push_page (BZ_WINDOW (window), login_page);
+}
+
+static void
+bz_application_flathub_logout_action (GSimpleAction *action,
+                                      GVariant      *parameter,
+                                      gpointer       user_data)
+{
+  BzApplication *self       = BZ_APPLICATION (user_data);
+  GtkWindow     *window     = gtk_application_get_active_window (GTK_APPLICATION (self));
+  BzAuthState   *auth_state = bz_state_info_get_auth_state (self->state);
+
+  g_assert (BZ_IS_WINDOW (window));
+
+  bz_auth_state_clear (auth_state);
+
+  bz_window_add_toast (
+      BZ_WINDOW (window),
+      adw_toast_new (_ ("Logged Out Successfully!")));
+}
+
+static void
 bz_application_quit_action (GSimpleAction *action,
                             GVariant      *parameter,
                             gpointer       user_data)
@@ -703,6 +762,8 @@ bz_application_quit_action (GSimpleAction *action,
 }
 
 static const GActionEntry app_actions[] = {
+  {       "flathub-login",       bz_application_flathub_login_action, NULL },
+  {      "flathub-logout",      bz_application_flathub_logout_action, NULL },
   {                "quit",                bz_application_quit_action, NULL },
   {         "preferences",         bz_application_preferences_action, NULL },
   {               "about",               bz_application_about_action, NULL },
@@ -736,6 +797,10 @@ bz_application_init (BzApplication *self)
       GTK_APPLICATION (self),
       "app.preferences",
       (const char *[]) { "<primary>comma", NULL });
+  gtk_application_set_accels_for_action (
+      GTK_APPLICATION (self),
+      "app.sync-remotes",
+      (const char *[]) { "<primary>r", NULL });
   gtk_application_set_accels_for_action (
       GTK_APPLICATION (self),
       "app.search('')",
@@ -1016,10 +1081,12 @@ init_fiber (GWeakRef *wr)
                   BZ_SERIALIZABLE (flathub), variant, &local_error);
               if (result)
                 {
-                  bz_state_info_set_busy (self->state, FALSE);
                   self->flathub = g_steal_pointer (&flathub);
                   bz_flathub_state_set_map_factory (self->flathub, self->application_factory);
                   bz_state_info_set_flathub (self->state, self->flathub);
+
+                  bz_state_info_set_busy (self->state, FALSE);
+                  dex_promise_resolve_boolean (self->ready_to_open_files, TRUE);
                 }
               else
                 {
@@ -1430,14 +1497,30 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
 }
 
 static DexFuture *
+open_appstream_fiber (OpenAppstreamData *data)
+{
+  g_autoptr (BzApplication) self = NULL;
+  char *id                       = data->id;
+
+  bz_weak_get_or_return_reject (self, data->self);
+  dex_await (dex_ref (self->ready_to_open_files), NULL);
+
+  open_generic_id (self, id);
+  return dex_future_new_true ();
+}
+
+static DexFuture *
 open_flatpakref_fiber (OpenFlatpakrefData *data)
 {
-  BzApplication *self            = data->self;
-  GFile         *file            = data->file;
+  g_autoptr (BzApplication) self = NULL;
+  GFile *file                    = data->file;
   g_autoptr (GError) local_error = NULL;
   g_autoptr (DexFuture) future   = NULL;
   GtkWindow    *window           = NULL;
   const GValue *value            = NULL;
+
+  bz_weak_get_or_return_reject (self, data->self);
+  dex_await (dex_ref (self->ready_to_open_files), NULL);
 
   future = bz_backend_load_local_package (BZ_BACKEND (self->flatpak), file, NULL);
   dex_await (dex_ref (future), NULL);
@@ -1489,12 +1572,12 @@ open_flatpakref_fiber (OpenFlatpakrefData *data)
   else
     bz_show_error_for_widget (GTK_WIDGET (window), local_error->message);
 
-  return NULL;
+  return dex_future_new_true ();
 }
 
 static DexFuture *
-init_finally (DexFuture *future,
-              GWeakRef  *wr)
+init_fiber_finally (DexFuture *future,
+                    GWeakRef  *wr)
 {
   g_autoptr (BzApplication) self = NULL;
   g_autoptr (GError) local_error = NULL;
@@ -1573,6 +1656,7 @@ backend_sync_finally (DexFuture *future,
 
   bz_state_info_set_online (self->state, dex_future_is_resolved (future));
   bz_state_info_set_syncing (self->state, FALSE);
+  bz_state_info_set_allow_manual_sync (self->state, TRUE);
 
   return dex_future_new_true ();
 }
@@ -1604,6 +1688,18 @@ flathub_update_finally (DexFuture *future,
       g_clear_object (&self->tmp_flathub);
       return dex_ref (future);
     }
+}
+
+static DexFuture *
+sync_then (DexFuture *future,
+           GWeakRef  *wr)
+{
+  g_autoptr (BzApplication) self = NULL;
+
+  bz_weak_get_or_return_reject (self, wr);
+
+  dex_promise_resolve_boolean (self->ready_to_open_files, TRUE);
+  return dex_future_new_true ();
 }
 
 static DexFuture *
@@ -2301,8 +2397,9 @@ init_service_struct (BzApplication *self,
   g_autoptr (GFile) config_file   = NULL;
   g_autoptr (GBytes) config_bytes = NULL;
 #endif
-  GtkCustomFilter *filter  = NULL;
-  GNetworkMonitor *network = NULL;
+  GtkCustomFilter *filter            = NULL;
+  GNetworkMonitor *network           = NULL;
+  g_autoptr (BzAuthState) auth_state = NULL;
 
   g_type_ensure (BZ_TYPE_MAIN_CONFIG);
 #ifdef HARDCODED_MAIN_CONFIG
@@ -2327,7 +2424,8 @@ init_service_struct (BzApplication *self,
   g_clear_error (&local_error);
 #endif
 
-  self->init_timer = g_timer_new ();
+  self->init_timer          = g_timer_new ();
+  self->ready_to_open_files = dex_promise_new ();
 
   if (self->config != NULL &&
       bz_main_config_get_yaml_blocklist_paths (self->config) != NULL)
@@ -2417,6 +2515,14 @@ init_service_struct (BzApplication *self,
 
   self->state = bz_state_info_new ();
   bz_state_info_set_busy (self->state, TRUE);
+
+  auth_state = bz_auth_state_new ();
+  bz_state_info_set_auth_state (self->state, auth_state);
+
+  g_object_bind_property (
+      auth_state, "authenticated",
+      g_action_map_lookup_action (G_ACTION_MAP (self), "flathub-login"), "enabled",
+      G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN);
 
   network = g_network_monitor_get_default ();
   if (network != NULL)
@@ -2538,6 +2644,11 @@ init_service_struct (BzApplication *self,
   bz_state_info_set_transaction_manager (self->state, self->transactions);
   bz_state_info_set_txt_blocklists (self->state, G_LIST_MODEL (self->txt_blocklists));
   bz_state_info_set_txt_blocklists_provider (self->state, self->txt_blocklists_provider);
+
+  g_object_bind_property (
+      self->state, "allow-manual-sync",
+      g_action_map_lookup_action (G_ACTION_MAP (self), "sync-remotes"), "enabled",
+      G_BINDING_SYNC_CREATE);
 }
 
 static GtkWindow *
@@ -2580,15 +2691,27 @@ static void
 open_appstream_take (BzApplication *self,
                      char          *appstream)
 {
-  g_assert (appstream != NULL);
+  const char *id                     = NULL;
+  g_autoptr (OpenAppstreamData) data = NULL;
+
+  g_info ("Loading appstream link %s...", appstream);
 
   if (g_str_has_prefix (appstream, "appstream://"))
-    open_generic_id (self, appstream + strlen ("appstream://"));
+    id = appstream + strlen ("appstream://");
   else
-    open_generic_id (self, appstream + strlen ("appstream:"));
+    id = appstream + strlen ("appstream:");
 
-  if (appstream != NULL)
-    g_free (appstream);
+  data       = open_appstream_data_new ();
+  data->self = bz_track_weak (self);
+  data->id   = g_strdup (id);
+
+  dex_future_disown (dex_scheduler_spawn (
+      dex_scheduler_get_default (),
+      bz_get_dex_stack_size (),
+      (DexFiberFunc) open_appstream_fiber,
+      open_appstream_data_ref (data),
+      open_appstream_data_unref));
+  g_free (appstream);
 }
 
 static void
@@ -2597,22 +2720,20 @@ open_flatpakref_take (BzApplication *self,
 {
   g_autofree char *path               = NULL;
   g_autoptr (OpenFlatpakrefData) data = NULL;
-  g_autoptr (DexFuture) future        = NULL;
 
   path = g_file_get_path (file);
-  g_debug ("Loading local flatpakref at %s now...", path);
+  g_info ("Loading flatpakref at %s...", path);
 
   data       = open_flatpakref_data_new ();
-  data->self = g_object_ref (self);
+  data->self = bz_track_weak (self);
   data->file = g_steal_pointer (&file);
 
-  future = dex_scheduler_spawn (
+  dex_future_disown (dex_scheduler_spawn (
       dex_scheduler_get_default (),
       bz_get_dex_stack_size (),
       (DexFiberFunc) open_flatpakref_fiber,
       open_flatpakref_data_ref (data),
-      open_flatpakref_data_unref);
-  dex_future_disown (g_steal_pointer (&future));
+      open_flatpakref_data_unref));
 }
 
 static void
@@ -2837,6 +2958,8 @@ make_sync_future (BzApplication *self)
   g_autoptr (DexFuture) flathub_future = NULL;
   g_autoptr (DexFuture) ret_future     = NULL;
 
+  bz_state_info_set_allow_manual_sync (self->state, FALSE);
+
   bz_state_info_set_syncing (self->state, TRUE);
   backend_future = bz_backend_retrieve_remote_entries (BZ_BACKEND (self->flatpak), NULL);
   backend_future = dex_future_finally (
@@ -2856,5 +2979,9 @@ make_sync_future (BzApplication *self)
       dex_ref (backend_future),
       dex_ref (flathub_future),
       NULL);
+  ret_future = dex_future_then (
+      ret_future,
+      (DexFutureCallback) sync_then,
+      bz_track_weak (self), bz_weak_release);
   return g_steal_pointer (&ret_future);
 }
