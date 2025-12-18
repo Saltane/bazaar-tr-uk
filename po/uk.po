@@ -586,8 +586,9 @@ msgid "translator-credits"
 msgstr "faoquad <faoquad@noreply.codeberg.org>, 2025"
 
 #: src/bz-application.c:749
+#, fuzzy
 msgid "Logged Out Successfully!"
-msgstr ""
+msgstr "Ви вийшли з Flathub"
 
 #: src/bz-application.c:855
 msgid "Performing setup..."
@@ -1831,15 +1832,16 @@ msgstr "Ви маєте зʼєднання з мережею, але перег�
 #: src/bz-window.blp:534
 #, fuzzy
 msgid "_Login with Flathub"
-msgstr "Оглянути Flathub"
+msgstr "_Увійти з допомогою Flathub"
 
 #: src/bz-window.blp:540
 msgid "_Manage Leftover User Data"
 msgstr "_Керувати залишковими даними"
 
 #: src/bz-window.blp:545
+#, fuzzy
 msgid "_Synchronize Remotes"
-msgstr ""
+msgstr "_Освіжити віддалені сховища"
 
 #: src/bz-window.blp:571
 msgid "Open Bazaar Inspector"
@@ -1848,7 +1850,7 @@ msgstr "Відкрити зневаджувач"
 #: src/bz-window.blp:580
 #, fuzzy
 msgid "Log Out"
-msgstr "Віддалити"
+msgstr "Вийти"
 
 #: src/bz-window.c:475
 #, c-format
