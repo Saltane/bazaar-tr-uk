@@ -587,7 +587,7 @@ msgstr "faoquad <faoquad@noreply.codeberg.org>, 2025"
 
 #: src/bz-application.c:749
 msgid "Logged Out Successfully!"
-msgstr "<alt>"
+msgstr "Вихід здійснено успішно!"
 
 #: src/bz-application.c:855
 msgid "Performing setup..."
