@@ -701,7 +701,6 @@ msgid "Choose an Installation"
 msgstr "Оберіть встановлення"
 
 #: src/bz-entry-group-util.c:76
-#, fuzzy
 msgid ""
 "You have multiple versions of this app installed. Which one would you like "
 "to proceed with?"
@@ -738,12 +737,10 @@ msgid "Copy and Close"
 msgstr "Копіювати та вийти"
 
 #: src/bz-favorite-button.c:434
-#, fuzzy
 msgid "Log in with Flathub to manage favorites"
 msgstr "Увійдіть із допомогою Flathub, аби керувати вподобаннями"
 
 #: src/bz-favorite-button.c:440
-#, fuzzy
 msgid "Log In"
 msgstr "Увійти"
 
@@ -752,7 +749,6 @@ msgid "Favorite Count"
 msgstr "Кількість уподобань"
 
 #: src/bz-favorites-tile.c:164
-#, fuzzy
 msgid "Uninstall"
 msgstr "Видалити"
 
@@ -761,12 +757,10 @@ msgid "Support this application"
 msgstr "Підтримати цей застосунок"
 
 #: src/bz-favorites-tile.blp:118
-#, fuzzy
 msgid "Remove from Favorites"
 msgstr "Прибрати з вподобаних"
 
 #: src/bz-favorites-page.blp:5 src/bz-favorites-page.blp:75
-#, fuzzy
 #: src/bz-window.blp:580
 msgid "Favorites"
 msgstr "Вподобані"
@@ -781,12 +775,10 @@ msgid "Loading"
 msgstr "Шукаємо"
 
 #: src/bz-favorites-page.blp:68
-#, fuzzy
 msgid "No Favorites"
 msgstr "Нічого не вподобано"
 
 #: src/bz-favorites-page.blp:69
-#, fuzzy
 msgid "Applications you mark as favorite will appear here"
 msgstr "Вподобані застосунки опинятимуться тут"
 
@@ -1778,7 +1770,6 @@ msgid "Pending"
 msgstr "Очікуємо"
 
 #: src/bz-update-dialog.blp:7
-#, fuzzy
 msgid "Update Now"
 msgstr "Оновити зараз"
 
