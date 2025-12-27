@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: bazaar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-27 12:34+0200\n"
-"PO-Revision-Date: 2025-12-21 15:55+0200\n"
+"PO-Revision-Date: 2025-12-27 12:51+0200\n"
 "Last-Translator: faoquad <faoquad@noreply.codeberg.org>\n"
 "Language-Team: Ukrainian <>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 25.12.0\n"
 
 #: data/io.github.kolunmi.Bazaar.desktop.in:3
@@ -63,12 +63,12 @@ msgstr "Ховати застосунки, що не походять із Flath
 #: data/io.github.kolunmi.Bazaar.gschema.xml:21
 #, fuzzy
 msgid "Show Only Verified Content"
-msgstr "Показувати лише вміст з Flathub"
+msgstr "Показувати лише підтверджений вміст"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:22
 #, fuzzy
 msgid "Hide applications which are not verified on Flathub"
-msgstr "Ховати застосунки, що не походять із Flathub"
+msgstr "Ховати застосунки, котрі не є підтвердженими на Flathub"
 
 #: data/io.github.kolunmi.Bazaar.gschema.xml:26
 msgid "Debounce Search Inputs"
@@ -579,7 +579,7 @@ msgstr "Встановлені"
 #: src/bz-apps-page.blp:103
 #, fuzzy
 msgid "Show All"
-msgstr ""
+msgstr "Показати всі"
 
 #: src/bz-application.c:578
 msgid ""
@@ -980,7 +980,7 @@ msgstr "Показати більше"
 #: src/bz-flathub-category.c:94
 #, fuzzy
 msgid "Adwaita"
-msgstr ""
+msgstr "Adwaita"
 
 #: src/bz-flathub-category.c:94
 #, fuzzy
@@ -990,12 +990,12 @@ msgstr "Показати більше"
 #: src/bz-flathub-category.c:95
 #, fuzzy
 msgid "KDE Apps"
-msgstr ""
+msgstr "Застосунки KDE"
 
 #: src/bz-flathub-category.c:95
 #, fuzzy
 msgid "More KDE Apps"
-msgstr "Більше застосунків"
+msgstr "Показати більше"
 
 #: src/bz-flathub-page.blp:23
 msgid "Flathub Not Added"
@@ -1563,12 +1563,12 @@ msgstr ""
 #: src/bz-preferences-dialog.blp:36
 #, fuzzy
 msgid "Verified Results Only"
-msgstr "Надходження лише з Flathub"
+msgstr "Лише підтверджені надходження"
 
 #: src/bz-preferences-dialog.blp:37
 #, fuzzy
 msgid "Hide results that are not verified on Flathub"
-msgstr "Ховати застосунки, що не походять із Flathub"
+msgstr "Ховати надходження, котрі не є підтвердженими на Flathub"
 
 #: src/bz-preferences-dialog.blp:41
 msgid "Hide EOL Apps"
@@ -1614,7 +1614,7 @@ msgstr "Лесбійський прапор"
 #: src/bz-preferences-dialog.c:35
 #, fuzzy
 msgid "Male Homosexual Pride Colors"
-msgstr "Пансексуальний прапор"
+msgstr "Барви Гордості чоловічої гомосексуальності"
 
 #: src/bz-preferences-dialog.c:36
 msgid "Transgender Pride Colors"
@@ -1679,7 +1679,7 @@ msgstr "Біромантичний прапор"
 #: src/bz-preferences-dialog.c:51
 #, fuzzy
 msgid "Disability Pride Colors"
-msgstr "Бісексуальні барви Гордості"
+msgstr "Барви Незламності"
 
 #: src/bz-releases-dialog.blp:5 src/bz-releases-list.blp:26
 msgid "Version History"
