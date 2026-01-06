@@ -58,6 +58,7 @@
 #include "bz-util.h"
 #include "bz-window.h"
 #include "bz-yaml-parser.h"
+#include "progress-bar-designs/common.h"
 
 struct _BzApplication
 {
@@ -141,7 +142,7 @@ BZ_DEFINE_DATA (
       GWeakRef *self;
       GFile    *file;
     },
-    BZ_RELEASE_DATA (self, g_object_unref);
+    BZ_RELEASE_DATA (self, bz_weak_release);
     BZ_RELEASE_DATA (file, g_object_unref))
 
 BZ_DEFINE_DATA (
@@ -300,6 +301,9 @@ validate_group_for_ui (BzApplication *self,
 
 static DexFuture *
 make_sync_future (BzApplication *self);
+
+static void
+finish_with_background_task_label (BzApplication *self);
 
 static void
 bz_application_dispose (GObject *object)
@@ -685,6 +689,12 @@ bz_application_about_action (GSimpleAction *action,
     NULL
   };
 
+  const char *special_thanks[] = {
+    "arewelibadwaitayet https://arewelibadwaitayet.com/",
+    /* This array MUST be NULL terminated */
+    NULL
+  };
+
   g_assert (BZ_IS_APPLICATION (self));
 
   window = gtk_application_get_active_window (GTK_APPLICATION (self));
@@ -714,6 +724,11 @@ bz_application_about_action (GSimpleAction *action,
       "release-notes", release_notes_text,
       NULL);
 
+  adw_about_dialog_add_acknowledgement_section (
+      ADW_ABOUT_DIALOG (dialog),
+      _ ("Special Thanks"),
+      special_thanks);
+
   adw_dialog_present (dialog, GTK_WIDGET (window));
 }
 
@@ -729,7 +744,7 @@ bz_application_preferences_action (GSimpleAction *action,
   g_assert (BZ_IS_APPLICATION (self));
 
   window      = gtk_application_get_active_window (GTK_APPLICATION (self));
-  preferences = bz_preferences_dialog_new (self->settings);
+  preferences = bz_preferences_dialog_new (self->state);
 
   adw_dialog_present (preferences, GTK_WIDGET (window));
 }
@@ -1395,7 +1410,7 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
             if (installed_set == NULL)
               {
                 g_warning ("Failed to enumerate installed entries: %s", local_error->message);
-                bz_state_info_set_background_task_label (self->state, NULL);
+                finish_with_background_task_label (self);
                 break;
               }
 
@@ -1492,7 +1507,7 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
             self->installed_set = g_steal_pointer (&installed_set);
 
             fiber_check_for_updates (self);
-            bz_state_info_set_background_task_label (self->state, NULL);
+            finish_with_background_task_label (self);
           }
           break;
         default:
@@ -1532,7 +1547,7 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
         {
           bz_state_info_set_background_task_label (self->state, _ ("Checking for updates"));
           fiber_check_for_updates (self);
-          bz_state_info_set_background_task_label (self->state, NULL);
+          finish_with_background_task_label (self);
         }
     }
 
@@ -1685,8 +1700,8 @@ init_sync_finally (DexFuture *future,
 
   bz_weak_get_or_return_reject (self, wr);
 
-  bz_state_info_set_background_task_label (self->state, NULL);
   bz_state_info_set_busy (self->state, FALSE);
+  finish_with_background_task_label (self);
 
   return dex_future_new_true ();
 }
@@ -2704,6 +2719,11 @@ init_service_struct (BzApplication *self,
       self->state, "allow-manual-sync",
       g_action_map_lookup_action (G_ACTION_MAP (self), "sync-remotes"), "enabled",
       G_BINDING_SYNC_CREATE);
+
+  gtk_style_context_add_provider_for_display (
+      gdk_display_get_default (),
+      bz_get_pride_style_provider (),
+      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
 
 static GtkWindow *
@@ -3042,4 +3062,22 @@ make_sync_future (BzApplication *self)
       (DexFutureCallback) sync_then,
       bz_track_weak (self), bz_weak_release);
   return g_steal_pointer (&ret_future);
+}
+
+static void
+finish_with_background_task_label (BzApplication *self)
+{
+  if (self->n_notifications_incoming > 0)
+    {
+      g_autofree char *label = NULL;
+
+      label = g_strdup_printf (_ ("Receiving %d entries..."), self->n_notifications_incoming);
+      bz_state_info_set_background_task_label (self->state, label);
+    }
+  else if (bz_state_info_get_syncing (self->state))
+    bz_state_info_set_background_task_label (self->state, _ ("Synchronizing..."));
+  else if (bz_state_info_get_busy (self->state))
+    bz_state_info_set_background_task_label (self->state, _ ("Indexing Data..."));
+  else
+    bz_state_info_set_background_task_label (self->state, NULL);
 }

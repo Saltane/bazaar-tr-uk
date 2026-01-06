@@ -1,13 +1,14 @@
 <p>This release comes with the following improvements:</p>
 <ul>
-  <li>Reworked loading to be substantially faster after first start via async loading</li>
-  <li>A gaming section on the Flathub page</li>
-  <li>Improved UI on mobile, especially on app pages</li>
-  <li>Verified badges next to most places where apps are shown</li>
-  <li>A popover that explains what verification and non-verification mean</li>
-  <li>An "other apps by" page for when a developer has more than 6 apps</li>
-  <li>Tags that show other apps with the same tag when pressed</li>
-  <li>An age rating dialog</li>
-  <li>Changed search filters into global content filters</li>
-  <li>5 new pride flags</li>
+  <li>New market stall icon</li>
+  <li>Remove Flathub styling</li>
+  <li>Add horizontal versions of pride flags</li>
+  <li>Text selection in app descriptions can be made across paragraph breaks</li>
+  <li>Support YAML anchors and aliases in config parsing</li>
+  <li>Drastically reduce disk cache writes over time by skipping unchanged entries</li>
+  <li>Show background status in popover</li>
+  <li>Add app permission system</li>
+  <li>Add back release URLs</li>
+  <li>Fix sync-remotes action in shortcut dialog</li>
+  <li>Fix visual hiccups in comet animations</li>
 </ul>

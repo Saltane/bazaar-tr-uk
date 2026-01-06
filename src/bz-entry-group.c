@@ -48,13 +48,12 @@ struct _BzEntryGroup
   char          *search_tokens;
   char          *remote_repos_string;
   char          *eol;
-  guint64        size;
+  guint64        installed_size;
   int            n_addons;
   char          *donation_url;
   GListModel    *categories;
 
-  int      max_usefulness;
-  gboolean has_non_eol;
+  int max_usefulness;
 
   int installable;
   int updatable;
@@ -94,7 +93,7 @@ enum
   PROP_UI_ENTRY,
   PROP_REMOTE_REPOS_STRING,
   PROP_EOL,
-  PROP_SIZE,
+  PROP_INSTALLED_SIZE,
   PROP_N_ADDONS,
   PROP_DONATION_URL,
   PROP_CATEGORIES,
@@ -211,8 +210,8 @@ bz_entry_group_get_property (GObject    *object,
     case PROP_EOL:
       g_value_set_string (value, bz_entry_group_get_eol (self));
       break;
-    case PROP_SIZE:
-      g_value_set_uint64 (value, bz_entry_group_get_size (self));
+    case PROP_INSTALLED_SIZE:
+      g_value_set_uint64 (value, bz_entry_group_get_installed_size (self));
       break;
     case PROP_N_ADDONS:
       g_value_set_int (value, bz_entry_group_get_n_addons (self));
@@ -390,9 +389,9 @@ bz_entry_group_class_init (BzEntryGroupClass *klass)
           NULL, NULL, NULL,
           G_PARAM_READABLE);
 
-  props[PROP_SIZE] =
+  props[PROP_INSTALLED_SIZE] =
       g_param_spec_uint64 (
-          "size",
+          "installed-size",
           NULL, NULL,
           0, G_MAXUINT64, 0,
           G_PARAM_READABLE);
@@ -610,10 +609,10 @@ bz_entry_group_get_eol (BzEntryGroup *self)
 }
 
 guint64
-bz_entry_group_get_size (BzEntryGroup *self)
+bz_entry_group_get_installed_size (BzEntryGroup *self)
 {
   g_return_val_if_fail (BZ_IS_ENTRY_GROUP (self), 0);
-  return self->size;
+  return self->installed_size;
 }
 
 int
@@ -738,6 +737,7 @@ bz_entry_group_add (BzEntryGroup *self,
   g_autoptr (GMutexLocker) locker  = NULL;
   const char   *unique_id          = NULL;
   gint          usefulness         = 0;
+  const char   *eol                = NULL;
   const char   *title              = NULL;
   const char   *developer          = NULL;
   const char   *description        = NULL;
@@ -749,7 +749,7 @@ bz_entry_group_add (BzEntryGroup *self,
   const char   *dark_accent_color  = NULL;
   gboolean      is_flathub         = FALSE;
   gboolean      is_verified        = FALSE;
-  guint64       size               = 0;
+  guint64       installed_size     = 0;
   GListModel   *addons             = NULL;
   int           n_addons           = 0;
   const char   *donation_url       = NULL;
@@ -769,20 +769,13 @@ bz_entry_group_add (BzEntryGroup *self,
     }
   unique_id = bz_entry_get_unique_id (entry);
 
-  if (!self->has_non_eol)
+  eol = bz_entry_get_eol (entry);
+  if (eol == NULL && runtime != NULL)
+    eol = bz_entry_get_eol (runtime);
+  if (eol != NULL)
     {
-      const char *eol = NULL;
-
-      eol = bz_entry_get_eol (entry);
-      if (eol == NULL && runtime != NULL)
-        eol = bz_entry_get_eol (runtime);
-
       g_clear_pointer (&self->eol, g_free);
-      if (eol != NULL)
-        self->eol = g_strdup (eol);
-      else
-        self->has_non_eol = TRUE;
-
+      self->eol = g_strdup (eol);
       g_object_notify_by_pspec (G_OBJECT (self), props[PROP_EOL]);
     }
 
@@ -797,7 +790,7 @@ bz_entry_group_add (BzEntryGroup *self,
   dark_accent_color  = bz_entry_get_dark_accent_color (entry);
   is_flathub         = bz_entry_get_is_flathub (entry);
   is_verified        = bz_entry_is_verified (entry);
-  size               = bz_entry_get_size (entry);
+  installed_size     = bz_entry_get_installed_size (entry);
   donation_url       = bz_entry_get_donation_url (entry);
   entry_categories   = bz_entry_get_categories (entry);
 
@@ -883,10 +876,10 @@ bz_entry_group_add (BzEntryGroup *self,
           self->is_verified = is_verified;
           g_object_notify_by_pspec (G_OBJECT (self), props[PROP_IS_VERIFIED]);
         }
-      if (size != self->size)
+      if (installed_size != self->installed_size)
         {
-          self->size = size;
-          g_object_notify_by_pspec (G_OBJECT (self), props[PROP_SIZE]);
+          self->installed_size = installed_size;
+          g_object_notify_by_pspec (G_OBJECT (self), props[PROP_INSTALLED_SIZE]);
         }
       if (n_addons != self->n_addons)
         {
@@ -954,10 +947,10 @@ bz_entry_group_add (BzEntryGroup *self,
           self->dark_accent_color = g_strdup (dark_accent_color);
           g_object_notify_by_pspec (G_OBJECT (self), props[PROP_DARK_ACCENT_COLOR]);
         }
-      if (size > 0 && self->size == 0)
+      if (installed_size > 0 && self->installed_size == 0)
         {
-          self->size = size;
-          g_object_notify_by_pspec (G_OBJECT (self), props[PROP_SIZE]);
+          self->installed_size = installed_size;
+          g_object_notify_by_pspec (G_OBJECT (self), props[PROP_INSTALLED_SIZE]);
         }
       if (donation_url != NULL && self->donation_url == NULL)
         {

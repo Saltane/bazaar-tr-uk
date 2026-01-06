@@ -32,17 +32,17 @@
 #include "bz-context-tile.h"
 #include "bz-developer-badge.h"
 #include "bz-dynamic-list-view.h"
-#include "bz-env.h"
 #include "bz-error.h"
 #include "bz-fading-clamp.h"
 #include "bz-favorite-button.h"
 #include "bz-flatpak-entry.h"
 #include "bz-full-view.h"
-#include "bz-global-net.h"
 #include "bz-hardware-support-dialog.h"
 #include "bz-lazy-async-texture-model.h"
 #include "bz-license-dialog.h"
 #include "bz-releases-list.h"
+#include "bz-safety-calculator.h"
+#include "bz-safety-dialog.h"
 #include "bz-screenshot-page.h"
 #include "bz-screenshots-carousel.h"
 #include "bz-section-view.h"
@@ -51,7 +51,6 @@
 #include "bz-state-info.h"
 #include "bz-stats-dialog.h"
 #include "bz-tag-list.h"
-#include "bz-util.h"
 
 struct _BzFullView
 {
@@ -213,7 +212,7 @@ is_zero (gpointer object,
 
 static gboolean
 is_positive (gpointer object,
-         int      value)
+             int      value)
 {
   return value > -1;
 }
@@ -233,6 +232,24 @@ is_null (gpointer object,
          GObject *value)
 {
   return value == NULL;
+}
+
+static gboolean
+is_empty (gpointer    object,
+          GListModel *model)
+{
+  if (model == NULL)
+    return TRUE;
+  return g_list_model_get_n_items (model) == 0;
+}
+
+static gboolean
+is_empty_string (gpointer    object,
+                 const char *str)
+{
+  if (str == NULL)
+    return TRUE;
+  return *str == '\0';
 }
 
 static gboolean
@@ -412,9 +429,9 @@ get_age_rating_style (gpointer         object,
   if (age >= 18)
     return g_strdup ("error");
   else if (age >= 15)
-    return g_strdup ("warning");
+    return g_strdup ("orange");
   else if (age >= 12)
-    return g_strdup ("dark-blue");
+    return g_strdup ("warning");
   else
     return g_strdup ("grey");
 }
@@ -555,8 +572,100 @@ static char *
 format_leftover_label (gpointer object, const char *name, guint64 size)
 {
   g_autofree char *formatted_size = NULL;
+
   formatted_size = g_format_size (size);
   return g_strdup_printf (_ ("%s is not installed, but it still has <b>%s</b> of data present."), name, formatted_size);
+}
+
+static char *
+get_safety_rating_icon (gpointer object,
+                        BzEntry *entry,
+                        int      index)
+{
+  char        *icon       = NULL;
+  BzImportance importance = 0;
+
+  if (entry == NULL)
+    return g_strdup ("app-safety-unknown-symbolic");
+
+  if (index < 0 || index > 2)
+    return NULL;
+
+  if (index == 0)
+    {
+      importance = bz_safety_calculator_calculate_rating (entry);
+      switch (importance)
+        {
+        case BZ_IMPORTANCE_UNIMPORTANT:
+        case BZ_IMPORTANCE_NEUTRAL:
+          return g_strdup ("app-safety-ok-symbolic");
+        case BZ_IMPORTANCE_INFORMATION:
+        case BZ_IMPORTANCE_WARNING:
+          return NULL;
+        case BZ_IMPORTANCE_IMPORTANT:
+          return g_strdup ("dialog-warning-symbolic");
+        default:
+          return NULL;
+        }
+    }
+
+  icon = bz_safety_calculator_get_top_icon (entry, index - 1);
+  return icon;
+}
+
+static char *
+get_safety_rating_style (gpointer object,
+                         BzEntry *entry)
+{
+  BzImportance importance;
+
+  if (entry == NULL)
+    return g_strdup ("grey");
+
+  importance = bz_safety_calculator_calculate_rating (entry);
+
+  switch (importance)
+    {
+    case BZ_IMPORTANCE_UNIMPORTANT:
+    case BZ_IMPORTANCE_NEUTRAL:
+      return g_strdup ("grey");
+    case BZ_IMPORTANCE_INFORMATION:
+      return g_strdup ("warning");
+    case BZ_IMPORTANCE_WARNING:
+      return g_strdup ("orange");
+    case BZ_IMPORTANCE_IMPORTANT:
+      return g_strdup ("error");
+    default:
+      return g_strdup ("grey");
+    }
+}
+
+static char *
+get_safety_rating_label (gpointer object,
+                         BzEntry *entry)
+{
+  BzImportance importance;
+
+  if (entry == NULL)
+    return g_strdup (_ ("N/A"));
+
+  importance = bz_safety_calculator_calculate_rating (entry);
+
+  switch (importance)
+    {
+    case BZ_IMPORTANCE_UNIMPORTANT:
+      return g_strdup (_ ("Low Risk"));
+    case BZ_IMPORTANCE_NEUTRAL:
+      return g_strdup (_ ("Low Risk"));
+    case BZ_IMPORTANCE_INFORMATION:
+      return g_strdup (_ ("Low Risk"));
+    case BZ_IMPORTANCE_WARNING:
+      return g_strdup (_ ("Medium Risk"));
+    case BZ_IMPORTANCE_IMPORTANT:
+      return g_strdup (_ ("High Risk"));
+    default:
+      return g_strdup (_ ("N/A"));
+    }
 }
 
 static gpointer
@@ -726,27 +835,6 @@ open_url_cb (BzFullView   *self,
 }
 
 static void
-open_flathub_url_cb (BzFullView *self,
-                     GtkButton  *button)
-{
-  BzEntry    *entry = NULL;
-  const char *id    = NULL;
-  char       *url   = NULL;
-
-  entry = BZ_ENTRY (bz_result_get_object (self->ui_entry));
-  id    = bz_entry_get_id (entry);
-
-  if (id != NULL && *id != '\0')
-    {
-      url = g_strdup_printf ("https://flathub.org/apps/%s", id);
-      g_app_info_launch_default_for_uri (url, NULL, NULL);
-      g_free (url);
-    }
-  else
-    g_warning ("Invalid or empty ID provided");
-}
-
-static void
 license_cb (BzFullView *self,
             GtkButton  *button)
 {
@@ -844,7 +932,7 @@ size_cb (BzFullView *self,
   if (self->group == NULL)
     return;
 
-  size_dialog = bz_app_size_dialog_new (bz_result_get_object (self->ui_entry));
+  size_dialog = bz_app_size_dialog_new (self->group);
   adw_dialog_present (size_dialog, GTK_WIDGET (self));
 }
 
@@ -860,6 +948,20 @@ formfactor_cb (BzFullView *self,
 
   ui_entry = bz_result_get_object (self->ui_entry);
   dialog   = ADW_DIALOG (bz_hardware_support_dialog_new (ui_entry));
+
+  adw_dialog_present (dialog, GTK_WIDGET (self));
+}
+
+static void
+safety_cb (BzFullView *self,
+           GtkButton  *button)
+{
+  AdwDialog *dialog = NULL;
+
+  if (self->group == NULL)
+    return;
+
+  dialog = ADW_DIALOG (bz_safety_dialog_new (self->group));
 
   adw_dialog_present (dialog, GTK_WIDGET (self));
 }
@@ -946,8 +1048,6 @@ support_cb (BzFullView *self,
       g_app_info_launch_default_for_uri (url, NULL, NULL);
     }
 }
-
-
 
 static void
 install_addons_cb (BzFullView *self,
@@ -1152,6 +1252,8 @@ bz_full_view_class_init (BzFullViewClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, is_zero);
   gtk_widget_class_bind_template_callback (widget_class, is_positive);
   gtk_widget_class_bind_template_callback (widget_class, is_null);
+  gtk_widget_class_bind_template_callback (widget_class, is_empty);
+  gtk_widget_class_bind_template_callback (widget_class, is_empty_string);
   gtk_widget_class_bind_template_callback (widget_class, logical_and);
   gtk_widget_class_bind_template_callback (widget_class, is_longer);
   gtk_widget_class_bind_template_callback (widget_class, bool_to_string);
@@ -1171,6 +1273,9 @@ bz_full_view_class_init (BzFullViewClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, get_license_icon);
   gtk_widget_class_bind_template_callback (widget_class, get_formfactor_label);
   gtk_widget_class_bind_template_callback (widget_class, get_formfactor_tooltip);
+  gtk_widget_class_bind_template_callback (widget_class, get_safety_rating_icon);
+  gtk_widget_class_bind_template_callback (widget_class, get_safety_rating_style);
+  gtk_widget_class_bind_template_callback (widget_class, get_safety_rating_label);
   gtk_widget_class_bind_template_callback (widget_class, has_link);
   gtk_widget_class_bind_template_callback (widget_class, format_leftover_label);
   gtk_widget_class_bind_template_callback (widget_class, format_other_apps_label);
@@ -1179,12 +1284,12 @@ bz_full_view_class_init (BzFullViewClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, more_apps_button_clicked_cb);
   gtk_widget_class_bind_template_callback (widget_class, has_other_apps);
   gtk_widget_class_bind_template_callback (widget_class, open_url_cb);
-  gtk_widget_class_bind_template_callback (widget_class, open_flathub_url_cb);
   gtk_widget_class_bind_template_callback (widget_class, license_cb);
   gtk_widget_class_bind_template_callback (widget_class, dl_stats_cb);
   gtk_widget_class_bind_template_callback (widget_class, screenshot_clicked_cb);
   gtk_widget_class_bind_template_callback (widget_class, size_cb);
   gtk_widget_class_bind_template_callback (widget_class, formfactor_cb);
+  gtk_widget_class_bind_template_callback (widget_class, safety_cb);
   gtk_widget_class_bind_template_callback (widget_class, run_cb);
   gtk_widget_class_bind_template_callback (widget_class, install_cb);
   gtk_widget_class_bind_template_callback (widget_class, remove_cb);

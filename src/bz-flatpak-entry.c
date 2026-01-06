@@ -26,11 +26,11 @@
 #include <glib/gi18n.h>
 #include <xmlb.h>
 
+#include "bz-app-permissions.h"
 #include "bz-async-texture.h"
 #include "bz-flathub-category.h"
 #include "bz-flatpak-private.h"
 #include "bz-io.h"
-#include "bz-issue.h"
 #include "bz-release.h"
 #include "bz-serializable.h"
 #include "bz-url.h"
@@ -368,6 +368,7 @@ bz_flatpak_entry_new_for_ref (FlatpakRef    *ref,
   g_autofree char *unique_id                           = NULL;
   g_autofree char *unique_id_checksum                  = NULL;
   guint64          download_size                       = 0;
+  guint64          installed_size                      = 0;
   const char      *title                               = NULL;
   const char      *eol                                 = NULL;
   const char      *description                         = NULL;
@@ -407,6 +408,7 @@ bz_flatpak_entry_new_for_ref (FlatpakRef    *ref,
   GPtrArray *as_categories                             = NULL;
   g_autoptr (GListModel) categories                    = NULL;
   g_autoptr (BzVerificationStatus) verification_status = NULL;
+  g_autoptr (BzAppPermissions) permissions             = NULL;
 
   g_return_val_if_fail (FLATPAK_IS_REF (ref), NULL);
   g_return_val_if_fail (FLATPAK_IS_REMOTE_REF (ref) || FLATPAK_IS_BUNDLE_REF (ref), NULL);
@@ -488,8 +490,11 @@ bz_flatpak_entry_new_for_ref (FlatpakRef    *ref,
 
   if (FLATPAK_IS_REMOTE_REF (ref))
     download_size = flatpak_remote_ref_get_download_size (FLATPAK_REMOTE_REF (ref));
+
+  if (FLATPAK_IS_REMOTE_REF (ref))
+    installed_size = flatpak_remote_ref_get_installed_size (FLATPAK_REMOTE_REF (ref));
   else if (FLATPAK_IS_BUNDLE_REF (ref))
-    download_size = flatpak_bundle_ref_get_installed_size (FLATPAK_BUNDLE_REF (ref));
+    installed_size = flatpak_bundle_ref_get_installed_size (FLATPAK_BUNDLE_REF (ref));
 
   if (component != NULL)
     {
@@ -687,40 +692,16 @@ bz_flatpak_entry_new_for_ref (FlatpakRef    *ref,
           for (guint i = 0; i < releases_arr->len; i++)
             {
               AsRelease  *as_release          = NULL;
-              GPtrArray  *as_issues           = NULL;
               const char *release_description = NULL;
-              g_autoptr (GListStore) issues   = NULL;
               g_autoptr (BzRelease) release   = NULL;
 
               as_release = g_ptr_array_index (releases_arr, i);
-              as_issues  = as_release_get_issues (as_release);
 
               release_description = as_release_get_description (as_release);
-
-              if (as_issues != NULL && as_issues->len > 0)
-                {
-                  issues = g_list_store_new (BZ_TYPE_ISSUE);
-
-                  for (guint j = 0; j < as_issues->len; j++)
-                    {
-                      AsIssue *as_issue         = NULL;
-                      g_autoptr (BzIssue) issue = NULL;
-
-                      as_issue = g_ptr_array_index (as_issues, j);
-
-                      issue = g_object_new (
-                          BZ_TYPE_ISSUE,
-                          "id", as_issue_get_id (as_issue),
-                          "url", as_issue_get_url (as_issue),
-                          NULL);
-                      g_list_store_append (issues, issue);
-                    }
-                }
 
               release = g_object_new (
                   BZ_TYPE_RELEASE,
                   "description", release_description,
-                  "issues", issues,
                   "timestamp", as_release_get_timestamp (as_release),
                   "url", as_release_get_url (as_release, AS_RELEASE_URL_KIND_DETAILS),
                   "version", as_release_get_version (as_release),
@@ -1034,6 +1015,10 @@ bz_flatpak_entry_new_for_ref (FlatpakRef    *ref,
                     NULL);
     }
 
+  permissions = bz_app_permissions_new_from_metadata (key_file, error);
+  if (permissions == NULL)
+    return NULL;
+
   g_object_set (
       self,
       "kinds", kinds,
@@ -1047,6 +1032,7 @@ bz_flatpak_entry_new_for_ref (FlatpakRef    *ref,
       "remote-repo-name", remote_name,
       "url", project_url,
       "size", download_size,
+      "installed-size", installed_size,
       "search-tokens", search_tokens,
       "metadata-license", metadata_license,
       "project-license", project_license,
@@ -1077,6 +1063,7 @@ bz_flatpak_entry_new_for_ref (FlatpakRef    *ref,
       "keywords", keywords,
       "categories", categories,
       "verification-status", verification_status,
+      "permissions", permissions,
       NULL);
 
   return g_steal_pointer (&self);
