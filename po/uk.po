@@ -99,7 +99,6 @@ msgid "Discover and install applications"
 msgstr "Знаходьте та встановлюйте застосунки"
 
 #: data/io.github.kolunmi.Bazaar.metainfo.xml.in:10
-#, fuzzy
 msgid ""
 "A new app store for Linux with a focus on discovering and installing "
 "applications and addons from Flatpak remotes, particularly Flathub."
