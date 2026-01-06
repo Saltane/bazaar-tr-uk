@@ -2259,3 +2259,48 @@ msgstr "Вийти"
 
 #~ msgid "Install Now"
 #~ msgstr "Встановити зараз"
+
+#, c-format
+#~ msgid "%s is suitable for toddlers"
+#~ msgstr "%s пасує немовлям"
+
+#~ msgid "--- MB"
+#~ msgstr "--- МБ"
+
+#~ msgid "Of the size of human DNA"
+#~ msgstr "від людської ДНК"
+
+#~ msgid "3 billion base pairs"
+#~ msgstr "3 мільярди пар основ"
+
+#~ msgid "Of the Linux Kernel"
+#~ msgstr "від ядра Linux"
+
+# Не потребує перекладу.
+#~ msgid "linux-6.17.tar.xz"
+#~ msgstr "linux-6.17.tar.xz"
+
+#~ msgid "Of the Apollo 11 guidance computer"
+#~ msgstr "від бортового обчислювача Apollo 11"
+
+#~ msgid "Total ROM and RAM"
+#~ msgstr "увесь простір ПЗП та ОЗП"
+
+#~ msgid "Of the original Super Mario Bros"
+#~ msgstr "від першого Super Mario Bros"
+
+#~ msgid "On the NES"
+#~ msgstr "на NES"
+
+#~ msgid "Of the size of Wikipedia"
+#~ msgstr "від усієї Вікіпедії"
+
+#~ msgid "Without any media"
+#~ msgstr "без медіявмісту"
+
+#~ msgid "Remove User Data"
+#~ msgstr "Видалити користувацькі дані"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Refresh"
+#~ msgstr "Освіжити"
