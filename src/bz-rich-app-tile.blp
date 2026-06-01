@@ -4,7 +4,6 @@ template $BzRichAppTile: $BzListTile {
   overflow: hidden;
 
   accessibility {
-    labelled-by: title;
     described-by: description;
   }
 
@@ -37,18 +36,17 @@ template $BzRichAppTile: $BzListTile {
           valign: center;
           hexpand: true;
 
-          visible: bind $is_null(template.first-screenshot) as <bool>;
-
+          visible: bind $is_null(template.ui-entry as <$BzEntry>.thumbnail-paintable) as <bool>;
         }
 
         $BzRoundedPicture {
           halign: center;
           hexpand: true;
           valign: center;
-          paintable: bind template.first-screenshot;
+          paintable: bind template.ui-entry as <$BzEntry>.thumbnail-paintable;
           radius: 6;
 
-          visible: bind $invert_boolean($is_null(template.first-screenshot) as <bool>) as <bool>;
+          visible: bind $invert_boolean($is_null(template.ui-entry as <$BzEntry>.thumbnail-paintable) as <bool>) as <bool>;
         }
       };
     }
@@ -60,16 +58,18 @@ template $BzRichAppTile: $BzListTile {
       margin-bottom: 12;
       orientation: horizontal;
       spacing: 15;
+      height-request: 64;
 
-      Image {
-        pixel-size: 64;
-        paintable: bind template.group as <$BzEntryGroup>.icon-paintable;
+      $BzTransactIcon {
+        valign: center;
+        halign: center;
+        width-request: 64;
+        height-request: 64;
 
-        visible: bind $invert_boolean($is_null(template.group as <$BzEntryGroup>.icon-paintable) as <bool>) as <bool>;
-
-        styles [
-          "icon-dropshadow",
-        ]
+        info: $BzTransactIconInfo transact_icon_info {
+          group: bind template.group as <$BzEntryGroup>;
+          paintable: bind template.ui_entry as <$BzEntry>.icon-paintable;
+        };
       }
 
       Box {
@@ -94,12 +94,16 @@ template $BzRichAppTile: $BzListTile {
           }
 
           Image {
-             styles [
-               "verified",
-             ]
+            styles [
+              "verified",
+            ]
             visible: bind template.group as <$BzEntryGroup>.is-verified;
             icon-name: "verified-checkmark-symbolic";
             pixel-size: 14;
+
+            accessibility {
+              label: _("Verified");
+            }
           }
         }
 
@@ -142,31 +146,99 @@ template $BzRichAppTile: $BzListTile {
         }
       }
 
-      Box {
-        Button {
-          visible: bind $is_zero(template.group as <$BzEntryGroup>.removable) as <bool>;
-          sensitive: bind $invert_boolean($is_zero(template.group as <$BzEntryGroup>.installable-and-available) as <bool>) as <bool>;
+      Stack {
+        transition-type: crossfade;
+        valign: center;
+        hhomogeneous: false;
+        interpolate-size: true;
+        visible-child-name: bind try {
+          $get_visible_page(
+            template.group as <$BzEntryGroup>.installable,
+            template.group as <$BzEntryGroup>.removable,
+            template.removable-at-start as <bool>,
+            template.tracker as <$BzTransactionEntryTracker>,
+            template.tracker as <$BzTransactionEntryTracker>.status as <$BzTransactionEntryStatus>
+            ) as <string>,
+          $get_visible_page(
+            template.group as <$BzEntryGroup>.installable,
+            template.group as <$BzEntryGroup>.removable,
+            template.removable-at-start as <bool>,
+            null as <$BzTransactionEntryTracker>,
+            null as <$BzTransactionEntryStatus>
+          ) as <string>
+        };
 
-          styles [
-            "medium-pill",
-          ]
+        StackPage {
+          name: "get";
+          child: Button get_button {
+            sensitive: bind $invert_boolean(
+              $is_zero(template.group as <$BzEntryGroup>.installable-and-available) as <bool>
+            ) as <bool>;
 
-          label: _("Get");
-          valign: center;
-          clicked => $install_button_clicked_cb(template);
+            styles [
+              "medium-pill",
+            ]
+
+            valign: center;
+            clicked => $install_button_clicked_cb(template);
+          };
         }
 
-        Button {
-          visible: bind $invert_boolean($is_zero(template.group as <$BzEntryGroup>.removable) as <bool>) as <bool>;
-          sensitive: bind $invert_boolean($is_zero(template.group as <$BzEntryGroup>.removable-and-available) as <bool>) as <bool>;
+        StackPage {
+          name: "open";
+          child: Button {
+            sensitive: bind $invert_boolean(
+              $is_zero(template.group as <$BzEntryGroup>.removable-and-available) as <bool>
+            ) as <bool>;
 
-          styles [
-            "circular"
-          ]
+            styles [
+              "medium-pill",
+            ]
 
-          icon-name: "user-trash-symbolic";
-          valign: center;
-          clicked => $install_button_clicked_cb(template);
+            label: _("Open");
+            valign: center;
+            clicked => $run_button_clicked_cb(template);
+          };
+        }
+
+        StackPage {
+          name: "uninstall";
+          child: Button {
+            sensitive: bind $invert_boolean(
+              $is_zero(template.group as <$BzEntryGroup>.removable-and-available) as <bool>
+            ) as <bool>;
+
+            styles [
+              "circular",
+            ]
+
+            icon-name: "user-trash-symbolic";
+            has-tooltip: true;
+            tooltip-text: _("Uninstall");
+            valign: center;
+            clicked => $remove_button_clicked_cb(template);
+          };
+        }
+
+        StackPage {
+          name: "cancel";
+          child: Button {
+            styles [
+              "circular",
+            ]
+
+            icon-name: "cross-large-circle-filled-symbolic";
+            has-tooltip: true;
+            tooltip-text: _("Cancel");
+            valign: center;
+            clicked => $cancel_button_clicked_cb(template);
+          };
+        }
+
+        StackPage {
+          name: "empty";
+
+          child: Box {};
         }
       }
     }

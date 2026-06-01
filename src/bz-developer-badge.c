@@ -85,6 +85,20 @@ get_icon_name (gpointer object,
 }
 
 static char *
+get_verified_tooltip (gpointer object,
+                      GObject *status)
+{
+  gboolean verified = FALSE;
+
+  if (status == NULL)
+    return g_strdup (_ ("Not Verified"));
+
+  g_object_get (status, "verified", &verified, NULL);
+
+  return g_strdup (verified ? _ ("Verified") : _ ("Not Verified"));
+}
+
+static char *
 format_app_id (const char *app_id)
 {
   return g_strdup_printf ("<b>%s</b>", app_id);
@@ -93,7 +107,8 @@ format_app_id (const char *app_id)
 static char *
 format_website_url (const char *website)
 {
-  return g_strdup_printf ("<b><a href=\"https://%s\">%s</a></b>", website, website);
+  return g_strdup_printf ("<b><a href='https://%s' title='https://%s'>%s</a></b>",
+                          website, website, website);
 }
 
 static char *
@@ -109,6 +124,73 @@ format_provider_name (const char *login_provider)
     return g_strdup ("KDE GitLab");
   else
     return g_strdup (login_provider);
+}
+
+static char *
+format_provider_url (const char *login_provider,
+                     const char *login_name)
+{
+  if (g_strcmp0 (login_provider, "github") == 0)
+    return g_strdup_printf ("https://github.com/%s", login_name);
+  else if (g_strcmp0 (login_provider, "gitlab") == 0)
+    return g_strdup_printf ("https://gitlab.com/%s", login_name);
+  else if (g_strcmp0 (login_provider, "gnome") == 0)
+    return g_strdup_printf ("https://gitlab.gnome.org/%s", login_name);
+  else if (g_strcmp0 (login_provider, "kde") == 0)
+    return g_strdup_printf ("https://invent.kde.org/%s", login_name);
+  else
+    return NULL;
+}
+
+static char *
+get_developer_link (gpointer              object,
+                    BzEntry              *entry,
+                    BzVerificationStatus *status)
+{
+  const char      *dev            = NULL;
+  const char      *method         = NULL;
+  const char      *login_name     = NULL;
+  const char      *login_provider = NULL;
+  const char      *website        = NULL;
+  gboolean         verified       = FALSE;
+  g_autofree char *escaped_dev    = NULL;
+
+  if (entry == NULL || !BZ_IS_ENTRY (entry))
+    return NULL;
+
+  dev         = bz_entry_get_developer (entry);
+  if (dev == NULL)
+    return NULL;
+
+  escaped_dev = g_markup_escape_text (dev, -1);
+
+  if (status == NULL)
+    return g_steal_pointer (&escaped_dev);
+
+  g_object_get (status,
+                "verified", &verified,
+                "method", &method,
+                "login-name", &login_name,
+                "login-provider", &login_provider,
+                "website", &website,
+                NULL);
+
+  if (!verified)
+    return g_steal_pointer (&escaped_dev);
+
+  if (g_strcmp0 (method, "login_provider") == 0 && login_name != NULL && login_provider != NULL)
+    {
+      g_autofree char *url = NULL;
+
+      url = format_provider_url (login_provider, login_name);
+      if (url != NULL)
+        return g_strdup_printf ("<a href='%s' title='%s'>%s</a>", url, url, escaped_dev);
+    }
+
+  if (g_strcmp0 (method, "website") == 0 && website != NULL && *website != '\0')
+      return g_strdup_printf ("<a href='https://%s' title='https://%s'>%s</a>", website, website, escaped_dev);
+
+  return g_steal_pointer (&escaped_dev);
 }
 
 static char *
@@ -157,15 +239,25 @@ get_popover_text (gpointer object,
 
   if (g_strcmp0 (method, "login_provider") == 0 && login_name != NULL && login_provider != NULL)
     {
+      g_autofree char *url         = NULL;
+      g_autofree char *linked_name = NULL;
+
       provider_name = format_provider_name (login_provider);
-      return g_strdup_printf (_ ("The ownership of the %s app ID has been verified by <b>%s</b> on <b>%s</b>."),
-                              formatted_app_id, login_name, provider_name);
+      url           = format_provider_url (login_provider, login_name);
+
+      if (url != NULL)
+        linked_name = g_strdup_printf ("<a href='%s' title='%s'>%s</a>", url, url, login_name);
+      else
+        linked_name = g_strdup (login_name);
+
+      return g_strdup_printf (_ ("The ownership of the %1$s app ID has been verified by <b>%2$s</b> on <b>%3$s</b>."),
+                              formatted_app_id, linked_name, provider_name);
     }
 
   if (website != NULL && *website != '\0')
     {
       formatted_website = format_website_url (website);
-      return g_strdup_printf (_ ("The ownership of the %s app ID has been verified using %s."),
+      return g_strdup_printf (_ ("The ownership of the %1$s app ID has been verified using %2$s."),
                               formatted_app_id, formatted_website);
     }
 
@@ -188,6 +280,15 @@ on_info_button_leave (GtkEventControllerMotion *controller,
 {
   GtkWidget *widget = GTK_WIDGET (user_data);
   gtk_widget_set_cursor (widget, NULL);
+}
+
+static gboolean
+on_popover_label_activate_link (GtkLabel         *label,
+                                const char       *uri,
+                                BzDeveloperBadge *self)
+{
+  gtk_popover_popdown (self->popover);
+  return FALSE;
 }
 
 static void
@@ -262,10 +363,13 @@ bz_developer_badge_class_init (BzDeveloperBadgeClass *klass)
   gtk_widget_class_bind_template_child (widget_class, BzDeveloperBadge, popover_label);
   gtk_widget_class_bind_template_callback (widget_class, on_info_button_enter);
   gtk_widget_class_bind_template_callback (widget_class, on_info_button_leave);
+  gtk_widget_class_bind_template_callback (widget_class, on_popover_label_activate_link);
   gtk_widget_class_bind_template_callback (widget_class, is_null);
   gtk_widget_class_bind_template_callback (widget_class, invert_boolean);
   gtk_widget_class_bind_template_callback (widget_class, get_developer_name);
+  gtk_widget_class_bind_template_callback (widget_class, get_developer_link);
   gtk_widget_class_bind_template_callback (widget_class, get_icon_name);
+  gtk_widget_class_bind_template_callback (widget_class, get_verified_tooltip);
   gtk_widget_class_bind_template_callback (widget_class, get_popover_text);
 }
 

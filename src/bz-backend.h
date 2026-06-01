@@ -52,6 +52,10 @@ struct _BzBackendInterface
   DexFuture *(*retrieve_update_ids) (BzBackend    *self,
                                      GCancellable *cancellable);
 
+  /* DexFuture* -> GListModel* (of BzRepository objects) */
+  DexFuture *(*list_repositories) (BzBackend    *self,
+                                   GCancellable *cancellable);
+
   /* DexFuture* -> gboolean */
   DexFuture *(*schedule_transaction) (BzBackend    *self,
                                       BzEntry     **installs,
@@ -62,6 +66,9 @@ struct _BzBackendInterface
                                       guint         n_removals,
                                       DexChannel   *channel,
                                       GCancellable *cancellable);
+
+  gboolean (*cancel_task_for_entry) (BzBackend *self,
+                                     BzEntry   *entry);
 };
 
 DexChannel *
@@ -85,6 +92,10 @@ bz_backend_retrieve_update_ids (BzBackend    *self,
                                 GCancellable *cancellable);
 
 DexFuture *
+bz_backend_list_repositories (BzBackend    *self,
+                              GCancellable *cancellable);
+
+DexFuture *
 bz_backend_schedule_transaction (BzBackend    *self,
                                  BzEntry     **installs,
                                  guint         n_installs,
@@ -100,5 +111,9 @@ bz_backend_merge_and_schedule_transactions (BzBackend    *self,
                                             GListModel   *transactions,
                                             DexChannel   *channel,
                                             GCancellable *cancellable);
+
+gboolean
+bz_backend_cancel_task_for_entry (BzBackend *self,
+                                  BzEntry   *entry);
 
 G_END_DECLS

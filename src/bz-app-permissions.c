@@ -548,6 +548,8 @@ bz_app_permissions_new_from_metadata (GKeyFile *keyfile,
         {                   "xdg-download:ro",                                  BZ_APP_PERMISSIONS_FLAGS_DOWNLOADS_READ },
         { "xdg-data/flatpak/overrides:create",                                  BZ_APP_PERMISSIONS_FLAGS_ESCAPE_SANDBOX },
         {                "xdg-run/pipewire-0", BZ_APP_PERMISSIONS_FLAGS_SCREEN | BZ_APP_PERMISSIONS_FLAGS_AUDIO_DEVICES },
+        {             "xdg-run/pipewire-0:rw", BZ_APP_PERMISSIONS_FLAGS_SCREEN | BZ_APP_PERMISSIONS_FLAGS_AUDIO_DEVICES },
+        {             "xdg-run/pipewire-0:ro", BZ_APP_PERMISSIONS_FLAGS_SCREEN | BZ_APP_PERMISSIONS_FLAGS_AUDIO_DEVICES },
         {                     "xdg-run/gvfsd",                                 BZ_APP_PERMISSIONS_FLAGS_FILESYSTEM_FULL },
       };
       guint filesystems_hits = 0;
@@ -715,7 +717,7 @@ bz_app_permissions_new_from_metadata (GKeyFile *keyfile,
               else if (g_str_equal (bus_policy_str, "own"))
                 bus_policy = BZ_BUS_POLICY_PERMISSION_OWN;
               else
-                bus_policy = BZ_BUS_POLICY_PERMISSION_UNKNOWN;
+                continue;
 
               if (app_id != NULL &&
                   bus_policy_types[h].bus_type == G_BUS_TYPE_SESSION &&

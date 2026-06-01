@@ -5,17 +5,18 @@
   <project_license>GPL-3.0-or-later</project_license>
 
   <name>Bazaar</name>
-  <summary>Discover and install applications</summary>
+  <summary>Discover and manage applications</summary>
   <description>
     <p>
-      A new app store for Linux with a focus on discovering and installing
-      applications and addons from Flatpak remotes, particularly Flathub.
+      A fast and modern app store for Linux with a focus on discovering
+      and installing Flatpak apps and addons, particularly from Flathub.
     </p>
-    <p>
-      It emphasizes supporting the developers who make the Linux desktop
-      possible. Bazaar features a "curated" tab that can be configured by
-      distributors to allow for a more localized experience.
-    </p>
+    <ul>
+      <li>Queue multiple installs and keep browsing</li>
+      <li>Easily view app permissions</li>
+      <li>Sign in to Flathub to view and manage your favorites</li>
+      <li>Search apps directly from GNOME Shell</li>
+    </ul>
   </description>
 
   <supports>
@@ -26,18 +27,18 @@
   </supports>
 
   <developer id="io.github.kolunmi">
-    <name>Adam Masciola</name>
+    <name>The Bazaar Contributors</name>
   </developer>
 
-  <url type="homepage">https://github.com/kolunmi/bazaar</url>
-  <url type="vcs-browser">https://github.com/kolunmi/bazaar</url>
-  <url type="bugtracker">https://github.com/kolunmi/bazaar/issues</url>
-  <url type="translate">https://github.com/kolunmi/bazaar/tree/master/po</url>
-  <url type="faq">https://github.com/kolunmi/bazaar/blob/master/README.md</url>
-  <url type="help">https://github.com/kolunmi/bazaar/discussions</url>
+  <url type="homepage">https://usebazaar.org/</url>
+  <url type="vcs-browser">https://github.com/bazaar-org/bazaar</url>
+  <url type="bugtracker">https://github.com/bazaar-org/bazaar/issues</url>
+  <url type="translate">https://github.com/bazaar-org/bazaar/tree/master/po</url>
+  <url type="faq">https://github.com/bazaar-org/bazaar/blob/master/README.md</url>
+  <url type="help">https://github.com/bazaar-org/bazaar/discussions</url>
   <url type="donation">https://github.com/sponsors/kolunmi</url>
   <url type="contact">https://github.com/kolunmi</url>
-  <url type="contribute">https://github.com/kolunmi/bazaar</url>
+  <url type="contribute">https://github.com/bazaar-org/bazaar</url>
 
   <translation type="gettext">bazaar</translation>
   <launchable type="desktop-id">io.github.kolunmi.Bazaar.desktop</launchable>
@@ -50,32 +51,297 @@
 
   <screenshots>
     <screenshot type="default">
-      <image>https://github.com/user-attachments/assets/ebe32d33-136c-4d90-a6e4-9d468f664be7</image>
+      <image>https://github.com/user-attachments/assets/b7d749fb-ecc0-4f3e-a965-15b6771c54d3</image>
       <caption>The home page displaying Flathub apps</caption>
     </screenshot>
     <screenshot>
-      <image>https://github.com/user-attachments/assets/8904e33b-37c5-41ae-ade6-3fa778bdc4c2</image>
-      <caption>Nucleus app page</caption>
+      <image>https://github.com/user-attachments/assets/7d306fbe-e1a7-4c74-91b2-f5061aba2c56</image>
+      <caption>Exhibit app page</caption>
     </screenshot>
     <screenshot>
-      <image>https://github.com/user-attachments/assets/230ef503-cf4f-4eae-907a-b48bf42f8dd1</image>
+      <image>https://github.com/user-attachments/assets/a25269a3-0560-4d75-9166-a38bc7a7f429</image>
+      <caption>Library page</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://github.com/user-attachments/assets/733bff33-a206-43b9-bbaf-08df9d1c65f3</image>
       <caption>Search page</caption>
     </screenshot>
     <screenshot>
-      <image>https://github.com/user-attachments/assets/74f838e9-af47-4e06-a0db-42a9176b69c0</image>
+      <image>https://github.com/user-attachments/assets/fd721125-1842-4cf1-9ab3-a70ef6b9ce10</image>
       <caption>Category page</caption>
     </screenshot>
   </screenshots>
 
   <releases>
+    <release version="0.8.1" date="2026-05-22">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.8.1</url>
+      <description translate="no">
+        <p>
+          Hot fix for an issue where updates would not show. Also adds a cancel button to the app tiles on the search page.
+        </p>
+        <p>
+          <em>Other Fixes</em>
+        </p>
+        <ul>
+          <li>Fix Flathub page svg graphics being rendered with a solid fill</li>
+          <li>Disable broken graphs for very new Flathub apps</li>
+          <li>Add workaround for KRunner sending broken app IDs</li>
+        </ul>
+        <p>
+          Thanks for reading, and have a great day!
+        </p>
+      </description>
+    </release>
+    <release version="0.8.0" date="2026-05-16">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.8.0</url>
+        <description translate="no">
+          <p>
+            <em>New Features</em>
+          </p>
+          <ul>
+            <li>Add support for installing (.flatpak) bundles</li>
+            <li>New progress indicators</li>
+            <li>The ability to view and delete app caches</li>
+          </ul>
+          <p>
+            <em>Fixes</em>
+          </p>
+          <ul>
+            <li>Fix the download context tile not displaying a label for non-Flathub apps</li>
+            <li>Reduce RAM usage when no windows are open</li>
+            <li>Fix an issue where a window could open at the wrong size while a transaction was running</li>
+            <li>Many other bug fixes</li>
+          </ul>
+          <p>
+            Thanks for reading, and have a great day!
+          </p>
+        </description>
+    </release>
+    <release version="0.7.15" date="2026-04-17">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.15</url>
+      <description translate="no">
+        <p>
+          <em>New Features</em>
+        </p>
+        <ul>
+          <li>Add support for previewing metainfo files</li>
+          <li>Show total installed apps number in the library view</li>
+          <li>Make exported desktop search provider app icon sizes adjustable</li>
+        </ul>
+        <p>
+          <em>Fixes</em>
+        </p>
+        <ul>
+          <li>Fix download timeline graph rerendering too much</li>
+          <li>Fix animated widget ticks not being in sync with fps</li>
+          <li>Fix progress animation for vertical pride flag stripes</li>
+          <li>Many other bug fixes</li>
+        </ul>
+        <p>
+          Thanks for reading, and have a great day!
+        </p>
+      </description>
+    </release>
+    <release version="0.7.14" date="2026-04-10">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.14</url>
+        <description translate="no">
+          <p>
+            <em>New Features</em>
+          </p>
+          <ul>
+            <li>Rework the add-ons dialog</li>
+            <li>Add a gradient under the download timeline</li>
+            <li>Add a filter button to the search page</li>
+            <li>Add a button to show the EULA for some proprietary apps</li>
+            <li>Make the names of verified developers clickable links</li>
+          </ul>
+          <p>
+            <em>Fixes</em>
+          </p>
+          <ul>
+            <li>Fix the colours of the update card</li>
+            <li>Make the update banner follow the accent colour</li>
+          </ul>
+          <p>
+            Thanks for reading, and have a great day!
+          </p>
+        </description>
+    </release>
+    <release version="0.7.13" date="2026-04-1">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.13</url>
+      <description translate="no">
+        <p>
+          <em>Changes</em>
+        </p>
+        <ul>
+          <li>Update to GNOME 50 Runtime</li>
+          <li>Force Adwaita icon theme to ensure consistency</li>
+          <li>Add support for clickable links in app descriptions</li>
+          <li>Add timed lingering cache to async textures, thereby reducing image flickering</li>
+          <li>Add ability to sort installed apps by size in library view</li>
+          <li>Add BAZAAR_N_DOWNLOAD_WORKERS envvar support</li>
+        </ul>
+        <p>
+          <em>Bug Fixes</em>
+        </p>
+        <ul>
+          <li>Fix double shadow around update cards</li>
+          <li>Fix global progress button displaying a focus ring when invisible</li>
+          <li>Fix incorrect total size displayed on update tasks</li>
+          <li>Fix empty UI when Flathub hasn't finished syncing yet</li>
+        </ul>
+        <p>
+          Thanks for reading and have a great day!
+        </p>
+      </description>
+    </release>
+    <release version="0.7.11" date="2026-03-07">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.11</url>
+      <description translate="no">
+        <p>
+          This release contains many technical improvements. This changelog
+          reflects roughly 2 weeks of work.
+        </p>
+        <p>
+          <em>Changes</em>
+        </p>
+        <ul>
+          <li>Respect system parental controls settings</li>
+          <li>Reap download workers when all windows are closed, reducing total memory usage</li>
+          <li>Add mnemonics to full app view</li>
+          <li>Many updates to language translations</li>
+        </ul>
+        <p>
+          <em>Bug Fixes</em>
+        </p>
+        <ul>
+          <li>Fix broken library page when backing installed apps model is empty</li>
+          <li>Fix int casting bug that was causing RetroDeck to appear to be 18.4 exabytes</li>
+          <li>Make "all apps" category pages respect global filters</li>
+          <li>Fix some text wrapping issues</li>
+        </ul>
+        <p>
+          Thanks for reading and have a great day!
+        </p>
+      </description>
+    </release>
+    <release version="0.7.10" date="2026-02-22">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.10</url>
+      <description translate="no">
+        <p>
+          This release fixes some bugs and greatly improves search
+          functionality.
+        </p>
+        <p>
+          If you missed the previous release, in 0.7.9 we also added the ability
+          to cancel transactions in the library view, a brand new screenshots
+          carousel, search suggestion buttons, and app runtime size information.
+          You can also now skip confirmation dialogs by holding shift as you
+          start a transaction.
+        </p>
+        <p>
+          Thanks for reading!
+        </p>
+      </description>
+    </release>
+    <release version="0.7.9" date="2026-02-21">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.9</url>
+      <description translate="no">
+        <p>**New Features**</p>
+        <ul>
+          <li>Search suggestion pills</li>
+          <li>**Cancel installation** transactions</li>
+          <li>Skip dialogs by pressing shift</li>
+          <li>Runtime size info for app pages</li>
+        </ul>
+        <p>**Updated**</p>
+        <ul>
+          <li>Redesigned "What's New" dialog</li>
+          <li>Improved search results by utilizing Flathub rankings</li>
+          <li>Improved screenshots carousel</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.7.8" date="2026-02-11">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.8</url>
+      <description translate="no">
+        <p>
+          This release lets you view and remove user-scoped installed apps from the library page in the Flatpak version of the app.
+          Installing from user remotes is not supported yet.
+        </p>
+      </description>
+    </release>
+    <release version="0.7.7" date="2026-02-09">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.7</url>
+      <description translate="no">
+        <p>This release comes with the following improvements:</p>
+        <ul>
+          <li>Merges the task sidebar and install page into the library page</li>
+          <li>Add installed version numbers of each app on the library and app pages</li>
+          <li>Add donations dialog</li>
+          <li>Fix broken addon and runtime eol detection</li>
+          <li>Add `enable-bulk-install` key to curated sections</li>
+          <li>Add `override-eol-markings` main config string list</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.7.6" date="2026-01-28">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.6</url>
+      <description translate="no">
+        <p>This release comes with the following improvements:</p>
+        <ul>
+          <li>Improve context dialogs</li>
+          <li>Fix leftover data bar being shown prematurely</li>
+          <li>Have a rotation toggle for flags</li>
+          <li>Add hard check to prevent removing Bazaar flatpak</li>
+          <li>Improve download statistics tooltips</li>
+          <li>Add read support for flatpak bundles</li>
+          <li>Fix critical output sometimes during transactions</li>
+          <li>Fix error popover refusing to spawn in transaction sidebar</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.7.5" date="2026-01-18">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.5</url>
+      <description translate="no">
+        <p>Minor bugfix release</p>
+      </description>
+    </release>
+    <release version="0.7.4" date="2026-01-18">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.4</url>
+      <description translate="no">
+        <p>This release comes with the following improvements:</p>
+        <ul>
+          <li>Fix issue where installed page is empty on opening second window</li>
+          <li>Fix screenshot flickering in search results</li>
+          <li>Fix pride flags sometimes not showing on certain locales</li>
+          <li>Add "Install all" to favorites page</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.7.3" date="2026-01-11">
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.3</url>
+      <description translate="no">
+        <p>This release comes with the following improvements:</p>
+        <ul>
+          <li>Trash user data instead of deleting</li>
+          <li>Tweaks to permissions dialog</li>
+          <li>Fix broken EOL filtering</li>
+          <li>Add text filter to installed page</li>
+          <li>Add optional translations mappings for string properties in YAML configs</li>
+          <li>Hide EOL apps by default</li>
+          <li>Many other minor bug fixes and improvements</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.7.2" date="2026-01-03">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.7.2</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.2</url>
       <description translate="no">
         <p>This small release ensures the new icon is rendered correctly on KDE Plasma.</p>
       </description>
     </release>
     <release version="0.7.1" date="2026-01-03">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.7.1</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.1</url>
       <description translate="no">
         <p>This release comes with the following improvements:</p>
         <ul>
@@ -94,7 +360,7 @@
       </description>
     </release>
     <release version="0.7.0" date="2025-12-31">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.7.0</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.7.0</url>
       <description translate="no">
         <p>This release comes with the following improvements:</p>
         <ul>
@@ -113,19 +379,19 @@
       </description>
     </release>
     <release version="0.6.3" date="2025-12-14">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.6.3</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.6.3</url>
       <description translate="no">
         <p>Another quick release to restore alphabetical sorting on the installed page</p>
       </description>
     </release>
     <release version="0.6.2" date="2025-12-09">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.6.2</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.6.2</url>
       <description translate="no">
         <p>Quick release to allow manual refresh if flathub is being flaky</p>
       </description>
     </release>
     <release version="0.6.1" date="2025-12-09">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.6.1</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.6.1</url>
       <description translate="no">
         <p>This release comes with the following improvements:</p>
         <ul>
@@ -136,7 +402,7 @@
       </description>
     </release>
     <release version="0.6.0" date="2025-12-04">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.6.0</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.6.0</url>
       <description translate="no">
         <p>This release comes with the following improvements:</p>
         <ul>
@@ -154,192 +420,97 @@
       </description>
     </release>
     <release version="0.5.10" date="2025-11-12">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.10</url>
-      <description translate="no">
-        <p>This release comes with the following improvements:</p>
-        <ul>
-          <li>Add "hide-eol" preferences option to prevent Bazaar from showing end-of-life applications or applications which depend on end-of-life runtimes</li>
-          <li>Fix global progress bar theme sometimes not syncing with preferences</li>
-          <li>Show version next to addon name in the addons dialog</li>
-        </ul>
-      </description>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.10</url>
     </release>
     <release version="0.5.9" date="2025-11-08">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.9</url>
-      <description translate="no">
-        <p>This release comes with the following improvements:</p>
-        <ul>
-          <li>Add "On the go" section and mobile cateogry</li>
-          <li>Greatly decrease reported memory usage</li>
-          <li>Rework search UI</li>
-          <li>Rework page stack navigation</li>
-          <li>Change screenshot dialog to page</li>
-        </ul>
-      </description>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.9</url>
     </release>
     <release version="0.5.8" date="2025-10-29">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.8</url>
-      <description translate="no">
-        <p>This release comes with the following improvements:</p>
-        <ul>
-          <li>Fix slow/inconsistent image loading</li>
-          <li>Fix context row in full view</li>
-        </ul>
-      </description>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.8</url>
     </release>
     <release version="0.5.7" date="2025-10-27">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.7</url>
-      <description translate="no">
-        <p>This release comes with the following improvements:</p>
-        <ul>
-          <li>Rework full view layout</li>
-          <li>Improve progress bar theme selection</li>
-          <li>Reduce quantity and improve quality of search results</li>
-          <li>Allow the application window to fit on mobile screen sizes</li>
-        </ul>
-      </description>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.7</url>
     </release>
     <release version="0.5.6" date="2025-10-15">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.6</url>
-      <description translate="no">
-        <p>This release comes with the following improvements:</p>
-        <ul>
-          <li>Add interactive screenshot dialog</li>
-          <li>Fix empty update dialogs</li>
-          <li>Greatly improve look of app description rendering</li>
-          <li>Add pending state to the global progress bar</li>
-          <li>Add featured apps carousel</li>
-        </ul>
-      </description>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.6</url>
     </release>
     <release version="0.5.5" date="2025-10-09">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.5</url>
-      <description translate="no">
-        <p>More improvements:</p>
-        <ul>
-          <li>Improve design of transaction dialog</li>
-          <li>Update remove button pulse effect and comet size curve</li>
-          <li>Reap and reload cached textures after a day</li>
-          <li>Eliminate some crashes caused by race conditions</li>
-          <li>Change preferences group to context bar in full view</li>
-          <li>Switch side panels to sidebars and use flat header bar designs</li>
-          <li>Add really useful app size dialog :)</li>
-        </ul>
-      </description>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.5</url>
     </release>
     <release version="0.5.4" date="2025-10-04">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.4</url>
-      <description translate="no">
-        <p>Some improvements:</p>
-        <ul>
-          <li>Make the global progress bar customizable with pride flags! Check preferences</li>
-          <li>Add a new world map page to the download statistics dialog</li>
-          <li>Allow clicking on entries on transaction sidebar to navigate to the original store page</li>
-          <li>Add Alexander Vanhee to the developer credits</li>
-        </ul>
-      </description>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.4</url>
     </release>
     <release version="0.5.3" date="2025-10-02">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.3</url>
-      <description translate="no">
-        <p>Some improvements:</p>
-        <ul>
-          <li>Overhaul download history graph; make it interactive</li>
-          <li>Smarter "back" functionality</li>
-          <li>Hide bottom bar more often on small window sizes</li>
-          <li>Make "light-banner" and "dark-banner" keys available to curated configs</li>
-        </ul>
-      </description>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.3</url>
     </release>
     <release version="0.5.2" date="2025-09-29">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.2</url>
-      <description translate="no">
-        <p>This release includes:</p>
-        <ul>
-          <li>553d041 * chore(po): update Ukrainian translation (#408)</li>
-          <li>711732a * Rework Version History (#407)</li>
-          <li>d2d3771 * Calculate detailed app tiles text color based on luminance of background accent color (#405)</li>
-          <li>3787e6e * Save window size in gsettings</li>
-          <li>18ba76c * AsyncTexture: increase HTTP timeout to 5 seconds</li>
-          <li>980f752 * SearchWidget: prevent invalid item selection</li>
-          <li>ab95593 * Add installed icons to app tiles (#404)</li>
-          <li>203754b * (UI) Improve visiblility of add-on feature (#403)</li>
-          <li>069ce61 * fix installed page list outline ring (#402)</li>
-          <li>da9f7b8 * (UX) Refine the Flathub views to be denser and have less partial lines (#401)</li>
-          <li>a6939ba * fix(po): fix Ukrainian translation (#400)</li>
-          <li>35c9611 * decrease app-tile description width reqs</li>
-          <li>6098be7 * chore(po): update Polish translation (#397)</li>
-          <li>2944d1e * change per section limit to 12 from 9 (#396)</li>
-          <li>0b04284 * Update Japanese Translation (#394)</li>
-          <li>fa60f4f * Move to brand new shiny Adw.ShortcutsDialog (#395)</li>
-        </ul>
-      </description>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.2</url>
     </release>
     <release version="0.5.1" date="2025-09-27">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.1</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.1</url>
     </release>
     <release version="0.5.0" date="2025-09-26">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.5.0</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.5.0</url>
     </release>
     <release version="0.4.11" date="2025-09-15">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.11</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.11</url>
     </release>
     <release version="0.4.10" date="2025-09-12">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.10</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.10</url>
     </release>
     <release version="0.4.9" date="2025-09-11">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.9</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.9</url>
     </release>
     <release version="0.4.8" date="2025-09-08">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.8</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.8</url>
     </release>
     <release version="0.4.7" date="2025-09-07">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.7</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.7</url>
     </release>
     <release version="0.4.6" date="2025-09-05">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.6</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.6</url>
     </release>
     <release version="0.4.5" date="2025-09-01">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.5</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.5</url>
     </release>
     <release version="0.4.4" date="2025-08-30">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.4</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.4</url>
     </release>
     <release version="0.4.3" date="2025-08-26">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.3</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.3</url>
     </release>
     <release version="0.4.2" date="2025-08-26">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.2</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.2</url>
     </release>
     <release version="0.4.1" date="2025-08-24">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.1</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.1</url>
     </release>
     <release version="0.4.0" date="2025-08-21">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.4.0</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.4.0</url>
     </release>
     <release version="0.3.2" date="2025-08-17">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.3.2</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.3.2</url>
     </release>
     <release version="0.3.1" date="2025-08-16">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.3.1</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.3.1</url>
     </release>
     <release version="0.3.0" date="2025-08-11">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.3.0</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.3.0</url>
     </release>
     <release version="0.2.3" date="2025-07-14">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.2.3</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.2.3</url>
     </release>
     <release version="0.2.2" date="2025-07-09">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.2.2</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.2.2</url>
     </release>
     <release version="0.2.1" date="2025-07-07">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.2.1</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.2.1</url>
     </release>
     <release version="0.2.0" date="2025-07-07">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.2.0</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.2.0</url>
     </release>
     <release version="0.1.0" date="2025-06-24">
-      <url type="details">https://github.com/kolunmi/bazaar/releases/tag/v0.1.0</url>
+      <url type="details">https://github.com/bazaar-org/bazaar/releases/tag/v0.1.0</url>
     </release>
   </releases>
 </component>

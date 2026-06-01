@@ -8,10 +8,14 @@ Bazaar
 
 <div align="center">
     <picture>
-        <source srcset="https://github.com/user-attachments/assets/cc545658-31fc-4cc5-b512-a4c17a2af454" media="(prefers-color-scheme: dark)">
-        <img width="512" alt="Screenshot showing Bazaar's Flathub page" src="https://github.com/user-attachments/assets/b712f5de-ea5f-4f06-b834-d41b9265a192" style="max-width: 100%; height: auto;">
+        <source srcset="screenshots/bazaar-dark.png" media="(prefers-color-scheme: dark)">
+        <img width="512" alt="Screenshot showing Bazaar's Flathub page" src="screenshots/bazaar-light.png" style="max-width: 100%; height: auto;">
     </picture>
 </div>
+
+> [!NOTE]
+> If you are a distributor/packager who would like to learn how to
+> customize Bazaar, take a look at the [docs](/docs/overview.md).
 
 > [!NOTE]
 > If you are interested in contributing code to Bazaar (Thank you!),
@@ -38,16 +42,23 @@ interface. A krunner
 [plugin](https://github.com/ublue-os/krunner-bazaar) is available for
 use on the KDE Plasma desktop.
 
-Thanks to [Jakub Steiner](http://jimmac.eu) for designing Bazaar's
-icon.
+Thanks to [Tobias Bernard](https://tobiasbernard.com/), [Jakub
+Steiner](http://jimmac.eu), and [Sam Hewitt](https://snwh.org) for designing
+Bazaar's market stall icon.
 
 ### Installing
 
 Pre-built binaries are distributed via Flathub and GitHub actions:
 
-<a href='https://flathub.org/apps/details/io.github.kolunmi.Bazaar'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
+<a href='https://flathub.org/apps/details/io.github.kolunmi.Bazaar'><img width='240' alt='Get it on Flathub' src='https://flathub.org/api/badge?svg&locale=en'/></a>
 
-[![Build Flatpak and Upload Artifact](https://github.com/kolunmi/bazaar/actions/workflows/build-flatpak.yml/badge.svg)](https://github.com/kolunmi/bazaar/actions/workflows/build-flatpak.yml)
+[![Build Flatpak and Upload Artifact](https://github.com/bazaar-org/bazaar/actions/workflows/build-flatpak.yml/badge.svg)](https://github.com/bazaar-org/bazaar/actions/workflows/build-flatpak.yml)
+
+There also exist packages for [Debian](https://tracker.debian.org/pkg/bazaar)
+and [Arch](https://archlinux.org/packages/extra/x86_64/bazaar/). These are not
+directly supported but should work fine. If you encounter a bug on any package
+of Bazaar other than the flatpak, ensure the bug also exists on the flatpak
+before reporting it here.
 
 ### Supporting
 
@@ -61,37 +72,36 @@ such an awesome desktop environment!
 
 ### Contributing
 
-> [!NOTE]
-> If you are a distributor/packager who would like to learn how to
-customize Bazaar, take a look at the [docs](/docs/overview.org).
-
 If you would like to try this project on your local machine, clone it
 on the cli and type these commands inside the project root:
 
 ```sh
-meson setup build --prefix=/usr/local
+meson setup build --prefix=/usr --libdir=/usr/lib64
 ninja -C build
 sudo ninja -C build install
 bazaar
 ```
 
 You will need the following dependencies installed, along with a C compiler, meson, and ninja:
-| Dep Name                                                | `pkg-config` Name | Min Version            | Justification                                       |
-|---------------------------------------------------------|-------------------|------------------------|-----------------------------------------------------|
-| [gtk4](https://gitlab.gnome.org/GNOME/gtk/)             | `gtk4`            | enforced by libadwaita | GUI                                                 |
-| [libadwaita](https://gitlab.gnome.org/GNOME/libadwaita) | `libadwaita-1`    | `1.8`                  | GNOME styling                                       |
-| [libdex](https://gitlab.gnome.org/GNOME/libdex)         | `libdex-1`        | `1.0`                  | Async helpers                                       |
-| [flatpak](https://github.com/flatpak/flatpak)           | `flatpak`         | `1.9`                  | Flatpak installation management                     |
-| [appstream](https://github.com/ximion/appstream)        | `appstream`       | `1.0`                  | Download application metadata                       |
-| [xmlb](https://github.com/hughsie/libxmlb)              | `xmlb`            | `0.3.4`                | Handle binary xml appstream bundles/Parse plain xml |
-| [glycin](https://gitlab.gnome.org/GNOME/glycin)         | `glycin-2`        | `2.0`                  | Retrieve and decode image uris                      |
-| [glycin-gtk4](https://gitlab.gnome.org/GNOME/glycin)    | `glycin-gtk4-2`   | `2.0`                  | Convert glycin frames to `GdkTexture`s              |
-| [libyaml](https://github.com/yaml/libyaml)              | `yaml-0.1`        | `0.2.5`                | Parse YAML configs                                  |
-| [libsoup](https://gitlab.gnome.org/GNOME/libsoup)       | `libsoup-3.0`     | `3.6.0`                | HTTP operations                                     |
-| [json-glib](https://gitlab.gnome.org/GNOME/json-glib)   | `json-glib-1.0`   | `1.10.0`               | Parse HTTP replies from Flathub                     |
-| [md4c](https://github.com/mity/md4c)                    | `md4c`            | `0.5.1`                | Parse markdown (.md)                                |
-| [webkitgtk](https://webkitgtk.org/)                     | `webkitgtk-6.0`   | `2.50.2`               | Render web views                                    |
-| [libsecret](https://gitlab.gnome.org/GNOME/libsecret)   | `libsecret-1`     | `0.20`                 | Store Flathub account information                   |
+| Dep Name                                                          | `pkg-config` Name | Min Version | Justification                                       |
+|-------------------------------------------------------------------|-------------------|-------------|-----------------------------------------------------|
+| [gtk4](https://gitlab.gnome.org/GNOME/gtk/)                       | `gtk4`            | `4.22.1`    | GUI                                                 |
+| [libadwaita](https://gitlab.gnome.org/GNOME/libadwaita)           | `libadwaita-1`    | `1.8`       | GNOME styling                                       |
+| [libdex](https://gitlab.gnome.org/GNOME/libdex)                   | `libdex-1`        | `1.0`       | Async helpers                                       |
+| [flatpak](https://github.com/flatpak/flatpak)                     | `flatpak`         | `1.9`       | Flatpak installation management                     |
+| [appstream](https://github.com/ximion/appstream)                  | `appstream`       | `1.0`       | Interpret application metadata                      |
+| [xmlb](https://github.com/hughsie/libxmlb)                        | `xmlb`            | `0.3.4`     | Handle binary xml appstream bundles/Parse plain xml |
+| [glycin](https://gitlab.gnome.org/GNOME/glycin)                   | `glycin-2`        | `2.0`       | Decode image URIs                                   |
+| [glycin-gtk4](https://gitlab.gnome.org/GNOME/glycin)              | `glycin-gtk4-2`   | `2.0`       | Convert glycin frames to texture representations    |
+| [libyaml](https://github.com/yaml/libyaml)                        | `yaml-0.1`        | `0.2.5`     | Parse YAML configs                                  |
+| [libsoup](https://gitlab.gnome.org/GNOME/libsoup)                 | `libsoup-3.0`     | `3.6.0`     | HTTP operations                                     |
+| [json-glib](https://gitlab.gnome.org/GNOME/json-glib)             | `json-glib-1.0`   | `1.10.0`    | Parse some HTTP replies                             |
+| [md4c](https://github.com/mity/md4c)                              | `md4c`            | `0.5.1`     | Parse markdown (.md)                                |
+| [gtksourceview](https://gitlab.gnome.org/GNOME/gtksourceview)     | `gtksourceview-5` | `5.17`      | Render markdown code blocks                         |
+| [webkitgtk](https://webkitgtk.org/)                               | `webkitgtk-6.0`   | `2.50.2`    | Render web views                                    |
+| [libsecret](https://gitlab.gnome.org/GNOME/libsecret)             | `libsecret-1`     | `0.20`      | Store Flathub account information                   |
+| [libproxy](https://github.com/libproxy/libproxy)                  | `libproxy-1.0`    | `0.5`       | Parse proxies for networking operations             |
+| [malcontent](https://gitlab.freedesktop.org/pwithnall/malcontent) | `malcontent-0`    | `0.12.0`    | Adhere to system parental controls settings         |
 
 #### Code of Conduct
 

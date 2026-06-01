@@ -29,6 +29,7 @@
 #include "bz-entry-group.h"
 #include "bz-env.h"
 #include "bz-flathub-category.h"
+#include "bz-subcategory-list.h"
 #include "bz-state-info.h"
 
 struct _BzAppsPage
@@ -40,6 +41,7 @@ struct _BzAppsPage
   GListModel *all_applications;
   GListModel *carousel_applications;
   char       *subtitle;
+  BzFlathubCategory *category;
 
   /* Template widgets */
 };
@@ -55,18 +57,13 @@ enum
   PROP_ALL_APPLICATIONS,
   PROP_CAROUSEL_APPLICATIONS,
   PROP_PAGE_SUBTITLE,
+  PROP_CATEGORY,
+  PROP_FLATHUB_STATE,
 
   LAST_PROP
 };
 static GParamSpec *props[LAST_PROP] = { 0 };
 
-enum
-{
-  SIGNAL_SELECT,
-
-  LAST_SIGNAL,
-};
-static guint signals[LAST_SIGNAL];
 
 static void
 tile_clicked (BzEntryGroup *group,
@@ -82,6 +79,7 @@ bz_apps_page_dispose (GObject *object)
   g_clear_object (&self->all_applications);
   g_clear_object (&self->carousel_applications);
   g_clear_pointer (&self->subtitle, g_free);
+  g_clear_object (&self->category);
 
   G_OBJECT_CLASS (bz_apps_page_parent_class)->dispose (object);
 }
@@ -110,6 +108,12 @@ bz_apps_page_get_property (GObject    *object,
       break;
     case PROP_PAGE_SUBTITLE:
       g_value_set_string (value, self->subtitle);
+      break;
+    case PROP_CATEGORY:
+      g_value_set_object (value, self->category);
+      break;
+    case PROP_FLATHUB_STATE:
+      g_value_set_object (value, bz_state_info_get_flathub(bz_state_info_get_default ()));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -190,20 +194,21 @@ is_not_empty_list (gpointer    object,
   return list != NULL && g_list_model_get_n_items (list) > 0;
 }
 
+static gboolean
+is_scrolled_down (gpointer object,
+                  double   value,
+                  gboolean carousel_visible)
+{
+  return value > (carousel_visible ? 400.0 : 50.0);
+}
+
 static void
 featured_carousel_group_clicked_cb (BzAppsPage   *self,
                                     BzEntryGroup *group,
                                     GtkWidget    *carousel)
 {
-  g_signal_emit (self, signals[SIGNAL_SELECT], 0, group);
-}
-
-static void
-all_apps_select_cb (BzAllAppsPage *all_page,
-                    BzEntryGroup  *group,
-                    BzAppsPage    *self)
-{
-  g_signal_emit (self, signals[SIGNAL_SELECT], 0, group);
+  gtk_widget_activate_action (GTK_WIDGET (self), "window.show-group", "s",
+                              bz_entry_group_get_id (group));
 }
 
 static void
@@ -233,9 +238,6 @@ show_all_cb (BzAppsPage *self,
   all_page  = bz_all_apps_page_new (all_title, g_object_ref (self->all_applications));
   if (all_page == NULL)
     return;
-
-  g_signal_connect (all_page, "select",
-                    G_CALLBACK (all_apps_select_cb), self);
 
   adw_navigation_view_push (ADW_NAVIGATION_VIEW (nav_view), all_page);
 }
@@ -281,30 +283,29 @@ bz_apps_page_class_init (BzAppsPageClass *klass)
           "page-subtitle",
           NULL, NULL, NULL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
+  props[PROP_CATEGORY] =
+      g_param_spec_object (
+          "category",
+          NULL, NULL,
+          BZ_TYPE_FLATHUB_CATEGORY,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+  props[PROP_FLATHUB_STATE] =
+      g_param_spec_object (
+          "flathub-state",
+          NULL, NULL,
+          BZ_TYPE_FLATHUB_STATE,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (object_class, LAST_PROP, props);
 
-  signals[SIGNAL_SELECT] =
-      g_signal_new (
-          "select",
-          G_OBJECT_CLASS_TYPE (klass),
-          G_SIGNAL_RUN_FIRST,
-          0,
-          NULL, NULL,
-          g_cclosure_marshal_VOID__OBJECT,
-          G_TYPE_NONE, 1,
-          BZ_TYPE_ENTRY);
-  g_signal_set_va_marshaller (
-      signals[SIGNAL_SELECT],
-      G_TYPE_FROM_CLASS (klass),
-      g_cclosure_marshal_VOID__OBJECTv);
-
   g_type_ensure (BZ_TYPE_APP_TILE);
+  g_type_ensure (BZ_TYPE_SUBCATEGORY_LIST);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/io/github/kolunmi/Bazaar/bz-apps-page.ui");
   gtk_widget_class_bind_template_callback (widget_class, is_not_null);
   gtk_widget_class_bind_template_callback (widget_class, is_not_empty_string);
   gtk_widget_class_bind_template_callback (widget_class, is_not_empty_list);
+  gtk_widget_class_bind_template_callback (widget_class, is_scrolled_down);
   gtk_widget_class_bind_template_callback (widget_class, bind_widget_cb);
   gtk_widget_class_bind_template_callback (widget_class, unbind_widget_cb);
   gtk_widget_class_bind_template_callback (widget_class, featured_carousel_group_clicked_cb);
@@ -347,30 +348,10 @@ static gboolean
 filter_by_category (BzEntryGroup *group,
                     const char   *category_name)
 {
-  GListModel *categories = NULL;
-  guint       n_items    = 0;
-
   g_return_val_if_fail (BZ_IS_ENTRY_GROUP (group), FALSE);
   g_return_val_if_fail (category_name != NULL, FALSE);
 
-  categories = bz_entry_group_get_categories (group);
-  if (categories == NULL)
-    return FALSE;
-
-  n_items = g_list_model_get_n_items (categories);
-  for (guint i = 0; i < n_items; i++)
-    {
-      g_autoptr (BzFlathubCategory) category = NULL;
-      const char *name                       = NULL;
-
-      category = g_list_model_get_item (categories, i);
-      name     = bz_flathub_category_get_name (category);
-
-      if (g_strcmp0 (name, category_name) == 0)
-        return TRUE;
-    }
-
-  return FALSE;
+  return bz_entry_group_has_category (group, category_name);
 }
 
 static DexFuture *
@@ -386,7 +367,7 @@ filter_applications_fiber (BzAppsPage *self)
   if (state_info == NULL)
     return NULL;
 
-  all_model = bz_state_info_get_all_entry_groups (state_info);
+  all_model = bz_state_info_get_filtered_entry_groups (state_info);
   if (all_model == NULL)
     return NULL;
 
@@ -501,11 +482,14 @@ bz_apps_page_new_from_category (BzFlathubCategory *category)
   else
     apps_page = create_standard_page (title, model, carousel_model);
 
-  if (total_entries > 0)
+  if (total_entries > 0 && !bz_flathub_category_get_is_spotlight (category))
     {
       subtitle = g_strdup_printf (_ ("%d Applications"), total_entries);
       bz_apps_page_set_subtitle (BZ_APPS_PAGE (apps_page), subtitle);
     }
+
+  BZ_APPS_PAGE(apps_page)->category = g_object_ref (category);
+  g_object_notify_by_pspec (G_OBJECT (apps_page), props[PROP_CATEGORY]);
 
   if (n_items <= 48)
     setup_category_filter (apps_page, category_name);
@@ -533,8 +517,6 @@ static void
 tile_clicked (BzEntryGroup *group,
               GtkButton    *button)
 {
-  GtkWidget *self = NULL;
-
-  self = gtk_widget_get_ancestor (GTK_WIDGET (button), BZ_TYPE_APPS_PAGE);
-  g_signal_emit (self, signals[SIGNAL_SELECT], 0, group);
+  gtk_widget_activate_action (GTK_WIDGET (button), "window.show-group", "s",
+                              bz_entry_group_get_id (group));
 }

@@ -18,14 +18,17 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "bz-section-view.h"
+#include <bge.h>
+
 #include "bz-application.h"
 #include "bz-async-texture.h"
 #include "bz-curated-app-tile.h"
 #include "bz-curated-section.h"
 #include "bz-dynamic-list-view.h"
 #include "bz-entry-group.h"
-#include "bz-markdown-render.h"
+#include "bz-rich-app-tile.h"
+#include "bz-section-view.h"
+#include "bz-window.h"
 
 struct _BzSectionView
 {
@@ -38,9 +41,10 @@ struct _BzSectionView
   GListModel      *applied_classes;
 
   /* Template widgets */
-  GtkOverlay *banner_text_overlay;
-  GtkBox     *banner_text_bg;
-  GtkBox     *banner_text;
+  GtkOverlay        *banner_text_overlay;
+  GtkBox            *banner_text_bg;
+  GtkBox            *banner_text;
+  BgeMarkdownRender *markdown;
 };
 
 G_DEFINE_FINAL_TYPE (BzSectionView, bz_section_view, ADW_TYPE_BIN)
@@ -233,6 +237,96 @@ unbind_widget_cb (BzSectionView     *self,
 }
 
 static void
+install_all_clicked (BzSectionView *self,
+                     GtkButton     *button)
+{
+  GtkWidget               *window   = NULL;
+  BzCuratedCategoryInfo   *category = NULL;
+  GListModel              *appids   = NULL;
+  guint                    n_appids = 0;
+  BzStateInfo             *info     = NULL;
+  BzApplicationMapFactory *factory  = NULL;
+  g_autoptr (GListModel) groups     = NULL;
+
+  window = gtk_widget_get_ancestor (GTK_WIDGET (self), BZ_TYPE_WINDOW);
+  if (window == NULL)
+    return;
+
+  /* If the button is visible and the user clicked it, this must be non-null */
+  category = bz_curated_section_get_category (self->section);
+  appids   = bz_curated_category_info_get_appids (category);
+  if (appids == NULL)
+    return;
+  n_appids = g_list_model_get_n_items (appids);
+  if (n_appids == 0)
+    return;
+
+  /* TODO: bind state via object properties */
+  info    = bz_state_info_get_default ();
+  factory = bz_state_info_get_application_factory (info);
+
+  groups = bz_application_map_factory_generate (factory, appids);
+  /* TODO: use signals to chain up the blueprints; it is cleaner, but more
+     work... :( */
+  bz_window_bulk_install (BZ_WINDOW (window), groups);
+}
+
+static GtkWidget *
+markdown_bind_inline_uri (BzSectionView     *self,
+                          const char        *title,
+                          const char        *src,
+                          BgeMarkdownRender *markdown)
+{
+  if (src == NULL)
+    return NULL;
+
+  if (g_str_has_prefix (src, "appstream://"))
+    {
+      BzStateInfo             *info    = NULL;
+      BzApplicationMapFactory *factory = NULL;
+      g_autoptr (BzEntryGroup) group   = NULL;
+
+      info    = bz_state_info_get_default ();
+      factory = bz_state_info_get_application_factory (info);
+
+      group = bz_application_map_factory_convert_one (
+          factory,
+          gtk_string_object_new (src + strlen ("appstream://")));
+      if (group != NULL)
+        {
+          GtkWidget *tile = NULL;
+
+          tile = bz_rich_app_tile_new ();
+          bz_rich_app_tile_set_group (BZ_RICH_APP_TILE (tile), group);
+
+          return tile;
+        }
+    }
+  else
+    {
+      g_autoptr (GFile) file = NULL;
+
+      file = g_file_new_for_uri (src);
+      if (file != NULL)
+        {
+          g_autoptr (BzAsyncTexture) texture = NULL;
+          GtkWidget *picture                 = NULL;
+
+          texture = bz_async_texture_new_lazy (file, NULL);
+          picture = gtk_picture_new ();
+          gtk_picture_set_paintable (GTK_PICTURE (picture), GDK_PAINTABLE (texture));
+
+          gtk_widget_set_hexpand (picture, TRUE);
+          gtk_widget_set_size_request (picture, -1, 100);
+
+          return picture;
+        }
+    }
+
+  return NULL;
+}
+
+static void
 bz_section_view_class_init (BzSectionViewClass *klass)
 {
   GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -268,13 +362,13 @@ bz_section_view_class_init (BzSectionViewClass *klass)
 
   g_type_ensure (BZ_TYPE_CURATED_APP_TILE);
   g_type_ensure (BZ_TYPE_DYNAMIC_LIST_VIEW);
-  g_type_ensure (BZ_TYPE_MARKDOWN_RENDER);
   g_type_ensure (BZ_TYPE_ASYNC_TEXTURE);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/io/github/kolunmi/Bazaar/bz-section-view.ui");
   gtk_widget_class_bind_template_child (widget_class, BzSectionView, banner_text_overlay);
   gtk_widget_class_bind_template_child (widget_class, BzSectionView, banner_text_bg);
   gtk_widget_class_bind_template_child (widget_class, BzSectionView, banner_text);
+  gtk_widget_class_bind_template_child (widget_class, BzSectionView, markdown);
   gtk_widget_class_bind_template_callback (widget_class, invert_boolean);
   gtk_widget_class_bind_template_callback (widget_class, is_null);
   gtk_widget_class_bind_template_callback (widget_class, get_banner);
@@ -284,6 +378,8 @@ bz_section_view_class_init (BzSectionViewClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, convert_to_groups);
   gtk_widget_class_bind_template_callback (widget_class, bind_widget_cb);
   gtk_widget_class_bind_template_callback (widget_class, unbind_widget_cb);
+  gtk_widget_class_bind_template_callback (widget_class, install_all_clicked);
+  gtk_widget_class_bind_template_callback (widget_class, markdown_bind_inline_uri);
 }
 
 static void
@@ -322,6 +418,10 @@ bz_section_view_init (BzSectionView *self)
       "notify::dark",
       G_CALLBACK (dark_changed),
       self);
+  g_object_bind_property (
+      self->style_manager, "dark",
+      self->markdown, "dark",
+      G_BINDING_SYNC_CREATE);
 }
 
 GtkWidget *

@@ -27,14 +27,15 @@
 
 #include "bz-app-permissions.h"
 #include "bz-async-texture.h"
+#include "bz-category-flags.h"
 #include "bz-country-data-point.h"
 #include "bz-data-point.h"
 #include "bz-entry.h"
 #include "bz-env.h"
-#include "bz-flathub-category.h"
 #include "bz-global-net.h"
 #include "bz-io.h"
 #include "bz-release.h"
+#include "bz-repository.h"
 #include "bz-serializable.h"
 #include "bz-url.h"
 #include "bz-util.h"
@@ -72,51 +73,52 @@ typedef struct
 {
   gint     hold;
   gboolean installed;
+  char    *installed_version;
+  gboolean reinstallable;
+  gboolean searchable;
 
-  guint            kinds;
-  GListModel      *addons;
-  char            *id;
-  char            *unique_id;
-  char            *unique_id_checksum;
-  char            *title;
-  char            *eol;
-  char            *description;
-  char            *long_description;
-  char            *remote_repo_name;
-  char            *url;
-  guint64          size;
-  guint64          installed_size;
-  GdkPaintable    *icon_paintable;
-  GIcon           *mini_icon;
-  GdkPaintable    *remote_repo_icon;
-  char            *search_tokens;
-  char            *metadata_license;
-  char            *project_license;
-  gboolean         is_floss;
-  char            *project_group;
-  char            *developer;
-  char            *developer_id;
-  GListModel      *developer_apps;
-  GListModel      *screenshot_paintables;
-  GListModel      *screenshot_captions;
-  GListModel      *share_urls;
-  char            *donation_url;
-  char            *forge_url;
-  GListModel      *reviews;
-  double           average_rating;
-  char            *ratings_summary;
-  GListModel      *version_history;
-  char            *light_accent_color;
-  char            *dark_accent_color;
-  gboolean         is_mobile_friendly;
-  guint            required_controls;
-  guint            recommended_controls;
-  guint            supported_controls;
-  gint             min_display_length;
-  gint             max_display_length;
-  AsContentRating *content_rating;
-  GListModel      *keywords;
-  GListModel      *categories;
+  guint             kinds;
+  GListModel       *addons;
+  char             *id;
+  char             *unique_id;
+  char             *unique_id_checksum;
+  char             *title;
+  char             *eol;
+  char             *description;
+  char             *long_description;
+  char             *remote_repo_name;
+  char             *url;
+  guint64           size;
+  guint64           installed_size;
+  GdkPaintable     *icon_paintable;
+  GIcon            *mini_icon;
+  GdkPaintable     *remote_repo_icon;
+  char             *search_tokens;
+  char             *metadata_license;
+  char             *project_license;
+  gboolean          is_floss;
+  char             *project_group;
+  char             *developer;
+  char             *developer_id;
+  GListModel       *developer_apps;
+  GListModel       *screenshot_paintables;
+  GListModel       *screenshot_captions;
+  GdkPaintable     *thumbnail_paintable;
+  GListModel       *share_urls;
+  char             *donation_url;
+  char             *ratings_summary;
+  GListModel       *version_history;
+  char             *light_accent_color;
+  char             *dark_accent_color;
+  gboolean          is_mobile_friendly;
+  guint             required_controls;
+  guint             recommended_controls;
+  guint             supported_controls;
+  gint              min_display_length;
+  gint              max_display_length;
+  AsContentRating  *content_rating;
+  GListModel       *keywords;
+  BzCategoryFlags   categories;
   BzAppPermissions *permissions;
 
   gboolean              is_flathub;
@@ -128,7 +130,6 @@ typedef struct
   int                   favorites_count;
 
   GHashTable *flathub_prop_queries;
-  DexFuture  *mini_icon_future;
 } BzEntryPrivate;
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (BzEntry, bz_entry, G_TYPE_OBJECT);
@@ -139,6 +140,9 @@ enum
 
   PROP_HOLDING,
   PROP_INSTALLED,
+  PROP_INSTALLED_VERSION,
+  PROP_REINSTALLABLE,
+  PROP_SEARCHABLE,
   PROP_KINDS,
   PROP_ADDONS,
   PROP_ID,
@@ -166,11 +170,9 @@ enum
   PROP_DEVELOPER_APPS,
   PROP_SCREENSHOT_PAINTABLES,
   PROP_SCREENSHOT_CAPTIONS,
+  PROP_THUMBNAIL_PAINTABLE,
   PROP_SHARE_URLS,
   PROP_DONATION_URL,
-  PROP_FORGE_URL,
-  PROP_REVIEWS,
-  PROP_AVERAGE_RATING,
   PROP_RATINGS_SUMMARY,
   PROP_VERSION_HISTORY,
   PROP_IS_FLATHUB,
@@ -238,30 +240,6 @@ maybe_save_paintable (BzEntryPrivate  *priv,
 static GdkPaintable *
 make_async_texture (GVariant *parse);
 
-static DexFuture *
-icon_paintable_future_then (DexFuture *future,
-                            GWeakRef  *wr);
-
-BZ_DEFINE_DATA (
-    load_mini_icon,
-    LoadMiniIcon,
-    {
-      BzEntry *self;
-      char    *path;
-      GIcon   *result;
-    },
-    BZ_RELEASE_DATA (self, g_object_unref);
-    BZ_RELEASE_DATA (path, g_free);
-    BZ_RELEASE_DATA (result, g_object_unref))
-static DexFuture *
-load_mini_icon_fiber (LoadMiniIconData *data);
-static DexFuture *
-load_mini_icon_notify (LoadMiniIconData *data);
-
-static GIcon *
-load_mini_icon_sync (const char *unique_id_checksum,
-                     const char *path);
-
 static void
 clear_entry (BzEntry *self);
 
@@ -291,6 +269,15 @@ bz_entry_get_property (GObject    *object,
       break;
     case PROP_INSTALLED:
       g_value_set_boolean (value, priv->installed);
+      break;
+    case PROP_INSTALLED_VERSION:
+      g_value_set_string (value, priv->installed_version);
+      break;
+    case PROP_REINSTALLABLE:
+      g_value_set_boolean (value, priv->reinstallable);
+      break;
+    case PROP_SEARCHABLE:
+      g_value_set_boolean (value, priv->searchable);
       break;
     case PROP_ADDONS:
       g_value_set_object (value, priv->addons);
@@ -333,7 +320,6 @@ bz_entry_get_property (GObject    *object,
       break;
     case PROP_ICON_PAINTABLE:
       g_value_set_object (value, priv->icon_paintable);
-      dex_unref (bz_entry_load_mini_icon (self));
       break;
     case PROP_MINI_ICON:
       g_value_set_object (value, priv->mini_icon);
@@ -372,20 +358,14 @@ bz_entry_get_property (GObject    *object,
     case PROP_SCREENSHOT_CAPTIONS:
       g_value_set_object (value, priv->screenshot_captions);
       break;
+    case PROP_THUMBNAIL_PAINTABLE:
+      g_value_set_object (value, priv->thumbnail_paintable);
+      break;
     case PROP_SHARE_URLS:
       g_value_set_object (value, priv->share_urls);
       break;
     case PROP_DONATION_URL:
       g_value_set_string (value, priv->donation_url);
-      break;
-    case PROP_FORGE_URL:
-      g_value_set_string (value, priv->forge_url);
-      break;
-    case PROP_REVIEWS:
-      g_value_set_object (value, priv->reviews);
-      break;
-    case PROP_AVERAGE_RATING:
-      g_value_set_double (value, priv->average_rating);
       break;
     case PROP_RATINGS_SUMMARY:
       g_value_set_string (value, priv->ratings_summary);
@@ -424,7 +404,7 @@ bz_entry_get_property (GObject    *object,
       g_value_set_object (value, priv->keywords);
       break;
     case PROP_CATEGORIES:
-      g_value_set_object (value, priv->categories);
+      g_value_set_uint (value, priv->categories);
       break;
     case PROP_PERMISSIONS:
       g_value_set_object (value, priv->permissions);
@@ -444,7 +424,7 @@ bz_entry_get_property (GObject    *object,
       g_value_set_object (value, priv->download_stats_per_country);
       break;
     case PROP_RECENT_DOWNLOADS:
-      query_flathub (self, PROP_DOWNLOAD_STATS);
+      query_flathub (self, PROP_RECENT_DOWNLOADS);
       g_value_set_int (value, priv->recent_downloads);
       break;
     case PROP_TOTAL_DOWNLOADS:
@@ -474,6 +454,16 @@ bz_entry_set_property (GObject      *object,
     {
     case PROP_INSTALLED:
       priv->installed = g_value_get_boolean (value);
+      break;
+    case PROP_INSTALLED_VERSION:
+      g_clear_pointer (&priv->installed_version, g_free);
+      priv->installed_version = g_value_dup_string (value);
+      break;
+    case PROP_REINSTALLABLE:
+      priv->reinstallable = g_value_get_boolean (value);
+      break;
+    case PROP_SEARCHABLE:
+      priv->searchable = g_value_get_boolean (value);
       break;
     case PROP_ADDONS:
       g_clear_object (&priv->addons);
@@ -577,6 +567,10 @@ bz_entry_set_property (GObject      *object,
       g_clear_object (&priv->screenshot_captions);
       priv->screenshot_captions = g_value_dup_object (value);
       break;
+    case PROP_THUMBNAIL_PAINTABLE:
+      g_clear_object (&priv->thumbnail_paintable);
+      priv->thumbnail_paintable = g_value_dup_object (value);
+      break;
     case PROP_SHARE_URLS:
       g_clear_object (&priv->share_urls);
       priv->share_urls = g_value_dup_object (value);
@@ -584,17 +578,6 @@ bz_entry_set_property (GObject      *object,
     case PROP_DONATION_URL:
       g_clear_pointer (&priv->donation_url, g_free);
       priv->donation_url = g_value_dup_string (value);
-      break;
-    case PROP_FORGE_URL:
-      g_clear_pointer (&priv->forge_url, g_free);
-      priv->forge_url = g_value_dup_string (value);
-      break;
-    case PROP_REVIEWS:
-      g_clear_object (&priv->reviews);
-      priv->reviews = g_value_dup_object (value);
-      break;
-    case PROP_AVERAGE_RATING:
-      priv->average_rating = g_value_get_double (value);
       break;
     case PROP_RATINGS_SUMMARY:
       g_clear_pointer (&priv->ratings_summary, g_free);
@@ -639,8 +622,7 @@ bz_entry_set_property (GObject      *object,
       priv->keywords = g_value_dup_object (value);
       break;
     case PROP_CATEGORIES:
-      g_clear_object (&priv->categories);
-      priv->categories = g_value_dup_object (value);
+      priv->categories = g_value_get_uint (value);
       break;
     case PROP_PERMISSIONS:
       g_clear_object (&priv->permissions);
@@ -660,28 +642,6 @@ bz_entry_set_property (GObject      *object,
           {
             g_clear_object (&priv->download_stats);
             priv->download_stats = g_value_dup_object (value);
-
-            if (priv->download_stats != NULL)
-              {
-                guint n_items          = 0;
-                guint start            = 0;
-                guint recent_downloads = 0;
-
-                n_items = g_list_model_get_n_items (priv->download_stats);
-                start   = n_items - MIN (n_items, 30);
-
-                for (guint i = start; i < n_items; i++)
-                  {
-                    g_autoptr (BzDataPoint) point = NULL;
-
-                    point = g_list_model_get_item (priv->download_stats, i);
-                    recent_downloads += bz_data_point_get_dependent (point);
-                  }
-                priv->recent_downloads = recent_downloads;
-              }
-            else
-              priv->recent_downloads = 0;
-            g_object_notify_by_pspec (object, props[PROP_RECENT_DOWNLOADS]);
           }
         else
           {
@@ -724,6 +684,25 @@ bz_entry_class_init (BzEntryClass *klass)
       g_param_spec_boolean (
           "installed",
           NULL, NULL, FALSE,
+          G_PARAM_READWRITE);
+
+  props[PROP_INSTALLED_VERSION] =
+      g_param_spec_string (
+          "installed-version",
+          NULL, NULL, NULL,
+          G_PARAM_READWRITE);
+
+  props[PROP_REINSTALLABLE] =
+      g_param_spec_boolean (
+          "reinstallable",
+          NULL, NULL, TRUE,
+          G_PARAM_READWRITE);
+
+  props[PROP_SEARCHABLE] =
+      g_param_spec_boolean (
+          "searchable",
+          NULL, NULL,
+          TRUE,
           G_PARAM_READWRITE);
 
   props[PROP_ADDONS] =
@@ -801,7 +780,7 @@ bz_entry_class_init (BzEntryClass *klass)
           0, G_MAXUINT64, 0,
           G_PARAM_READWRITE);
 
-    props[PROP_INSTALLED_SIZE] =
+  props[PROP_INSTALLED_SIZE] =
       g_param_spec_uint64 (
           "installed-size",
           NULL, NULL,
@@ -892,6 +871,13 @@ bz_entry_class_init (BzEntryClass *klass)
           G_TYPE_LIST_MODEL,
           G_PARAM_READWRITE);
 
+  props[PROP_THUMBNAIL_PAINTABLE] =
+      g_param_spec_object (
+          "thumbnail-paintable",
+          NULL, NULL,
+          GDK_TYPE_PAINTABLE,
+          G_PARAM_READWRITE);
+
   props[PROP_SHARE_URLS] =
       g_param_spec_object (
           "share-urls",
@@ -903,26 +889,6 @@ bz_entry_class_init (BzEntryClass *klass)
       g_param_spec_string (
           "donation-url",
           NULL, NULL, NULL,
-          G_PARAM_READWRITE);
-
-  props[PROP_FORGE_URL] =
-      g_param_spec_string (
-          "forge-url",
-          NULL, NULL, NULL,
-          G_PARAM_READWRITE);
-
-  props[PROP_REVIEWS] =
-      g_param_spec_object (
-          "reviews",
-          NULL, NULL,
-          G_TYPE_LIST_MODEL,
-          G_PARAM_READWRITE);
-
-  props[PROP_AVERAGE_RATING] =
-      g_param_spec_double (
-          "average-rating",
-          NULL, NULL,
-          0.0, 1.0, 0.0,
           G_PARAM_READWRITE);
 
   props[PROP_RATINGS_SUMMARY] =
@@ -1012,10 +978,11 @@ bz_entry_class_init (BzEntryClass *klass)
           G_PARAM_READWRITE);
 
   props[PROP_CATEGORIES] =
-      g_param_spec_object (
+      g_param_spec_uint (
           "categories",
           NULL, NULL,
-          G_TYPE_LIST_MODEL,
+          0, G_MAXUINT,
+          BZ_CATEGORY_FLAGS_NONE,
           G_PARAM_READWRITE);
 
   props[PROP_PERMISSIONS] =
@@ -1082,6 +1049,8 @@ bz_entry_init (BzEntry *self)
   BzEntryPrivate *priv = bz_entry_get_instance_private (self);
 
   priv->hold            = 0;
+  priv->reinstallable   = TRUE;
+  priv->searchable      = TRUE;
   priv->favorites_count = -1;
 }
 
@@ -1093,7 +1062,11 @@ bz_entry_real_serialize (BzSerializable  *serializable,
   BzEntryPrivate *priv = bz_entry_get_instance_private (self);
 
   g_variant_builder_add (builder, "{sv}", "installed", g_variant_new_boolean (priv->installed));
+  if (priv->installed_version != NULL)
+    g_variant_builder_add (builder, "{sv}", "installed-version", g_variant_new_string (priv->installed_version));
   g_variant_builder_add (builder, "{sv}", "kinds", g_variant_new_uint32 (priv->kinds));
+  g_variant_builder_add (builder, "{sv}", "reinstallable", g_variant_new_boolean (priv->reinstallable));
+  g_variant_builder_add (builder, "{sv}", "searchable", g_variant_new_boolean (priv->searchable));
   if (priv->addons != NULL)
     {
       guint n_items = 0;
@@ -1206,6 +1179,8 @@ bz_entry_real_serialize (BzSerializable  *serializable,
           g_variant_builder_add (builder, "{sv}", "screenshot-captions", g_variant_builder_end (sub_builder));
         }
     }
+  if (priv->thumbnail_paintable != NULL)
+    maybe_save_paintable (priv, "thumbnail-paintable", priv->thumbnail_paintable, builder);
   if (priv->share_urls != NULL)
     {
       guint n_items = 0;
@@ -1215,27 +1190,24 @@ bz_entry_real_serialize (BzSerializable  *serializable,
         {
           g_autoptr (GVariantBuilder) sub_builder = NULL;
 
-          sub_builder = g_variant_builder_new (G_VARIANT_TYPE ("a(sss)"));
+          sub_builder = g_variant_builder_new (G_VARIANT_TYPE ("a(ss)"));
           for (guint i = 0; i < n_items; i++)
             {
               g_autoptr (BzUrl) url = NULL;
-              const char *name      = NULL;
+              const char *id        = NULL;
               const char *url_str   = NULL;
-              const char *icon_name = NULL;
 
-              url       = g_list_model_get_item (priv->share_urls, i);
-              name      = bz_url_get_name (url);
-              url_str   = bz_url_get_url (url);
-              icon_name = bz_url_get_icon_name (url);
-              g_variant_builder_add (sub_builder, "(sss)", name, url_str, icon_name ? icon_name : "");
+              url     = g_list_model_get_item (priv->share_urls, i);
+              id      = bz_url_get_id (url);
+              url_str = bz_url_get_url (url);
+
+              g_variant_builder_add (sub_builder, "(ss)", id ? id : "", url_str ? url_str : "");
             }
           g_variant_builder_add (builder, "{sv}", "share-urls", g_variant_builder_end (sub_builder));
         }
     }
   if (priv->donation_url != NULL)
     g_variant_builder_add (builder, "{sv}", "donation-url", g_variant_new_string (priv->donation_url));
-  if (priv->forge_url != NULL)
-    g_variant_builder_add (builder, "{sv}", "forge-url", g_variant_new_string (priv->forge_url));
   if (priv->version_history != NULL)
     {
       guint n_items = 0;
@@ -1248,11 +1220,11 @@ bz_entry_real_serialize (BzSerializable  *serializable,
           sub_builder = g_variant_builder_new (G_VARIANT_TYPE ("a(mstmsms)"));
           for (guint i = 0; i < n_items; i++)
             {
-              g_autoptr (BzRelease) release              = NULL;
-              guint64     timestamp                      = 0;
-              const char *url                            = NULL;
-              const char *version                        = NULL;
-              const char *description                    = NULL;
+              g_autoptr (BzRelease) release = NULL;
+              guint64     timestamp         = 0;
+              const char *url               = NULL;
+              const char *version           = NULL;
+              const char *description       = NULL;
 
               release     = g_list_model_get_item (priv->version_history, i);
               timestamp   = bz_release_get_timestamp (release);
@@ -1329,32 +1301,9 @@ bz_entry_real_serialize (BzSerializable  *serializable,
           g_variant_builder_add (builder, "{sv}", "keywords", g_variant_builder_end (sub_builder));
         }
     }
-
-  if (priv->categories != NULL)
-    {
-      guint n_items = 0;
-
-      n_items = g_list_model_get_n_items (priv->categories);
-      if (n_items > 0)
-        {
-          g_autoptr (GVariantBuilder) sub_builder = NULL;
-
-          sub_builder = g_variant_builder_new (G_VARIANT_TYPE ("as"));
-          for (guint i = 0; i < n_items; i++)
-            {
-              g_autoptr (BzFlathubCategory) category = NULL;
-              const char *category_name              = NULL;
-
-              category      = g_list_model_get_item (priv->categories, i);
-              category_name = bz_flathub_category_get_name (category);
-              if (category_name != NULL)
-                g_variant_builder_add (sub_builder, "s", category_name);
-            }
-
-          g_variant_builder_add (builder, "{sv}", "categories", g_variant_builder_end (sub_builder));
-        }
-    }
-
+  if (priv->categories != BZ_CATEGORY_FLAGS_NONE)
+    g_variant_builder_add (builder, "{sv}", "categories",
+                           g_variant_new_uint32 (priv->categories));
   if (priv->verification_status != NULL)
     {
       gboolean         verified              = FALSE;
@@ -1457,8 +1406,14 @@ bz_entry_real_deserialize (BzSerializable *serializable,
 
       if (g_strcmp0 (key, "installed") == 0)
         priv->installed = g_variant_get_boolean (value);
+      else if (g_strcmp0 (key, "installed-version") == 0)
+        priv->installed_version = g_variant_dup_string (value, NULL);
       else if (g_strcmp0 (key, "kinds") == 0)
         priv->kinds = g_variant_get_uint32 (value);
+      else if (g_strcmp0 (key, "reinstallable") == 0)
+        priv->reinstallable = g_variant_get_boolean (value);
+      else if (g_strcmp0 (key, "searchable") == 0)
+        priv->searchable = g_variant_get_boolean (value);
       else if (g_strcmp0 (key, "addons") == 0)
         {
           g_autoptr (GListStore) store        = NULL;
@@ -1563,27 +1518,26 @@ bz_entry_real_deserialize (BzSerializable *serializable,
 
           priv->screenshot_captions = G_LIST_MODEL (g_steal_pointer (&store));
         }
+      else if (g_strcmp0 (key, "thumbnail-paintable") == 0)
+        priv->thumbnail_paintable = make_async_texture (value);
       else if (g_strcmp0 (key, "share-urls") == 0)
         {
           g_autoptr (GListStore) store      = NULL;
           g_autoptr (GVariantIter) url_iter = NULL;
 
-          store = g_list_store_new (BZ_TYPE_URL);
-
+          store    = g_list_store_new (BZ_TYPE_URL);
           url_iter = g_variant_iter_new (value);
           for (;;)
             {
-              g_autofree char *name      = NULL;
-              g_autofree char *url_str   = NULL;
-              g_autoptr (BzUrl) url      = NULL;
-              g_autofree char *icon_name = NULL;
+              g_autofree char *id      = NULL;
+              g_autofree char *url_str = NULL;
+              g_autoptr (BzUrl) url    = NULL;
 
-              if (!g_variant_iter_next (url_iter, "(sss)", &name, &url_str, &icon_name))
+              if (!g_variant_iter_next (url_iter, "(ss)", &id, &url_str))
                 break;
               url = bz_url_new ();
-              bz_url_set_name (url, name);
+              bz_url_set_id (url, id);
               bz_url_set_url (url, url_str);
-              bz_url_set_icon_name (url, icon_name);
               g_list_store_append (store, url);
             }
 
@@ -1591,8 +1545,6 @@ bz_entry_real_deserialize (BzSerializable *serializable,
         }
       else if (g_strcmp0 (key, "donation-url") == 0)
         priv->donation_url = g_variant_dup_string (value, NULL);
-      else if (g_strcmp0 (key, "forge-url") == 0)
-        priv->forge_url = g_variant_dup_string (value, NULL);
       else if (g_strcmp0 (key, "version-history") == 0)
         {
           g_autoptr (GListStore) store          = NULL;
@@ -1603,11 +1555,11 @@ bz_entry_real_deserialize (BzSerializable *serializable,
           version_iter = g_variant_iter_new (value);
           for (;;)
             {
-              guint64          timestamp          = 0;
-              g_autofree char *url                = NULL;
-              g_autofree char *description        = NULL;
-              g_autofree char *version            = NULL;
-              g_autoptr (BzRelease) release       = NULL;
+              guint64          timestamp    = 0;
+              g_autofree char *url          = NULL;
+              g_autofree char *description  = NULL;
+              g_autofree char *version      = NULL;
+              g_autoptr (BzRelease) release = NULL;
 
               if (!g_variant_iter_next (version_iter, "(mstmsms)", &description, &timestamp, &url, &version))
                 break;
@@ -1693,28 +1645,7 @@ bz_entry_real_deserialize (BzSerializable *serializable,
           priv->keywords = G_LIST_MODEL (g_steal_pointer (&store));
         }
       else if (g_strcmp0 (key, "categories") == 0)
-        {
-          g_autoptr (GListStore) store             = NULL;
-          g_autoptr (GVariantIter) categories_iter = NULL;
-
-          store = g_list_store_new (BZ_TYPE_FLATHUB_CATEGORY);
-
-          categories_iter = g_variant_iter_new (value);
-          for (;;)
-            {
-              g_autofree char *category_name         = NULL;
-              g_autoptr (BzFlathubCategory) category = NULL;
-
-              if (!g_variant_iter_next (categories_iter, "s", &category_name))
-                break;
-
-              category = bz_flathub_category_new ();
-              bz_flathub_category_set_name (category, category_name);
-              g_list_store_append (store, category);
-            }
-
-          priv->categories = G_LIST_MODEL (g_steal_pointer (&store));
-        }
+        priv->categories = g_variant_get_uint32 (value);
       else if (g_strcmp0 (key, "verification-verified") == 0)
         {
           if (priv->verification_status == NULL)
@@ -1835,6 +1766,31 @@ bz_entry_set_installed (BzEntry *self,
   g_object_notify_by_pspec (G_OBJECT (self), props[PROP_INSTALLED]);
 }
 
+const char *
+bz_entry_get_installed_version (BzEntry *self)
+{
+  BzEntryPrivate *priv = NULL;
+
+  g_return_val_if_fail (BZ_IS_ENTRY (self), NULL);
+  priv = bz_entry_get_instance_private (self);
+
+  return priv->installed_version;
+}
+
+void
+bz_entry_set_installed_version (BzEntry    *self,
+                                const char *version)
+{
+  BzEntryPrivate *priv = NULL;
+
+  g_return_if_fail (BZ_IS_ENTRY (self));
+  priv = bz_entry_get_instance_private (self);
+
+  g_clear_pointer (&priv->installed_version, g_free);
+  priv->installed_version = g_strdup (version);
+  g_object_notify_by_pspec (G_OBJECT (self), props[PROP_INSTALLED_VERSION]);
+}
+
 gboolean
 bz_entry_is_of_kinds (BzEntry *self,
                       guint    kinds)
@@ -1845,6 +1801,28 @@ bz_entry_is_of_kinds (BzEntry *self,
   priv = bz_entry_get_instance_private (self);
 
   return (priv->kinds & kinds) == kinds;
+}
+
+gboolean
+bz_entry_is_reinstallable (BzEntry *self)
+{
+  BzEntryPrivate *priv = NULL;
+
+  g_return_val_if_fail (BZ_IS_ENTRY (self), TRUE);
+  priv = bz_entry_get_instance_private (self);
+
+  return priv->reinstallable;
+}
+
+gboolean
+bz_entry_is_searchable (BzEntry *self)
+{
+  BzEntryPrivate *priv = NULL;
+
+  g_return_val_if_fail (BZ_IS_ENTRY (self), TRUE);
+  priv = bz_entry_get_instance_private (self);
+
+  return priv->searchable;
 }
 
 void
@@ -2093,15 +2071,44 @@ bz_entry_get_donation_url (BzEntry *self)
   return priv->donation_url;
 }
 
-const char *
-bz_entry_get_forge_url (BzEntry *self)
+BzRepository *
+bz_entry_get_repository (BzEntry    *self,
+                         GListModel *repos)
 {
-  BzEntryPrivate *priv = NULL;
+  BzEntryPrivate *priv    = NULL;
+  guint           n_repos = 0;
+  g_auto (GStrv) parts    = NULL;
+  const char *scope       = NULL;
+  const char *repo_name   = NULL;
+  gboolean    is_user     = FALSE;
 
-  g_return_val_if_fail (BZ_IS_ENTRY (self), NULL);
   priv = bz_entry_get_instance_private (self);
 
-  return priv->forge_url;
+  if (priv->unique_id == NULL)
+    return NULL;
+
+  parts = g_strsplit (priv->unique_id, "::", -1);
+  if (g_strv_length (parts) < 3)
+    return NULL;
+
+  scope     = parts[0];
+  repo_name = parts[1];
+
+  is_user = g_strcmp0 (scope, "FLATPAK-USER") == 0;
+
+  n_repos = g_list_model_get_n_items (repos);
+  for (guint i = 0; i < n_repos; i++)
+    {
+      g_autoptr (BzRepository) repo = g_list_model_get_item (repos, i);
+      const char *name              = bz_repository_get_name (repo);
+      gboolean    repo_is_user      = bz_repository_get_is_user (repo);
+
+      if (repo_is_user == is_user &&
+          g_strcmp0 (name, repo_name) == 0)
+        return g_object_ref (repo);
+    }
+
+  return NULL;
 }
 
 gboolean
@@ -2253,14 +2260,14 @@ bz_entry_get_content_rating (BzEntry *self)
   return priv->content_rating;
 }
 
-GListModel *
-bz_entry_get_categories (BzEntry *self)
+BzCategoryFlags
+bz_entry_get_category_flags (BzEntry *self)
 {
   BzEntryPrivate *priv = NULL;
 
-  g_return_val_if_fail (BZ_IS_ENTRY (self), NULL);
-
+  g_return_val_if_fail (BZ_IS_ENTRY (self), BZ_CATEGORY_FLAGS_NONE);
   priv = bz_entry_get_instance_private (self);
+
   return priv->categories;
 }
 
@@ -2273,36 +2280,6 @@ bz_entry_get_is_flathub (BzEntry *self)
   priv = bz_entry_get_instance_private (self);
 
   return priv->is_flathub;
-}
-
-DexFuture *
-bz_entry_load_mini_icon (BzEntry *self)
-{
-  BzEntryPrivate *priv = NULL;
-
-  dex_return_error_if_fail (BZ_IS_ENTRY (self));
-  priv = bz_entry_get_instance_private (self);
-
-  if (priv->mini_icon == NULL &&
-      priv->mini_icon_future == NULL &&
-      BZ_IS_ASYNC_TEXTURE (priv->icon_paintable))
-    {
-      dex_clear (&priv->mini_icon_future);
-      priv->mini_icon_future = dex_future_then (
-          bz_async_texture_dup_future (BZ_ASYNC_TEXTURE (priv->icon_paintable)),
-          (DexFutureCallback) icon_paintable_future_then,
-          bz_track_weak (self), bz_weak_release);
-      return dex_ref (priv->mini_icon_future);
-    }
-  else
-    return dex_future_new_true ();
-}
-
-GIcon *
-bz_load_mini_icon_sync (const char *unique_id_checksum,
-                        const char *path)
-{
-  return load_mini_icon_sync (unique_id_checksum, path);
 }
 
 gint
@@ -2357,6 +2334,63 @@ bz_entry_deserialize (BzEntry  *self,
   return bz_entry_real_deserialize (BZ_SERIALIZABLE (self), import, error);
 }
 
+GIcon *
+bz_load_mini_icon_sync (const char *unique_id_checksum,
+                        const char *path)
+{
+  guint            icon_size          = 0;
+  g_autofree char *main_cache         = NULL;
+  g_autofree char *mini_icon_basename = NULL;
+  g_autofree char *mini_icon_path     = NULL;
+  g_autoptr (GBytes) bytes            = NULL;
+  cairo_surface_t *surface_in         = NULL;
+  int              width              = 0;
+  int              height             = 0;
+  cairo_surface_t *surface_out        = NULL;
+  cairo_t         *cairo              = NULL;
+  g_autoptr (GFile) parent_file       = NULL;
+  g_autoptr (GFile) mini_icon_file    = NULL;
+  g_autoptr (GIcon) mini_icon         = NULL;
+
+  icon_size = bz_get_desktop_search_provider_icon_size ();
+
+  main_cache         = bz_dup_module_dir ();
+  mini_icon_basename = g_strdup_printf ("%s-%ux%u", unique_id_checksum, icon_size, icon_size);
+  mini_icon_path     = g_build_filename (main_cache, mini_icon_basename, NULL);
+
+  if (g_file_test (mini_icon_path, G_FILE_TEST_EXISTS))
+    /* Assume the icon left behind by last writer */
+    goto done;
+
+  surface_in = cairo_image_surface_create_from_png (path);
+  width      = cairo_image_surface_get_width (surface_in);
+  height     = cairo_image_surface_get_height (surface_in);
+
+  surface_out = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, icon_size, icon_size);
+  cairo       = cairo_create (surface_out);
+
+  cairo_scale (cairo,
+               (double) icon_size / (double) width,
+               (double) icon_size / (double) height);
+  cairo_set_source_surface (cairo, surface_in, 0, 0);
+  cairo_paint (cairo);
+  cairo_restore (cairo);
+
+  parent_file = g_file_new_for_path (main_cache);
+  g_file_make_directory_with_parents (parent_file, NULL, NULL);
+
+  cairo_surface_flush (surface_out);
+  cairo_surface_write_to_png (surface_out, mini_icon_path);
+  cairo_destroy (cairo);
+  cairo_surface_destroy (surface_in);
+  cairo_surface_destroy (surface_out);
+
+done:
+  mini_icon_file = g_file_new_for_path (mini_icon_path);
+  mini_icon      = g_file_icon_new (mini_icon_file);
+  return g_steal_pointer (&mini_icon);
+}
+
 static void
 query_flathub (BzEntry *self,
                int      prop)
@@ -2364,10 +2398,16 @@ query_flathub (BzEntry *self,
   BzEntryPrivate *priv              = NULL;
   g_autoptr (QueryFlathubData) data = NULL;
   g_autoptr (DexFuture) future      = NULL;
+  gboolean is_download_stat         = FALSE;
 
   priv = bz_entry_get_instance_private (self);
 
-  if (!priv->is_flathub)
+  is_download_stat = (prop == PROP_DOWNLOAD_STATS ||
+                      prop == PROP_DOWNLOAD_STATS_PER_COUNTRY ||
+                      prop == PROP_RECENT_DOWNLOADS ||
+                      prop == PROP_TOTAL_DOWNLOADS);
+
+  if (!is_download_stat && !priv->is_flathub)
     return;
   if (priv->id == NULL)
     return;
@@ -2421,6 +2461,7 @@ query_flathub_fiber (QueryFlathubData *data)
     {
     case PROP_DOWNLOAD_STATS:
     case PROP_DOWNLOAD_STATS_PER_COUNTRY:
+    case PROP_RECENT_DOWNLOADS:
     case PROP_TOTAL_DOWNLOADS:
       request = g_strdup_printf ("/stats/%s?all=false&days=175", id);
       break;
@@ -2448,22 +2489,18 @@ query_flathub_fiber (QueryFlathubData *data)
     {
     case PROP_DOWNLOAD_STATS:
       {
+        JsonObject *root             = NULL;
         JsonObject *per_day          = NULL;
         g_autoptr (GListStore) store = NULL;
 
         if (!JSON_NODE_HOLDS_OBJECT (node))
-          {
-            g_debug ("No data for property %s for %s from flathub",
-                     props[prop]->name, id);
-            return dex_future_new_for_error (
-                g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
-                             "Unexpected JSON response format"));
-          }
+          return dex_future_new_for_error (
+              g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+                           "Unexpected JSON response format"));
 
-        per_day = json_object_get_object_member (
-            json_node_get_object (node),
-            "installs_per_day");
-        store = g_list_store_new (BZ_TYPE_DATA_POINT);
+        root    = json_node_get_object (node);
+        per_day = json_object_get_object_member (root, "installs_per_day");
+        store   = g_list_store_new (BZ_TYPE_DATA_POINT);
 
         json_object_foreach_member (
             per_day,
@@ -2471,6 +2508,7 @@ query_flathub_fiber (QueryFlathubData *data)
             store);
 
         g_list_store_sort (store, (GCompareDataFunc) compare_dates, NULL);
+
         return dex_future_new_for_object (store);
       }
       break;
@@ -2479,6 +2517,11 @@ query_flathub_fiber (QueryFlathubData *data)
       {
         JsonObject *per_country      = NULL;
         g_autoptr (GListStore) store = NULL;
+
+        if (!JSON_NODE_HOLDS_OBJECT (node))
+          return dex_future_new_for_error (
+              g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+                           "Unexpected JSON response format"));
 
         per_country = json_object_get_object_member (
             json_node_get_object (node),
@@ -2494,9 +2537,26 @@ query_flathub_fiber (QueryFlathubData *data)
         return dex_future_new_for_object (store);
       }
       break;
+
+    case PROP_RECENT_DOWNLOADS:
+      {
+        int recent_downloads = 0;
+
+        if (!JSON_NODE_HOLDS_OBJECT (node))
+          return dex_future_new_for_int (0);
+
+        if (json_object_has_member (json_node_get_object (node), "installs_last_month"))
+          recent_downloads = json_object_get_int_member (json_node_get_object (node), "installs_last_month");
+
+        return dex_future_new_for_int (recent_downloads);
+      }
+      break;
     case PROP_TOTAL_DOWNLOADS:
       {
         int total_downloads = 0;
+
+        if (!JSON_NODE_HOLDS_OBJECT (node))
+          return dex_future_new_for_int (0);
 
         if (json_object_has_member (json_node_get_object (node), "installs_total"))
           total_downloads = json_object_get_int_member (json_node_get_object (node), "installs_total");
@@ -2557,6 +2617,7 @@ query_flathub_then (DexFuture        *future,
 
   value = dex_future_get_value (future, NULL);
   g_object_set_property (G_OBJECT (self), props[prop]->name, value);
+
   return NULL;
 }
 
@@ -2625,7 +2686,6 @@ maybe_save_paintable (BzEntryPrivate  *priv,
 
   if (!BZ_IS_ASYNC_TEXTURE (paintable))
     {
-      g_warning ("Paintable must be of type BzAsyncTexture to be serialized!");
       return FALSE;
     }
 
@@ -2721,133 +2781,17 @@ make_async_texture (GVariant *parse)
   return GDK_PAINTABLE (g_steal_pointer (&texture));
 }
 
-static DexFuture *
-icon_paintable_future_then (DexFuture *future,
-                            GWeakRef  *wr)
-{
-  g_autoptr (BzEntry) self          = NULL;
-  BzEntryPrivate *priv              = NULL;
-  const char     *icon_path         = NULL;
-  g_autoptr (LoadMiniIconData) data = NULL;
-
-  bz_weak_get_or_return_reject (self, wr);
-  priv = bz_entry_get_instance_private (self);
-
-  /* ? */
-  if (!BZ_IS_ASYNC_TEXTURE (priv->icon_paintable))
-    return NULL;
-
-  icon_path = bz_async_texture_get_cache_into_path (BZ_ASYNC_TEXTURE (priv->icon_paintable));
-  if (icon_path == NULL)
-    return NULL;
-
-  data       = load_mini_icon_data_new ();
-  data->self = g_object_ref (self);
-  data->path = g_strdup (icon_path);
-
-  return dex_scheduler_spawn (
-      bz_get_io_scheduler (),
-      bz_get_dex_stack_size (),
-      (DexFiberFunc) load_mini_icon_fiber,
-      load_mini_icon_data_ref (data),
-      load_mini_icon_data_unref);
-}
-
-static DexFuture *
-load_mini_icon_fiber (LoadMiniIconData *data)
-{
-  BzEntry *self = data->self;
-  char    *path = data->path;
-
-  data->result = load_mini_icon_sync (
-      bz_entry_get_unique_id_checksum (BZ_ENTRY (self)),
-      path);
-  return dex_scheduler_spawn (
-      dex_scheduler_get_default (),
-      bz_get_dex_stack_size (),
-      (DexFiberFunc) load_mini_icon_notify,
-      load_mini_icon_data_ref (data),
-      load_mini_icon_data_unref);
-}
-
-static GIcon *
-load_mini_icon_sync (const char *unique_id_checksum,
-                     const char *path)
-{
-  g_autofree char *main_cache            = NULL;
-  g_autoptr (GString) mini_icon_basename = NULL;
-  g_autofree char *mini_icon_path        = NULL;
-  g_autoptr (GBytes) bytes               = NULL;
-  cairo_surface_t *surface_in            = NULL;
-  int              width                 = 0;
-  int              height                = 0;
-  cairo_surface_t *surface_out           = NULL;
-  cairo_t         *cairo                 = NULL;
-  g_autoptr (GFile) parent_file          = NULL;
-  g_autoptr (GFile) mini_icon_file       = NULL;
-  g_autoptr (GIcon) mini_icon            = NULL;
-
-  main_cache         = bz_dup_module_dir ();
-  mini_icon_basename = g_string_new (unique_id_checksum);
-  g_string_append (mini_icon_basename, "-24x24.png");
-  mini_icon_path = g_build_filename (main_cache, mini_icon_basename->str, NULL);
-
-  if (g_file_test (mini_icon_path, G_FILE_TEST_EXISTS))
-    /* Assume the icon left behind by last writer */
-    goto done;
-
-  surface_in = cairo_image_surface_create_from_png (path);
-  width      = cairo_image_surface_get_width (surface_in);
-  height     = cairo_image_surface_get_height (surface_in);
-
-  /* 24x24 for the gnome-shell search provider */
-  surface_out = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 24, 24);
-  cairo       = cairo_create (surface_out);
-
-  cairo_scale (cairo, 24.0 / (double) width, 24.0 / (double) height);
-  cairo_set_source_surface (cairo, surface_in, 0, 0);
-  cairo_paint (cairo);
-  cairo_restore (cairo);
-
-  parent_file = g_file_new_for_path (main_cache);
-  g_file_make_directory_with_parents (parent_file, NULL, NULL);
-
-  cairo_surface_flush (surface_out);
-  cairo_surface_write_to_png (surface_out, mini_icon_path);
-  cairo_destroy (cairo);
-  cairo_surface_destroy (surface_in);
-  cairo_surface_destroy (surface_out);
-
-done:
-  mini_icon_file = g_file_new_for_path (mini_icon_path);
-  mini_icon      = g_file_icon_new (mini_icon_file);
-  return g_steal_pointer (&mini_icon);
-}
-
-static DexFuture *
-load_mini_icon_notify (LoadMiniIconData *data)
-{
-  BzEntry *self   = data->self;
-  GIcon   *result = data->result;
-
-  g_object_set (
-      self,
-      "mini-icon", result,
-      NULL);
-  return dex_future_new_true ();
-}
-
 static void
 clear_entry (BzEntry *self)
 {
   BzEntryPrivate *priv = bz_entry_get_instance_private (self);
 
-  dex_clear (&priv->mini_icon_future);
   g_clear_pointer (&priv->flathub_prop_queries, g_hash_table_unref);
   g_clear_object (&priv->addons);
   g_clear_pointer (&priv->id, g_free);
   g_clear_pointer (&priv->unique_id, g_free);
   g_clear_pointer (&priv->unique_id_checksum, g_free);
+  g_clear_pointer (&priv->installed_version, g_free);
   g_clear_pointer (&priv->title, g_free);
   g_clear_pointer (&priv->eol, g_free);
   g_clear_pointer (&priv->description, g_free);
@@ -2866,10 +2810,9 @@ clear_entry (BzEntry *self)
   g_clear_object (&priv->developer_apps);
   g_clear_object (&priv->screenshot_paintables);
   g_clear_object (&priv->screenshot_captions);
+  g_clear_object (&priv->thumbnail_paintable);
   g_clear_object (&priv->share_urls);
   g_clear_pointer (&priv->donation_url, g_free);
-  g_clear_pointer (&priv->forge_url, g_free);
-  g_clear_object (&priv->reviews);
   g_clear_pointer (&priv->ratings_summary, g_free);
   g_clear_object (&priv->version_history);
   g_clear_pointer (&priv->light_accent_color, g_free);
@@ -2879,6 +2822,5 @@ clear_entry (BzEntry *self)
   g_clear_object (&priv->download_stats_per_country);
   g_clear_object (&priv->content_rating);
   g_clear_object (&priv->keywords);
-  g_clear_object (&priv->categories);
   g_clear_object (&priv->permissions);
 }

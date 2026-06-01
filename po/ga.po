@@ -1,0 +1,3477 @@
+# Irish translations for bazaar package.
+# Copyright (C) 2026 THE bazaar'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the bazaar package.
+# Automatically generated, 2026.
+#
+# Aindriú Mac Giolla Eoin <aindriu80@yahoo.com>, 2026.
+msgid ""
+msgstr ""
+"Project-Id-Version: bazaar\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-24 13:42+0100\n"
+"PO-Revision-Date: 2026-05-24 13:17+0000\n"
+"Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@yahoo.com>\n"
+"Language-Team: Irish <http://weblate.amgelocalnet.duckdns.org/projects/"
+"bazaar-translations/bazaar/ga/>\n"
+"Language: ga\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n==2 ? 1 : 2;\n"
+"X-Generator: Weblate 2026.5\n"
+
+#: data/io.github.kolunmi.Bazaar.desktop.in:3
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:7 src/bz-window.blp:45
+#: src/bz-window.blp:199 src/bz-window.c:373 src/bz-window.c:374
+msgid "Bazaar"
+msgstr "Bazaar"
+
+#: data/io.github.kolunmi.Bazaar.desktop.in:4
+msgid "Add, remove or update flatpak software on this computer"
+msgstr ""
+"Bogearraí flatpak a chur leis, a bhaint nó a nuashonrú ar an ríomhaire seo"
+
+#: data/io.github.kolunmi.Bazaar.desktop.in:10
+msgid "GTK;System;PackageManager;Discover;Flatpak;Software;Store;"
+msgstr "GTK;Córas;Bainisteoir Pacáistí;Faigh Amach;Flatpak;Bogearraí;Stór;"
+
+#: data/io.github.kolunmi.Bazaar.desktop.in:17
+msgid "New Window"
+msgstr "Fuinneog Nua"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:8
+msgid "Discover and manage applications"
+msgstr "Aimsigh agus bainistigh feidhmchláir"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:10
+msgid ""
+"A fast and modern app store for Linux with a focus on discovering and "
+"installing Flatpak apps and addons, particularly from Flathub."
+msgstr ""
+"Siopa aipeanna gasta agus nua-aimseartha do Linux le fócas ar aipeanna agus "
+"breiseáin Flatpak a aimsiú agus a shuiteáil, go háirithe ó Flathub."
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:15
+msgid "Queue multiple installs and keep browsing"
+msgstr "Cuir ilshuiteálacha i scuaine agus lean ort ag brabhsáil"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:16
+msgid "Easily view app permissions"
+msgstr "Féach go héasca ar cheadanna aipeanna"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:17
+msgid "Sign in to Flathub to view and manage your favorites"
+msgstr ""
+"Sínigh isteach chuig Flathub chun do rogha pearsanta a fheiceáil agus a "
+"bhainistiú"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:18
+msgid "Search apps directly from GNOME Shell"
+msgstr "Cuardaigh aipeanna go díreach ó GNOME Shell"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:30 src/bz-application.c:762
+msgid "The Bazaar Contributors"
+msgstr "Rannpháirtithe an Bazaar"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:55
+msgid "The home page displaying Flathub apps"
+msgstr "An leathanach baile a thaispeánann aipeanna Flathub"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:59
+msgid "Exhibit app page"
+msgstr "Leathanach aip taispeántais"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:63
+msgid "Library page"
+msgstr "Leathanach na leabharlainne"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:67
+msgid "Search page"
+msgstr "Leathanach cuardaigh"
+
+#: data/io.github.kolunmi.Bazaar.metainfo.xml.in:71
+msgid "Category page"
+msgstr "Leathanach catagóire"
+
+#: src/bz-addon-tile.blp:64 src/bz-installed-tile.blp:55
+#: src/bz-rich-app-tile.blp:141
+msgid "Stopped Receiving Updates"
+msgstr "Stopadh ag fáil nuashonruithe"
+
+#: src/bz-addon-tile.c:167 src/bz-favorites-tile.c:155
+msgctxt "Install Controls"
+msgid "Uninstall"
+msgstr "Díshuiteáil"
+
+#: src/bz-addon-tile.c:169 src/bz-bundle-install-dialog.blp:126
+#: src/bz-favorites-tile.c:157 src/bz-install-controls.wdgt:29
+msgctxt "Install Controls"
+msgid "Install"
+msgstr "Suiteáil"
+
+#: src/bz-addons-dialog.blp:14 src/bz-addons-dialog.blp:21
+#: src/bz-addons-dialog.blp:70 src/bz-full-view.blp:583
+#: src/bz-installed-tile.blp:92
+msgid "Manage Add-Ons"
+msgstr "Bainistigh Breiseáin"
+
+#: src/bz-addons-dialog.blp:80
+msgid "No Add-Ons Visible"
+msgstr "Gan Breiseáin le Feiceáil"
+
+#: src/bz-addons-dialog.blp:81
+msgid ""
+"Your current filter preferences are hiding all known add-ons. Try adjusting "
+"them."
+msgstr ""
+"Tá do chuid roghanna scagaire reatha ag cur breiseáin aitheanta i bhfolach. "
+"Bain triail as iad a choigeartú."
+
+#: src/bz-addons-dialog.blp:88
+msgid "Add-on Page"
+msgstr "Leathanach Breiseáin"
+
+#: src/bz-addons-dialog.blp:202 src/bz-full-view.blp:381
+msgid "Downloads/Month"
+msgstr "Íoslódálacha/Mí"
+
+#: src/bz-addons-dialog.blp:229 src/bz-full-view.blp:417
+msgid "Stopped Receiving Core Updates"
+msgstr "Stopadh ag fáil nuashonruithe lárnacha"
+
+#: src/bz-addons-dialog.blp:243
+msgid ""
+"This add-on uses a runtime that no longer receives updates or security "
+"fixes. It may become unsafe to use."
+msgstr ""
+"Úsáideann an breiseán seo am rith nach bhfaigheann nuashonruithe ná "
+"socruithe slándála a thuilleadh. D’fhéadfadh sé a bheith neamhshábháilte le "
+"húsáid."
+
+#: src/bz-addons-dialog.c:333
+#, c-format
+msgid "Add-on for %s"
+msgstr "Breiseán do %s"
+
+#: src/bz-addons-dialog.c:347 src/bz-full-view.c:600
+msgid "Show Less"
+msgstr "Taispeáin Níos Lú"
+
+#: src/bz-addons-dialog.c:347 src/bz-full-view.c:600
+msgid "Show More"
+msgstr "Taispeáin Tuilleadh"
+
+#: src/bz-addons-dialog.c:397
+msgid "Download Stats"
+msgstr "Staitisticí Íoslódála"
+
+#: src/bz-age-rating-dialog.blp:7 src/bz-age-rating-dialog.blp:31
+#: src/bz-age-rating-dialog.c:736 src/bz-context-tile-callbacks.c:186
+#: src/bz-context-tile-callbacks.c:193
+msgid "Age Rating"
+msgstr "Rátáil Aois"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:88
+msgid "Cartoon Violence"
+msgstr "Foréigean Cartúin"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:90
+msgid "No information regarding cartoon violence"
+msgstr "Gan aon eolas maidir le foréigean cartúin"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:94
+msgid "Fantasy Violence"
+msgstr "Foréigean Fantaisíochta"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:96
+msgid "No information regarding fantasy violence"
+msgstr "Gan aon eolas maidir le foréigean fantaisíochta"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:100
+msgid "Realistic Violence"
+msgstr "Foréigean Réalaíoch"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:102
+msgid "No information regarding realistic violence"
+msgstr "Gan aon fhaisnéis maidir le foréigean réalaíoch"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:106
+msgid "Violence Depicting Bloodshed"
+msgstr "Foréigean a léiríonn fuildhoirteadh"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:108
+msgid "No information regarding bloodshed"
+msgstr "Gan aon eolas faoi fhuildhoirteadh"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:112
+msgid "Sexual Violence"
+msgstr "Foréigean Gnéasach"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:114
+msgid "No information regarding sexual violence"
+msgstr "Gan aon eolas maidir le foréigean gnéasach"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:118
+msgid "Alcohol"
+msgstr "Alcól"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:120
+msgid "No information regarding references to alcohol"
+msgstr "Gan aon fhaisnéis maidir le tagairtí d'alcól"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:124
+msgid "Narcotics"
+msgstr "Támhshuanacha"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:126
+msgid "No information regarding references to illicit drugs"
+msgstr "Gan aon fhaisnéis maidir le tagairtí do dhrugaí mídhleathacha"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:130
+msgid "Tobacco"
+msgstr "Tobac"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:132
+msgid "No information regarding references to tobacco products"
+msgstr "Gan aon fhaisnéis maidir le tagairtí do tháirgí tobac"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:136 src/bz-age-rating-dialog.c:475
+msgid "Nudity"
+msgstr "Nochtacht"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:138
+msgid "No information regarding nudity of any sort"
+msgstr "Gan aon fhaisnéis maidir le nochtas de chineál ar bith"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:142
+msgid "Sexual Themes"
+msgstr "Téamaí Gnéis"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:144
+msgid "No information regarding references to or depictions of sexual nature"
+msgstr "Gan aon fhaisnéis maidir le tagairtí nó léirithe de chineál gnéasach"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:148
+msgid "Profanity"
+msgstr "Maslaí"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:150
+msgid "No information regarding profanity of any kind"
+msgstr "Gan aon fhaisnéis maidir le maslaí de chineál ar bith"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:154
+msgid "Inappropriate Humor"
+msgstr "Greann Míchuí"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:156
+msgid "No information regarding inappropriate humor"
+msgstr "Gan aon eolas maidir le greann míchuí"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:160
+msgid "Discrimination"
+msgstr "Idirdhealú"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:162
+msgid "No information regarding discriminatory language of any kind"
+msgstr "Gan aon fhaisnéis maidir le teanga idirdhealaitheach d'aon chineál"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:166
+msgid "Advertising"
+msgstr "Fógraíocht"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:168
+msgid "No information regarding advertising of any kind"
+msgstr "Gan aon fhaisnéis maidir le fógraíocht d'aon chineál"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:172
+msgid "Gambling"
+msgstr "Cearrbhachas"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:174
+msgid "No information regarding gambling of any kind"
+msgstr "Gan aon fhaisnéis maidir le cearrbhachas d'aon chineál"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:178
+msgid "Purchasing"
+msgstr "Ceannach"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:180
+msgid "No information regarding the ability to spend money"
+msgstr "Gan aon eolas maidir leis an gcumas airgead a chaitheamh"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:184
+msgid "Chat Between Users"
+msgstr "Comhrá idir Úsáideoirí"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:186
+msgid "No information regarding ways to chat with other users"
+msgstr ""
+"Gan aon eolas maidir le bealaí chun comhrá a dhéanamh le húsáideoirí eile"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:190
+msgid "Audio Chat Between Users"
+msgstr "Comhrá Fuaime Idir Úsáideoirí"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:192
+msgid "No information regarding ways to talk with other users"
+msgstr "Gan aon eolas maidir le bealaí chun labhairt le húsáideoirí eile"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:196
+msgid "Contact Details"
+msgstr "Sonraí Teagmhála"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:198
+msgid ""
+"No information regarding sharing of social network usernames or email "
+"addresses"
+msgstr ""
+"Gan aon fhaisnéis maidir le hainmneacha úsáideora ná seoltaí ríomhphoist "
+"líonraí sóisialta a roinnt"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:202
+msgid "Identifying Information"
+msgstr "Faisnéis Aitheantais"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:204
+msgid "No information regarding sharing of user information with third parties"
+msgstr ""
+"Gan aon fhaisnéis maidir le faisnéis úsáideora a roinnt le tríú páirtithe"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:208
+msgid "Location Sharing"
+msgstr "Comhroinnt Suímh"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:210
+msgid "No information regarding sharing of physical location with other users"
+msgstr ""
+"Gan aon fhaisnéis maidir le suíomh fisiceach a roinnt le húsáideoirí eile"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:214
+msgid "Prostitution"
+msgstr "Striapachas"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:216
+msgid "No information regarding references to prostitution"
+msgstr "Gan aon fhaisnéis maidir le tagairtí do striapachas"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:220
+msgid "Adultery"
+msgstr "Adaltranas"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:222
+msgid "No information regarding references to adultery"
+msgstr "Gan aon fhaisnéis maidir le tagairtí d'adhaltranas"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:226
+msgid "Sexualized Characters"
+msgstr "Carachtair Ghnéasaithe"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:228
+msgid "No information regarding sexualized characters"
+msgstr "Gan aon fhaisnéis maidir le carachtair ghnéasaithe"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:232
+msgid "Desecration"
+msgstr "Mí-naomhú"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:234
+msgid "No information regarding references to desecration"
+msgstr "Gan aon fhaisnéis maidir le tagairtí do dhí-sheacracht"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:238
+msgid "Human Remains"
+msgstr "Iarsmaí Daonna"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:240
+msgid "No information regarding visible dead human remains"
+msgstr "Gan aon fhaisnéis maidir le hiarsmaí daonna marbha infheicthe"
+
+#. TRANSLATORS: content rating title, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:244
+msgid "Slavery"
+msgstr "Sclábhaíocht"
+
+#. TRANSLATORS: content rating description, see https://hughsie.github.io/oars/
+#: src/bz-age-rating-dialog.c:246
+msgid "No information regarding references to slavery"
+msgstr "Gan aon fhaisnéis maidir le tagairtí don sclábhaíocht"
+
+#: src/bz-age-rating-dialog.c:424
+msgid "Does not include references to drugs"
+msgstr "Ní áirítear tagairtí do dhrugaí"
+
+#: src/bz-age-rating-dialog.c:426
+msgid ""
+"Does not include swearing, profanity, and other kinds of strong language"
+msgstr "Ní chuimsíonn sé mionnú, maslaí, agus cineálacha eile teanga ghéar"
+
+#: src/bz-age-rating-dialog.c:428
+msgid "Does not include ads or monetary transactions"
+msgstr "Ní áirítear fógraí ná idirbhearta airgid"
+
+#: src/bz-age-rating-dialog.c:430
+msgid "Does not include sex or nudity"
+msgstr "Ní chuimsíonn sé gnéas ná nochtas"
+
+#: src/bz-age-rating-dialog.c:432
+msgid "Does not include uncontrolled chat functionality"
+msgstr "Ní chuimsíonn sé feidhmiúlacht comhrá neamhrialaithe"
+
+#: src/bz-age-rating-dialog.c:434
+msgid "Does not include violence"
+msgstr "Ní áirítear foréigean"
+
+#: src/bz-age-rating-dialog.c:469
+msgid "Drugs"
+msgstr "Drugaí"
+
+#: src/bz-age-rating-dialog.c:471
+msgid "Strong Language"
+msgstr "Teanga Láidir"
+
+#: src/bz-age-rating-dialog.c:473
+msgid "Money"
+msgstr "Airgead"
+
+#: src/bz-age-rating-dialog.c:477
+msgid "Social"
+msgstr "Sóisialta"
+
+#: src/bz-age-rating-dialog.c:479
+msgid "Violence"
+msgstr "Foréigean"
+
+#. Translators: Age rating format, e.g. "12+" for ages 12 and up
+#: src/bz-age-rating-dialog.c:686 src/bz-context-tile-callbacks.c:176
+#, c-format
+msgid "%d+"
+msgstr "%d+"
+
+#: src/bz-age-rating-dialog.c:711
+msgctxt "Age rating"
+msgid "All"
+msgstr "Gach"
+
+#: src/bz-age-rating-dialog.c:747
+#, c-format
+msgid "%s has an unknown age rating"
+msgstr "Tá rátáil aoise anaithnid ag %s"
+
+#: src/bz-age-rating-dialog.c:753
+#, c-format
+msgid "%s is suitable for everyone"
+msgstr "Tá %s oiriúnach do gach duine"
+
+#: src/bz-age-rating-dialog.c:756
+#, c-format
+msgid "%s is suitable for young children"
+msgstr "Tá %s oiriúnach do leanaí óga"
+
+#: src/bz-age-rating-dialog.c:759
+#, c-format
+msgid "%s is suitable for children"
+msgstr "Tá %s oiriúnach do pháistí"
+
+#: src/bz-age-rating-dialog.c:762
+#, c-format
+msgid "%s is suitable for teenagers"
+msgstr "Tá %s oiriúnach do dhéagóirí"
+
+#: src/bz-age-rating-dialog.c:765
+#, c-format
+msgid "%s is suitable for adults"
+msgstr "Tá %s oiriúnach do dhaoine fásta"
+
+#: src/bz-age-rating-dialog.c:768
+#, c-format
+msgid "%s is suitable for %s"
+msgstr "Tá %s oiriúnach do %s"
+
+#: src/bz-age-rating-dialog.c:862
+#, c-format
+msgid "%s • %s"
+msgstr "%s • %s"
+
+#: src/bz-app-permissions.c:160
+#, c-format
+msgid "System folder %s"
+msgstr "Fillteán córais %s"
+
+#: src/bz-app-permissions.c:162
+#, c-format
+msgid "Home subfolder %s"
+msgstr "Fo-fhillteán baile %s"
+
+#: src/bz-app-permissions.c:164
+msgid "Host system folders"
+msgstr "Fillteáin chórais óstach"
+
+#: src/bz-app-permissions.c:166
+msgid "Host system configuration from /etc"
+msgstr "Cumraíocht an chórais óstach ó /etc"
+
+#: src/bz-app-permissions.c:169
+#, c-format
+msgid "Desktop subfolder %s"
+msgstr "Fo-fhillteán deisce %s"
+
+#: src/bz-app-permissions.c:170
+msgid "Desktop folder"
+msgstr "Fillteán deisce"
+
+#: src/bz-app-permissions.c:173
+#, c-format
+msgid "Documents subfolder %s"
+msgstr "Fo-fhillteán doiciméad %s"
+
+#: src/bz-app-permissions.c:174
+msgid "Documents folder"
+msgstr "Fillteán na ndoiciméad"
+
+#: src/bz-app-permissions.c:177
+#, c-format
+msgid "Music subfolder %s"
+msgstr "Fo-fhillteán ceoil %s"
+
+#: src/bz-app-permissions.c:178
+msgid "Music folder"
+msgstr "Fillteán ceoil"
+
+#: src/bz-app-permissions.c:181
+#, c-format
+msgid "Pictures subfolder %s"
+msgstr "Fo-fhillteán pictiúr %s"
+
+#: src/bz-app-permissions.c:182
+msgid "Pictures folder"
+msgstr "Fillteán pictiúr"
+
+#: src/bz-app-permissions.c:185
+#, c-format
+msgid "Public Share subfolder %s"
+msgstr "Fo-fhillteán Comhroinnte Poiblí %s"
+
+#: src/bz-app-permissions.c:186
+msgid "Public Share folder"
+msgstr "Fillteán Comhroinnte Poiblí"
+
+#: src/bz-app-permissions.c:189
+#, c-format
+msgid "Videos subfolder %s"
+msgstr "Fo-fhillteán físeáin %s"
+
+#: src/bz-app-permissions.c:190
+msgid "Videos folder"
+msgstr "Fillteán físeáin"
+
+#: src/bz-app-permissions.c:193
+#, c-format
+msgid "Templates subfolder %s"
+msgstr "Fo-fhillteán teimpléid %s"
+
+#: src/bz-app-permissions.c:194
+msgid "Templates folder"
+msgstr "Fillteán teimpléid"
+
+#: src/bz-app-permissions.c:197
+#, c-format
+msgid "User cache subfolder %s"
+msgstr "Fo-fhillteán taisce úsáideora %s"
+
+#: src/bz-app-permissions.c:198
+msgid "User cache folder"
+msgstr "Fillteán taisce úsáideora"
+
+#: src/bz-app-permissions.c:201
+#, c-format
+msgid "User configuration subfolder %s"
+msgstr "Fo-fhillteán cumraíochta úsáideora %s"
+
+#: src/bz-app-permissions.c:202
+msgid "User configuration folder"
+msgstr "Fillteán cumraíochta úsáideora"
+
+#: src/bz-app-permissions.c:205
+#, c-format
+msgid "User data subfolder %s"
+msgstr "Fo-fhillteán sonraí úsáideora %s"
+
+#: src/bz-app-permissions.c:206
+msgid "User data folder"
+msgstr "Fillteán sonraí úsáideora"
+
+#: src/bz-app-permissions.c:209
+#, c-format
+msgid "User runtime subfolder %s"
+msgstr "Fo-fhillteán ama rite úsáideora %s"
+
+#: src/bz-app-permissions.c:210
+msgid "User runtime folder"
+msgstr "Fillteán rith-ama úsáideora"
+
+#: src/bz-app-permissions.c:212
+#, c-format
+msgid "Filesystem access to %s"
+msgstr "Rochtain ar chóras comhad ar %s"
+
+#: src/bz-app-permissions.c:214
+msgid "Unknown filesystem path"
+msgstr "Cosán anaithnid córas comhad"
+
+#: src/bz-app-size-dialog.blp:26 src/bz-app-size-dialog.blp:60
+msgid "Download Size"
+msgstr "Méid Íoslódála"
+
+#: src/bz-app-size-dialog.blp:33 src/bz-app-size-dialog.blp:81
+msgid "Installed Size"
+msgstr "Méid Suiteáilte"
+
+#: src/bz-app-size-dialog.blp:61
+msgid "Amount to download from the internet"
+msgstr "Méid le híoslódáil ón idirlíon"
+
+#: src/bz-app-size-dialog.blp:82
+msgid "Size on Disk"
+msgstr "Méid ar Diosca"
+
+#: src/bz-app-size-dialog.blp:133
+msgid "Open user data folder"
+msgstr "Oscail fillteán sonraí úsáideora"
+
+#: src/bz-app-size-dialog.blp:143
+msgid "Your User Data"
+msgstr "Do Shonraí Úsáideora"
+
+#: src/bz-app-size-dialog.blp:144
+msgid "Caches, settings, and other app data"
+msgstr "Taisceáin, socruithe, agus sonraí eile aipeanna"
+
+#: src/bz-app-size-dialog.blp:165
+msgid "Cache"
+msgstr "Taisce"
+
+#: src/bz-app-size-dialog.blp:166
+msgid "Temporary cached data"
+msgstr "Sonraí taisceáilte sealadacha"
+
+#: src/bz-app-size-dialog.blp:176
+msgid "Clear Cache"
+msgstr "Glan an Taisce"
+
+#: src/bz-app-size-dialog.c:99
+msgid "Installed Runtime Size"
+msgstr "Méid Ama Rith Suiteáilte"
+
+#: src/bz-app-size-dialog.c:99
+msgid "Runtime Download Size"
+msgstr "Méid Íoslódála Am Rithime"
+
+#: src/bz-app-size-dialog.c:220
+msgid "App Size"
+msgstr "Méid an Aipe"
+
+#: src/bz-app-tile.blp:57 src/bz-developer-badge.c:98
+#: src/bz-rich-app-tile.blp:105 src/bz-rich-app-tile.c:429
+msgid "Verified"
+msgstr "Fíoraithe"
+
+#. Translators: As in 'The app is installed'.
+#: src/bz-app-tile.blp:88 src/bz-context-tile-callbacks.c:135
+#: src/bz-releases-list.c:206
+msgid "Installed"
+msgstr "Suiteáilte"
+
+#. Translators: Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
+#: src/bz-application.c:765
+msgid "translator-credits"
+msgstr "Aindriú Mac Giolla Eoin"
+
+#: src/bz-application.c:775
+msgid "Special Thanks"
+msgstr "Buíochas Speisialta"
+
+#: src/bz-application.c:833
+msgid "Logged Out Successfully!"
+msgstr "Logáilte Amach go Rathúil!"
+
+#: src/bz-application.c:969
+msgid "Performing setup…"
+msgstr "Ag déanamh an socraithe…"
+
+#: src/bz-application.c:1055
+msgid "Set Up System Flathub?"
+msgstr "Córas Flathub a Chur Ar Bun?"
+
+#: src/bz-application.c:1058
+msgid ""
+"The system Flathub remote is not set up. Bazaar requires Flathub to be "
+"configured on the system Flatpak installation to browse and install "
+"applications.\n"
+"\n"
+"You can still use Bazaar to browse and remove already installed apps."
+msgstr ""
+"Níl an cianrialtán Flathub córais socraithe. Éilíonn Bazaar go mbeidh "
+"Flathub cumraithe ar shuiteáil Flatpak an chórais chun brabhsáil agus "
+"feidhmchláir a shuiteáil.\n"
+"\n"
+"Is féidir leat Bazaar a úsáid fós chun brabhsáil agus aipeanna atá "
+"suiteáilte cheana féin a bhaint."
+
+#: src/bz-application.c:1065
+msgid "Set Up Flathub?"
+msgstr "Suiteáil Flathub?"
+
+#: src/bz-application.c:1068
+msgid ""
+"Flathub is not set up on this system. You will not be able to browse and "
+"install applications in Bazaar if its unavailable.\n"
+"\n"
+"You can still use Bazaar to browse and remove already installed apps."
+msgstr ""
+"Níl Flathub socraithe ar an gcóras seo. Ní bheidh tú in ann brabhsáil agus "
+"feidhmchláir a shuiteáil i Bazaar mura bhfuil sé ar fáil.\n"
+"\n"
+"Is féidir leat Bazaar a úsáid fós chun brabhsáil agus aipeanna atá "
+"suiteáilte cheana féin a bhaint."
+
+#: src/bz-application.c:1074
+msgid "Later"
+msgstr "Níos déanaí"
+
+#: src/bz-application.c:1075
+msgid "Set Up Flathub"
+msgstr "Socraigh Flathub"
+
+#: src/bz-application.c:1431
+msgid "A backend error occurred"
+msgstr "Tharla earráid chúltaca"
+
+#: src/bz-application.c:1631 src/bz-application.c:3790
+msgid "Refreshing…"
+msgstr "Ag athnuachan…"
+
+#: src/bz-application.c:1795 src/bz-application.c:3788
+#, c-format
+msgid "Loading %d apps…"
+msgstr "Ag lódáil %d aip…"
+
+#: src/bz-application.c:1848
+msgid "Failed to open file"
+msgstr "Theip ar an gcomhad a oscailt"
+
+#: src/bz-application.c:1953
+msgid "An initialization error occurred"
+msgstr "Tharla earráid tosaithe"
+
+#: src/bz-application.c:2319
+msgid "Checking for updates…"
+msgstr "Ag seiceáil le haghaidh nuashonruithe…"
+
+#: src/bz-application.c:2375
+msgid "Failed to check for updates"
+msgstr "Theip ar sheiceáil le haghaidh nuashonruithe"
+
+#: src/bz-application.c:3501
+msgid "Malformed Link"
+msgstr "Nasc Mífhoirmithe"
+
+#: src/bz-application.c:3502
+msgid ""
+"The link used to open this app has incorrect capitalization and may stop "
+"working in the future.\n"
+"\n"
+"This is most likely caused by KRunner sending incorrect app IDs"
+msgstr ""
+"Tá caipitliú mícheart ar an nasc a úsáideadh chun an aip seo a oscailt agus "
+"d'fhéadfadh sé stopadh ag obair amach anseo.\n"
+"\n"
+"Is dóichí gur tharla sé seo mar gheall ar aitheantais aipeanna míchearta a "
+"sheoladh ag KRunner"
+
+#: src/bz-application.c:3510
+msgid "Could not find app"
+msgstr "Níorbh fhéidir an aip a aimsiú"
+
+#: src/bz-application.c:3541
+msgid "Failed to load metainfo"
+msgstr "Theip ar an meiteafhaisnéis a lódáil"
+
+#: src/bz-application.c:3792
+msgid "Writing to cache…"
+msgstr "Ag scríobh chuig an taisce…"
+
+#: src/bz-apps-page.blp:99
+msgid "Show All"
+msgstr "Taispeáin Gach Rud"
+
+#: src/bz-apps-page.c:237
+#, c-format
+msgid "All \"%s\""
+msgstr "Gach \"%s\""
+
+#: src/bz-apps-page.c:487 src/bz-tag-list.c:91
+#, c-format
+msgid "%d Applications"
+msgstr "%d Feidhmchlár"
+
+#: src/bz-bundle-install-dialog.blp:8 src/bz-bundle-install-dialog.blp:14
+msgid "Bundle Installation"
+msgstr "Suiteáil Pacáiste"
+
+#: src/bz-bundle-install-dialog.blp:147
+msgid "Additional dependencies may take extra space"
+msgstr "D’fhéadfadh spleáchais bhreise spás breise a thógáil"
+
+#: src/bz-bundle-install-dialog.blp:181
+msgid ""
+"Installing this app may require adding a new software source. Other apps "
+"from this source will show up in Bazaar.\n"
+"\n"
+"Only add this source if you're sure you trust it."
+msgstr ""
+"B’fhéidir go mbeadh gá le foinse bogearraí nua a chur leis agus an aip seo á "
+"shuiteáil. Beidh aipeanna eile ón bhfoinse seo le feiceáil i Bazaar.\n"
+"\n"
+"Ná cuir an fhoinse seo leis ach amháin má tá tú cinnte go bhfuil muinín agat "
+"aisti."
+
+#: src/bz-bundle-install-dialog.blp:357
+msgid "Successfully Installed!"
+msgstr "Suiteáilte go rathúil!"
+
+#: src/bz-bundle-install-dialog.blp:381 src/bz-bundle-install-dialog.blp:463
+#: src/bz-rich-app-tile.blp:198 src/bz-transaction-tile.blp:298
+msgid "Open"
+msgstr "Oscail"
+
+#: src/bz-bundle-install-dialog.blp:391 src/bz-bundle-install-dialog.blp:473
+msgid "Show App Details"
+msgstr "Taispeáin Sonraí an Aipe"
+
+#: src/bz-bundle-install-dialog.blp:440
+msgid "Already Installed"
+msgstr "Suiteáilte cheana féin"
+
+#: src/bz-bundle-install-dialog.blp:485
+msgid "Installation Failed"
+msgstr "Theip ar an Suiteáil"
+
+#: src/bz-bundle-install-dialog.c:169
+msgid "Unknown install size"
+msgstr "Méid suiteála anaithnid"
+
+#: src/bz-bundle-install-dialog.c:172
+#, c-format
+msgid "About %s to install"
+msgstr "Thart ar %s le suiteáil"
+
+#: src/bz-bundle-install-dialog.c:186 src/bz-context-tile-callbacks.c:104
+#: src/bz-context-tile-callbacks.c:392 src/bz-context-tile-callbacks.c:409
+msgid "N/A"
+msgstr "N/B"
+
+#: src/bz-bundle-install-dialog.c:215
+msgid "No special permissions"
+msgstr "Gan ceadanna speisialta"
+
+#: src/bz-context-tile-callbacks.c:68
+msgid "---"
+msgstr "---"
+
+#. Translators: M is the suffix for millions
+#: src/bz-context-tile-callbacks.c:75
+#, c-format
+msgid "%.*fM"
+msgstr "%.*fM"
+
+#. Translators: K is the suffix for thousands
+#: src/bz-context-tile-callbacks.c:82
+#, c-format
+msgid "%.*fK"
+msgstr "%.*fK"
+
+#: src/bz-context-tile-callbacks.c:92
+#, c-format
+msgid "%d downloads in the last month"
+msgstr "%d íoslódálacha sa mhí seo caite"
+
+#: src/bz-context-tile-callbacks.c:132
+#, c-format
+msgid "+%s runtime"
+msgstr "+%s am rith"
+
+#: src/bz-context-tile-callbacks.c:135
+msgid "Download"
+msgstr "Íoslódáil"
+
+#: src/bz-context-tile-callbacks.c:155
+msgid "Size information unavailable"
+msgstr "Níl faisnéis mhéide ar fáil"
+
+#: src/bz-context-tile-callbacks.c:158
+#, c-format
+msgid "Download size of %s"
+msgstr "Méid íoslódála %s"
+
+#: src/bz-context-tile-callbacks.c:191
+msgid "All Ages"
+msgstr "Gach Aois"
+
+#: src/bz-context-tile-callbacks.c:203
+msgid "Age rating information unavailable"
+msgstr "Níl faisnéis faoi rátáil aoise ar fáil"
+
+#: src/bz-context-tile-callbacks.c:208
+msgid "Suitable for all ages"
+msgstr "Oiriúnach do gach aois"
+
+#: src/bz-context-tile-callbacks.c:210
+#, c-format
+msgid "Suitable for ages %d and up"
+msgstr "Oiriúnach do dhaoine aois %d agus os a chionn"
+
+#: src/bz-context-tile-callbacks.c:243 src/bz-context-tile-callbacks.c:248
+#: src/bz-context-tile-callbacks.c:276 src/bz-context-tile-callbacks.c:284
+msgid "Unknown"
+msgstr "Anaithnid"
+
+#: src/bz-context-tile-callbacks.c:253
+#, c-format
+msgid "Free software licensed under %s"
+msgstr "Bogearraí saor in aisce ceadúnaithe faoi %s"
+
+#: src/bz-context-tile-callbacks.c:258
+msgid "Free software"
+msgstr "Bogearraí saor in aisce"
+
+#: src/bz-context-tile-callbacks.c:261
+msgid "Proprietary Software"
+msgstr "Bogearraí Dílseánaigh"
+
+#: src/bz-context-tile-callbacks.c:264
+#, c-format
+msgid "Special License: %s"
+msgstr "Ceadúnas Speisialta: %s"
+
+#: src/bz-context-tile-callbacks.c:281
+msgid "Free"
+msgstr "Saor in aisce"
+
+#: src/bz-context-tile-callbacks.c:287 src/bz-license-dialog.c:133
+msgid "Proprietary"
+msgstr "Dílseánaigh"
+
+#: src/bz-context-tile-callbacks.c:289 src/bz-license-dialog.c:135
+msgid "Special License"
+msgstr "Ceadúnas Speisialta"
+
+#: src/bz-context-tile-callbacks.c:309
+msgid "Adaptive"
+msgstr "Oiriúnaitheach"
+
+#: src/bz-context-tile-callbacks.c:309
+msgid "Desktop Only"
+msgstr "Deasc Amháin"
+
+#: src/bz-context-tile-callbacks.c:315
+msgid "Works on desktop, tablets, and phones"
+msgstr "Oibríonn sé ar dheasc, táibléid agus fóin"
+
+#: src/bz-context-tile-callbacks.c:316
+msgid "May not work on mobile devices"
+msgstr "B’fhéidir nach n-oibreoidh sé ar ghléasanna soghluaiste"
+
+#: src/bz-context-tile-callbacks.c:399 src/bz-safety-dialog.blp:27
+msgid "Safe"
+msgstr "Sábháilte"
+
+#: src/bz-context-tile-callbacks.c:401 src/bz-context-tile-callbacks.c:403
+msgid "Low Risk"
+msgstr "Riosca Íseal"
+
+#: src/bz-context-tile-callbacks.c:405
+msgid "Medium Risk"
+msgstr "Riosca Meánach"
+
+#: src/bz-context-tile-callbacks.c:407
+msgid "High Risk"
+msgstr "Ardriosca"
+
+#: src/bz-curated-view.blp:11 src/bz-favorites-page.blp:46
+#: src/bz-flathub-page.blp:19 src/bz-full-view.blp:30
+#: src/bz-library-page.blp:67 src/bz-user-data-page.blp:30
+msgid "Empty"
+msgstr "Folamh"
+
+#: src/bz-curated-view.blp:15
+msgid "No Curation"
+msgstr "Gan Coimeádadh"
+
+#: src/bz-curated-view.blp:16
+msgid ""
+"There is no curation information provided on this system. You can still "
+"browse applications on Flathub"
+msgstr ""
+"Níl aon fhaisnéis choimeádta curtha ar fáil ar an gcóras seo. Is féidir leat "
+"brabhsáil a dhéanamh ar fheidhmchláir ar Flathub fós"
+
+#: src/bz-curated-view.blp:18
+msgid "Browse Flathub"
+msgstr "Brabhsáil Flathub"
+
+#: src/bz-curated-view.blp:29 src/bz-curated-view.blp:33
+#: src/bz-flathub-page.blp:30 src/bz-flathub-page.blp:34
+msgid "Offline"
+msgstr "As líne"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-curated-view.blp:39 src/bz-flathub-page.blp:49
+#: src/bz-search-pill-list.c:67
+msgid "Browser"
+msgstr "Brabhsálaí"
+
+#: src/bz-developer-badge.c:94 src/bz-developer-badge.c:98
+msgid "Not Verified"
+msgstr "Gan Fíorú"
+
+#: src/bz-developer-badge.c:213
+msgid "Developer information not available."
+msgstr "Níl faisnéis forbróra ar fáil."
+
+#: src/bz-developer-badge.c:219 src/bz-developer-badge.c:233
+#, c-format
+msgid ""
+"The ownership of the %s app ID has not been verified and it may be a "
+"community package."
+msgstr ""
+"Níl úinéireacht an aitheantais aip %s fíoraithe agus d'fhéadfadh gur "
+"pacáiste pobail atá ann."
+
+#: src/bz-developer-badge.c:237
+#, c-format
+msgid ""
+"The ownership of the %s app ID has been manually verified by the Flathub "
+"team."
+msgstr ""
+"Tá úinéireacht an aitheantais aip %s fíoraithe de láimh ag foireann Flathub."
+
+#: src/bz-developer-badge.c:253
+#, c-format
+msgid ""
+"The ownership of the %1$s app ID has been verified by <b>%2$s</b> on "
+"<b>%3$s</b>."
+msgstr ""
+"Tá úinéireacht an aitheantais aip %1$s fíoraithe ag <b>%2$s</b> ar <b>%3$s</"
+"b>."
+
+#: src/bz-developer-badge.c:260
+#, c-format
+msgid "The ownership of the %1$s app ID has been verified using %2$s."
+msgstr "Tá úinéireacht ID an aip %1$s fíoraithe ag baint úsáide as %2$s."
+
+#: src/bz-developer-badge.c:264
+#, c-format
+msgid "The ownership of the %s app ID has been verified."
+msgstr "Tá úinéireacht an aitheantais aip %s fíoraithe."
+
+#: src/bz-donations-dialog.blp:74
+msgid "Full Release Notes"
+msgstr "Nótaí Eisiúna Iomlána"
+
+#: src/bz-donations-dialog.blp:108
+msgid "This release was made possible by users like you!"
+msgstr ""
+"Rinneadh an eisiúint seo indéanta a bhuíochas d’úsáideoirí cosúil leatsa!"
+
+#: src/bz-donations-dialog.blp:116
+msgid ""
+"I love making Bazaar, but I cannot do it alone. Help support further "
+"development by donating on Ko-Fi."
+msgstr ""
+"Is breá liom Bazaar a chruthú, ach ní féidir liom é a dhéanamh liom féin. "
+"Cabhraigh le forbairt bhreise a chothú trí bhronnadh a thabhairt ar Ko-Fi."
+
+#: src/bz-donations-dialog.blp:131
+msgid "Donate to Bazaar"
+msgstr "Tabhair síntiús don Bazaar"
+
+#. Translators: the %s format specifier will be something along the lines of "0.7.6" etc
+#: src/bz-donations-dialog.c:227
+#, c-format
+msgid "What's New in %s?"
+msgstr "Cad atá Nua i %s?"
+
+#. Translators: this is a release date label, like "Released February 9, 2026"
+#: src/bz-donations-dialog.c:243
+msgid "Released %B %-e, %Y"
+msgstr "Scaoilte %B %-e, %Y"
+
+#: src/bz-entry-group-util.c:73
+msgid "Choose an Installation"
+msgstr "Roghnaigh Suiteáil"
+
+#: src/bz-entry-group-util.c:76
+msgid ""
+"You have multiple versions of this app installed. Which one would you like "
+"to proceed with?"
+msgstr ""
+"Tá roinnt leaganacha den aip seo suiteáilte agat. Cé acu ceann ar mhaith "
+"leat leanúint ar aghaidh leis?"
+
+#: src/bz-entry-group-util.c:80 src/bz-rich-app-tile.blp:232
+msgid "Cancel"
+msgstr "Cealaigh"
+
+#: src/bz-entry-selection-row.blp:17
+msgid "For This User Only"
+msgstr "Don Úsáideoir seo Amháin"
+
+#: src/bz-entry-selection-row.c:112
+msgid "this user"
+msgstr "an t-úsáideoir seo"
+
+#: src/bz-entry-selection-row.c:112
+msgid "all users"
+msgstr "gach úsáideoir"
+
+#: src/bz-error-dialog.blp:36 src/bz-error.c:69 src/bz-error.c:88
+#: src/bz-safety-dialog.blp:46
+msgid "Details"
+msgstr "Sonraí"
+
+#: src/bz-error-dialog.blp:47
+msgid "Copy"
+msgstr "Cóipeáil"
+
+#: src/bz-error-dialog.c:56 src/bz-share-list.c:94
+msgid "Copied!"
+msgstr "Cóipeáilte!"
+
+#: src/bz-favorite-button.blp:14
+msgid "Favorite Count"
+msgstr "Líon na bhFear is Ansa liom"
+
+#: src/bz-favorite-button.c:388
+msgid "Failed to update favorite"
+msgstr "Theip ar an rogha is fearr leat a nuashonrú"
+
+#: src/bz-favorite-button.c:434
+msgid "Log in with Flathub to manage favorites"
+msgstr "Logáil isteach le Flathub chun na cinn is fearr leat a bhainistiú"
+
+#: src/bz-favorite-button.c:440
+msgid "Log In"
+msgstr "Logáil Isteach"
+
+#: src/bz-favorites-page.blp:5 src/bz-favorites-page.blp:56
+#: src/bz-window.blp:334
+msgid "Favorites"
+msgstr "Ceanáin"
+
+#: src/bz-favorites-page.blp:17 src/bz-section-view.blp:144
+msgid "Install All"
+msgstr "Suiteáil Uile"
+
+#: src/bz-favorites-page.blp:34 src/bz-user-data-page.blp:19
+msgid "Loading"
+msgstr "Ag luchtú"
+
+#: src/bz-favorites-page.blp:49
+msgid "No Favorites"
+msgstr "Gan aon Ceanáin"
+
+#: src/bz-favorites-page.blp:50
+msgid "Applications you mark as favorite will appear here"
+msgstr "Beidh feidhmchláir a mharcálann tú mar is fearr leat le feiceáil anseo"
+
+#: src/bz-favorites-tile.blp:60 src/bz-installed-tile.blp:69
+msgid "Support This Application"
+msgstr "Tacaigh leis an bhFeidhmchlár seo"
+
+#: src/bz-favorites-tile.blp:109
+msgid "Remove From Favorites"
+msgstr "Bain as na Ceanáin"
+
+#: src/bz-favorites-tile.c:353
+msgid "Failed to remove favorite"
+msgstr "Níorbh fhéidir an ceanán a bhaint"
+
+#: src/bz-featured-carousel.blp:31
+msgid "Previous"
+msgstr "Roimhe Seo"
+
+#: src/bz-featured-carousel.blp:54
+msgid "Next"
+msgstr "Ar Aghaidh"
+
+#: src/bz-flathub-category.c:93
+msgid "Editing"
+msgstr "Eagarthóireacht"
+
+#: src/bz-flathub-category.c:94
+msgid "Midi"
+msgstr "Midi"
+
+#: src/bz-flathub-category.c:95
+msgid "Mixer"
+msgstr "Meascthóir"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-flathub-category.c:96 src/bz-search-pill-list.c:77
+msgid "Music"
+msgstr "Ceol"
+
+#: src/bz-flathub-category.c:97
+msgid "Player"
+msgstr "Seinnteoir"
+
+#: src/bz-flathub-category.c:98
+msgid "Recorder"
+msgstr "Taifeadán"
+
+#: src/bz-flathub-category.c:99
+msgid "Sequencer"
+msgstr "Seicheamhóir"
+
+#: src/bz-flathub-category.c:100
+msgid "Tuner"
+msgstr "Tiúnóir"
+
+#: src/bz-flathub-category.c:101
+msgid "TV"
+msgstr "Teilifís"
+
+#: src/bz-flathub-category.c:106
+msgid "Emulation"
+msgstr "Aithris"
+
+#: src/bz-flathub-category.c:107
+msgid "Action"
+msgstr "Gníomh"
+
+#: src/bz-flathub-category.c:108
+msgid "Adventure"
+msgstr "Eachtraíochta"
+
+#: src/bz-flathub-category.c:109
+msgid "Arcade"
+msgstr "Stuara"
+
+#: src/bz-flathub-category.c:110
+msgid "Blocks"
+msgstr "Bloic"
+
+#: src/bz-flathub-category.c:111
+msgid "Board"
+msgstr "Bord"
+
+#: src/bz-flathub-category.c:112
+msgid "Card"
+msgstr "Cárta"
+
+#: src/bz-flathub-category.c:113
+msgid "Kids"
+msgstr "Páistí"
+
+#: src/bz-flathub-category.c:114
+msgid "Logic"
+msgstr "Lóighic"
+
+#: src/bz-flathub-category.c:115
+msgid "Role Playing"
+msgstr "Rólghlacadh"
+
+#: src/bz-flathub-category.c:116
+msgid "Shooter"
+msgstr "Lámhachóir"
+
+#: src/bz-flathub-category.c:117
+msgid "Simulation"
+msgstr "Insamhalta"
+
+#: src/bz-flathub-category.c:118
+msgid "Sports"
+msgstr "Spóirt"
+
+#: src/bz-flathub-category.c:119
+msgid "Strategy"
+msgstr "Straitéis"
+
+#: src/bz-flathub-category.c:124
+msgid "Audio & Video"
+msgstr "Fuaim & Físeán"
+
+#: src/bz-flathub-category.c:124
+msgid "Media"
+msgstr "Meáin"
+
+#: src/bz-flathub-category.c:124
+msgid "More Audio & Video"
+msgstr "Tuilleadh Fuaime & Físeáin"
+
+#: src/bz-flathub-category.c:125
+msgid "Developer Tools"
+msgstr "Uirlisí Forbróra"
+
+#: src/bz-flathub-category.c:125
+msgid "Develop"
+msgstr "Forbair"
+
+#: src/bz-flathub-category.c:125
+msgid "More Developer Tools"
+msgstr "Tuilleadh Uirlisí Forbróra"
+
+#: src/bz-flathub-category.c:126
+msgid "Education"
+msgstr "Oideachas"
+
+#: src/bz-flathub-category.c:126
+msgid "Learn"
+msgstr "Foghlaim"
+
+#: src/bz-flathub-category.c:126
+msgid "More Education"
+msgstr "Tuilleadh Oideachais"
+
+#: src/bz-flathub-category.c:127
+msgid "Gaming"
+msgstr "Cluichíocht"
+
+#: src/bz-flathub-category.c:127
+msgid "Play"
+msgstr "Imir"
+
+#: src/bz-flathub-category.c:127
+msgid "More Gaming"
+msgstr "Tuilleadh Cluichíocht"
+
+#: src/bz-flathub-category.c:128
+msgid "Graphics & Photography"
+msgstr "Grafaicí & Grianghrafadóireacht"
+
+#: src/bz-flathub-category.c:128
+msgid "Create"
+msgstr "Cruthaigh"
+
+#: src/bz-flathub-category.c:128
+msgid "More Graphics & Photography"
+msgstr "Tuilleadh Grafaicí & Grianghrafadóireachta"
+
+#: src/bz-flathub-category.c:129
+msgid "Networking"
+msgstr "Líonrú"
+
+#: src/bz-flathub-category.c:129
+msgid "Internet"
+msgstr "Internet"
+
+#: src/bz-flathub-category.c:129
+msgid "More Networking"
+msgstr "Tuilleadh Líonraithe"
+
+#: src/bz-flathub-category.c:130
+msgid "Productivity"
+msgstr "Táirgiúlacht"
+
+#: src/bz-flathub-category.c:130
+msgid "Work"
+msgstr "Obair"
+
+#: src/bz-flathub-category.c:130
+msgid "More Productivity"
+msgstr "Tuilleadh Táirgiúlachta"
+
+#: src/bz-flathub-category.c:131
+msgid "Science"
+msgstr "Eolaíocht"
+
+#: src/bz-flathub-category.c:131
+msgid "More Science"
+msgstr "Tuilleadh Eolaíochta"
+
+#: src/bz-flathub-category.c:132
+msgid "System"
+msgstr "Córas"
+
+#: src/bz-flathub-category.c:132
+msgid "More System"
+msgstr "Tuilleadh Córas"
+
+#: src/bz-flathub-category.c:133
+msgid "Utilities"
+msgstr "Fóntais"
+
+#: src/bz-flathub-category.c:133
+msgid "Tools"
+msgstr "Uirlisí"
+
+#: src/bz-flathub-category.c:133
+msgid "More Utilities"
+msgstr "Tuilleadh Fóntais"
+
+#: src/bz-flathub-category.c:134 src/bz-flathub-page.blp:116
+#: src/bz-flathub-page.blp:148
+msgid "Trending"
+msgstr "Ag treochtáil"
+
+#: src/bz-flathub-category.c:134
+msgid "More Trending"
+msgstr "Tuilleadh Treochtaí"
+
+#: src/bz-flathub-category.c:135 src/bz-flathub-page.blp:122
+#: src/bz-flathub-page.blp:178
+msgid "Popular"
+msgstr "Coitianta"
+
+#: src/bz-flathub-category.c:135
+msgid "More Popular"
+msgstr "Níos Coitianta"
+
+#: src/bz-flathub-category.c:136 src/bz-flathub-page.blp:168
+msgid "Recently Added"
+msgstr "Curtha leis le Déanaí"
+
+#: src/bz-flathub-category.c:136 src/bz-flathub-page.blp:128
+msgid "New"
+msgstr "Nua"
+
+#: src/bz-flathub-category.c:136
+msgid "More New"
+msgstr "Tuilleadh Nua"
+
+#: src/bz-flathub-category.c:137 src/bz-flathub-page.blp:158
+msgid "Recently Updated"
+msgstr "Nuashonraithe le Déanaí"
+
+#: src/bz-flathub-category.c:137 src/bz-flathub-page.blp:134
+msgid "Updated"
+msgstr "Nuashonraithe"
+
+#: src/bz-flathub-category.c:137
+msgid "More Updated"
+msgstr "Tuilleadh Nuashonraithe"
+
+#: src/bz-flathub-category.c:138
+msgid "Mobile"
+msgstr "Soghluaiste"
+
+#: src/bz-flathub-category.c:138
+msgid "More Mobile"
+msgstr "Níos Soghluaiste"
+
+#: src/bz-flathub-category.c:139
+msgid "Adwaita"
+msgstr "Adwaita"
+
+#: src/bz-flathub-category.c:139
+msgid "More Adwaita"
+msgstr "Tuilleadh Adwaita"
+
+#: src/bz-flathub-category.c:140
+msgid "KDE Apps"
+msgstr "Aipeanna KDE"
+
+#: src/bz-flathub-category.c:140
+msgid "More KDE Apps"
+msgstr "Tuilleadh Aipeanna KDE"
+
+#: src/bz-flathub-page.blp:23
+msgid "Flathub Not Added"
+msgstr "Níor Cuireadh Flathub Leis"
+
+#: src/bz-flathub-page.blp:24
+msgid "The Flathub remote was not found on any of your Flatpak installations"
+msgstr ""
+"Ní bhfuarthas an cianrialtán Flathub ar aon cheann de do shuiteálacha Flatpak"
+
+#: src/bz-flathub-page.blp:35
+msgid "Flathub returned an error"
+msgstr "Thug Flathub earráid ar ais"
+
+#: src/bz-flathub-page.blp:41
+msgid "Retry Flathub Connection"
+msgstr "Déan iarracht eile ar nasc Flathub"
+
+#: src/bz-flathub-page.blp:57
+msgid "Flathub Unavailable"
+msgstr "Flathub Gan Fáil"
+
+#: src/bz-flathub-page.blp:58
+msgid ""
+"We could not connect to Flathub. You can still manage and search for "
+"applications."
+msgstr ""
+"Ní raibh muid in ann ceangal le Flathub. Is féidir leat feidhmchláir a "
+"bhainistiú agus a chuardach fós."
+
+#: src/bz-flathub-page.blp:61
+msgid "Search Apps"
+msgstr "Cuardaigh Aipeanna"
+
+#: src/bz-flathub-page.blp:205
+msgid "App of the Day"
+msgstr "Aip an Lae"
+
+#: src/bz-flathub-page.blp:268
+msgid "On the Go"
+msgstr "Ar an mBóthar"
+
+#: src/bz-flathub-page.blp:280
+msgid "Apps for your Linux phones and tablets"
+msgstr "Aipeanna do do ghutháin agus táibléid Linux"
+
+#: src/bz-flathub-page.blp:291 src/bz-flathub-page.blp:326
+msgid "More Mobile Apps"
+msgstr "Tuilleadh Aipeanna Soghluaiste"
+
+#: src/bz-flathub-page.blp:382
+msgid "We​ ♥​ Games"
+msgstr "Is breá linn ♥ Cluichí"
+
+#: src/bz-flathub-page.blp:395
+msgid "Games and apps to run your favorite titles"
+msgstr "Cluichí agus aipeanna chun do theidil is fearr leat a rith"
+
+#: src/bz-flathub-page.blp:429
+msgid "More Games"
+msgstr "Tuilleadh Cluichí"
+
+#: src/bz-full-view.blp:34 src/bz-library-page.blp:78
+#: src/bz-library-page.blp:82
+msgid "No Results"
+msgstr "Gan Torthaí"
+
+#: src/bz-full-view.blp:35
+msgid "Try a different search query"
+msgstr "Bain triail as ceist chuardaigh dhifriúil"
+
+#: src/bz-full-view.blp:41
+msgid "Content"
+msgstr "Ábhar"
+
+#: src/bz-full-view.blp:103
+msgid ""
+"This is a local preview, some details may differ from the published listing"
+msgstr ""
+"Réamhamharc áitiúil atá anseo, d'fhéadfadh roinnt sonraí a bheith difriúil "
+"ón liostú foilsithe"
+
+#: src/bz-full-view.blp:106
+msgid "Preview Store Appearance"
+msgstr "Réamhamharc ar Chuma an tSiopa"
+
+#: src/bz-full-view.blp:232
+msgid "_Support"
+msgstr "_Tacaíocht"
+
+#: src/bz-full-view.blp:431
+msgid ""
+"This app uses a runtime that no longer receives updates or security fixes. "
+"It may become unsafe to use."
+msgstr ""
+"Úsáideann an aip seo am rith nach bhfaigheann nuashonruithe ná socruithe "
+"slándála a thuilleadh. D’fhéadfadh sé a bheith neamhshábháilte le húsáid."
+
+#: src/bz-full-view.blp:518
+msgid "Trash Data"
+msgstr "Sonraí Bruscair"
+
+#: src/bz-full-view.blp:658
+msgid "Tags:"
+msgstr "Clibeanna:"
+
+#: src/bz-full-view.c:180
+msgid "No URL"
+msgstr "Gan URL"
+
+#: src/bz-full-view.c:198
+msgid ""
+"This application has a FLOSS license, meaning the source code can be audited "
+"for safety."
+msgstr ""
+"Tá ceadúnas FLOSS ag an bhfeidhmchlár seo, rud a chiallaíonn gur féidir an "
+"cód foinse a iniúchadh ar mhaithe le sábháilteacht."
+
+#: src/bz-full-view.c:199
+msgid ""
+"This application has a proprietary license, meaning the source code is "
+"developed privately and cannot be audited by an independent third party."
+msgstr ""
+"Tá ceadúnas dílseánaigh ag an bhfeidhmchlár seo, rud a chiallaíonn go "
+"bhforbraítear an cód foinse go príobháideach agus nach féidir le tríú páirtí "
+"neamhspleách é a iniúchadh."
+
+#: src/bz-full-view.c:206
+msgid "More Apps"
+msgstr "Tuilleadh Aipeanna"
+
+#: src/bz-full-view.c:207
+#, c-format
+msgid "More Apps by %s"
+msgstr "Tuilleadh Aipeanna ó %s"
+
+#: src/bz-full-view.c:214
+msgid "Other Apps by this Developer"
+msgstr "Aipeanna Eile ón bhForbróir seo"
+
+#: src/bz-full-view.c:216 src/bz-full-view.c:316
+#, c-format
+msgid "Other Apps by %s"
+msgstr "Aipeanna Eile ó %s"
+
+#: src/bz-full-view.c:225
+#, c-format
+msgid "%s is not installed, but it still has <b>%s</b> of data present."
+msgstr "Níl %s suiteáilte, ach tá <b>%s</b> sonraí ann fós."
+
+#: src/bz-full-view.c:318
+msgid "Other Apps"
+msgstr "Aipeanna Eile"
+
+#: src/bz-full-view.c:320
+#, c-format
+msgid "%d Application"
+msgid_plural "%d Applications"
+msgstr[0] "%d Feidhmchlár"
+msgstr[1] "%d Feidhmchláir"
+msgstr[2] "%d Feidhmchláir"
+
+#: src/bz-full-view.c:536 src/bz-user-data-tile.c:144
+msgid "Failed to Remove User Data"
+msgstr "Theip ar Shonraí Úsáideora a Bhaint"
+
+#: src/bz-hardware-support-dialog.blp:7 src/bz-hardware-support-dialog.blp:31
+msgid "Hardware Support"
+msgstr "Tacaíocht Crua-earraí"
+
+#: src/bz-hardware-support-dialog.c:62
+msgid "Keyboard support"
+msgstr "Tacaíocht méarchláir"
+
+#: src/bz-hardware-support-dialog.c:64
+msgid "Requires keyboards"
+msgstr "Éilíonn méarchláir"
+
+#: src/bz-hardware-support-dialog.c:65
+msgid "Recommends keyboards"
+msgstr "Molann méarchláir"
+
+#: src/bz-hardware-support-dialog.c:66
+msgid "Supports keyboards"
+msgstr "Tacaíonn méarchláir"
+
+#: src/bz-hardware-support-dialog.c:67
+msgid "Unknown support for keyboards"
+msgstr "Tacaíocht anaithnid do mhéarchláir"
+
+#: src/bz-hardware-support-dialog.c:69
+msgid "Mouse support"
+msgstr "Tacaíocht luiche"
+
+#: src/bz-hardware-support-dialog.c:71
+msgid "Requires mice or pointing devices"
+msgstr "Teastaíonn lucha nó gléasanna pointeála"
+
+#: src/bz-hardware-support-dialog.c:72
+msgid "Recommends mice or pointing devices"
+msgstr "Molann lucha nó gléasanna pointeála"
+
+#: src/bz-hardware-support-dialog.c:73
+msgid "Supports mice or pointing devices"
+msgstr "Tacaíonn sé le lucha nó le gléasanna pointeála"
+
+#: src/bz-hardware-support-dialog.c:74
+msgid "Unknown support for mice or pointing devices"
+msgstr "Tacaíocht anaithnid do lucha nó do ghléasanna pointeála"
+
+#: src/bz-hardware-support-dialog.c:76
+msgid "Touchscreen support"
+msgstr "Tacaíocht scáileáin tadhaill"
+
+#: src/bz-hardware-support-dialog.c:78
+msgid "Requires touchscreens"
+msgstr "Éilíonn scáileáin tadhaill"
+
+#: src/bz-hardware-support-dialog.c:79
+msgid "Recommends touchscreens"
+msgstr "Molann scáileáin tadhaill"
+
+#: src/bz-hardware-support-dialog.c:80
+msgid "Supports touchscreens"
+msgstr "Tacaíonn sé le scáileáin tadhaill"
+
+#: src/bz-hardware-support-dialog.c:81
+msgid "Unknown support for touchscreens"
+msgstr "Tacaíocht anaithnid do scáileáin tadhaill"
+
+#: src/bz-hardware-support-dialog.c:160
+msgid "Mobile support"
+msgstr "Tacaíocht shoghluaiste"
+
+#: src/bz-hardware-support-dialog.c:161
+msgid "Works on mobile devices"
+msgstr "Oibríonn sé ar ghléasanna soghluaiste"
+
+#: src/bz-hardware-support-dialog.c:161
+msgid "May not work well on mobile devices"
+msgstr "B’fhéidir nach n-oibreoidh sé go maith ar ghléasanna soghluaiste"
+
+#: src/bz-hardware-support-dialog.c:166
+msgid "Desktop support"
+msgstr "Tacaíocht deisce"
+
+#: src/bz-hardware-support-dialog.c:167
+msgid "Works well on large screens"
+msgstr "Oibríonn go maith ar scáileáin mhóra"
+
+#: src/bz-hardware-support-dialog.c:201
+#, c-format
+msgid "%s works best on specific hardware"
+msgstr "Oibríonn %s is fearr ar chrua-earraí sonracha"
+
+#: src/bz-hardware-support-dialog.c:209
+#, c-format
+msgid "%s works on most devices"
+msgstr "Oibríonn %s ar an gcuid is mó de na gléasanna"
+
+#: src/bz-install-controls.blp:62
+msgid "_Open"
+msgstr "_Oscail"
+
+#: src/bz-install-controls.blp:77 src/bz-install-controls.blp:134
+msgid "Uninstall Application"
+msgstr "Díshuiteáil Feidhmchlár"
+
+#: src/bz-install-controls.blp:87 src/bz-transaction-dialog.c:230
+msgid "_Remove"
+msgstr "_Bain"
+
+#: src/bz-install-controls.blp:121 src/bz-updates-card.c:164
+#: src/bz-updates-card.c:183
+msgid "Update"
+msgstr "Nuashonrú"
+
+#: src/bz-install-controls.blp:144 src/bz-installed-tile.blp:105
+msgid "Remove"
+msgstr "Bain"
+
+#: src/bz-install-controls.wdgt:32
+msgctxt "Install Controls"
+msgid "Cancel"
+msgstr "Cealaigh"
+
+#: src/bz-install-controls.wdgt:35
+msgctxt "Install Controls"
+msgid "Cancelling"
+msgstr "Ag cealú"
+
+#: src/bz-library-page.blp:32
+msgid "Search installed apps"
+msgstr "Cuardaigh aipeanna suiteáilte"
+
+#: src/bz-library-page.blp:50
+msgid "Clear search"
+msgstr "Glan an cuardach"
+
+#: src/bz-library-page.blp:71
+msgid "No Apps Found"
+msgstr "Níor aimsíodh aon aipeanna"
+
+#: src/bz-library-page.blp:90
+msgid "Search Store Instead"
+msgstr "Cuardaigh Siopa Ina Ionad"
+
+#. Translators: .
+#: src/bz-library-page.blp:100 src/bz-window.blp:112
+msgid "Library"
+msgstr "Leabharlann"
+
+#: src/bz-library-page.blp:128
+msgid "Pending Updates"
+msgstr "Nuashonruithe ar Feitheamh"
+
+#: src/bz-library-page.blp:155
+msgid "Downloads"
+msgstr "Íoslódálacha"
+
+#: src/bz-library-page.blp:198
+msgid "Recently Uninstalled"
+msgstr "Díshuiteáilte le Déanaí"
+
+#: src/bz-library-page.blp:249
+msgid "Clear Finished Tasks"
+msgstr "Glan na Tascanna Críochnaithe"
+
+#: src/bz-library-page.blp:334
+msgid "Sort By"
+msgstr "Sórtáil De réir"
+
+#: src/bz-library-page.blp:348
+msgid "Name"
+msgstr "Ainm"
+
+#: src/bz-library-page.blp:354
+msgid "Size"
+msgstr "Méid"
+
+#: src/bz-library-page.c:180
+#, c-format
+msgid "No matches found for \"%s\" in the list of installed apps"
+msgstr ""
+"Níor aimsíodh aon mheaitseálacha do \"%s\" i liosta na n-aipeanna suiteáilte"
+
+#: src/bz-library-page.c:193 src/bz-updates-card.c:433
+#, c-format
+msgid "%u Available Update"
+msgid_plural "%u Available Updates"
+msgstr[0] "%u Nuashonrú atá ar Fáil"
+msgstr[1] "%u Nuashonruithe atá ar Fáil"
+msgstr[2] "%u Nuashonruithe atá ar Fáil"
+
+#: src/bz-library-page.c:203
+#, c-format
+msgid "%u Installed App"
+msgid_plural "%u Installed Apps"
+msgstr[0] "%u Aip Suiteáilte"
+msgstr[1] "%u Aipeanna Suiteáilte"
+msgstr[2] "%u Aipeanna Suiteáilte"
+
+#: src/bz-license-dialog.blp:94
+msgid "Get Involved"
+msgstr "Bígí Páirteach"
+
+#: src/bz-license-dialog.blp:111
+msgid "Learn More"
+msgstr "Foghlaim Tuilleadh"
+
+#: src/bz-license-dialog.c:127
+msgid "Unknown License"
+msgstr "Ceadúnas Anaithnid"
+
+#: src/bz-license-dialog.c:130
+msgid "Community Built"
+msgstr "Tógtha ag an bPobal"
+
+#: src/bz-license-dialog.c:203
+msgid ""
+"This app is developed in the open by an international community.\n"
+"\n"
+"You can participate and help make it even better."
+msgstr ""
+"Forbraíodh an aip seo go hoscailte ag pobal idirnáisiúnta.\n"
+"\n"
+"Is féidir leat páirt a ghlacadh agus cabhrú le feabhas a chur uirthi."
+
+#: src/bz-license-dialog.c:206
+msgid "The license of this app is not known"
+msgstr "Níl ceadúnas an aip seo ar eolas"
+
+#: src/bz-license-dialog.c:212
+#, c-format
+msgid ""
+"This app is developed in the open by an international community, and "
+"released under the %s license.\n"
+"\n"
+"You can participate and help make it even better."
+msgstr ""
+"Forbraíodh an aip seo go hoscailte ag pobal idirnáisiúnta, agus eisíodh í "
+"faoin gceadúnas %s.\n"
+"\n"
+"Is féidir leat páirt a ghlacadh agus cabhrú le feabhas a chur uirthi."
+
+#: src/bz-license-dialog.c:220
+msgid ""
+"This app is not developed in the open, so only its developers know how it "
+"works. It may be insecure in ways that are hard to detect, and it may change "
+"without oversight.\n"
+"\n"
+"You may or may not be able to contribute to this app."
+msgstr ""
+"Níor forbraíodh an aip seo go hoscailte, mar sin níl a fhios ag ach a "
+"forbróirí conas a oibríonn sé. D’fhéadfadh sé a bheith neamhshábháilte ar "
+"bhealaí atá deacair a bhrath, agus d’fhéadfadh sé athrú gan mhaoirseacht.\n"
+"\n"
+"B’fhéidir go mbeidh tú in ann cur leis an aip seo nó nach mbeidh."
+
+#: src/bz-license-dialog.c:226
+#, c-format
+msgid ""
+"This app is developed under the special license %s.\n"
+"\n"
+"You may or may not be able to contribute to this app."
+msgstr ""
+"Forbraíodh an aip seo faoin gceadúnas speisialta %s.\n"
+"\n"
+"B’fhéidir go mbeidh tú in ann cur leis an aip seo nó nach mbeidh."
+
+#: src/bz-license-dialog.c:356 src/bz-safety-dialog.blp:49
+msgid "License"
+msgstr "Ceadúnas"
+
+#: src/bz-login-page.blp:5 src/bz-login-page.blp:42
+msgid "Connect to Flathub"
+msgstr "Ceangail le Flathub"
+
+#: src/bz-login-page.blp:32
+msgid "Something Went Wrong"
+msgstr "Chuaigh rud éigin mícheart"
+
+#: src/bz-login-page.blp:43
+msgid "Connect your Flathub account to Bazaar to manage your favorited apps."
+msgstr ""
+"Ceangail do chuntas Flathub le Bazaar chun do chuid aipeanna is fearr leat a "
+"bhainistiú."
+
+#: src/bz-login-page.blp:110
+msgid "Finish"
+msgstr "Críochnaigh"
+
+#: src/bz-login-page.c:664
+#, c-format
+msgid "Hello, %s!"
+msgstr "Haigh, %s!"
+
+#: src/bz-metainfo-preview.c:84
+msgid "Select Metainfo File"
+msgstr "Roghnaigh Comhad Meiteafhaisnéise"
+
+#: src/bz-metainfo-preview.c:87
+msgid "Metainfo Files"
+msgstr "Comhaid Meiteafhaisnéise"
+
+#: src/bz-metainfo-preview.c:141
+msgid "Select Icon (Optional)"
+msgstr "Roghnaigh Deilbhín (Roghnach)"
+
+#: src/bz-metainfo-preview.c:144
+msgid "Image Files"
+msgstr "Comhaid Íomhá"
+
+#: src/bz-metainfo-preview.c:231
+msgid "Preview"
+msgstr "Réamhamharc"
+
+#: src/bz-preferences-dialog.blp:19
+msgid "Preferences"
+msgstr "Roghanna"
+
+#: src/bz-preferences-dialog.blp:25
+msgid "Network connection is metered — automatic store data refresh is paused"
+msgstr ""
+"Tá an nasc líonra méadraithe — tá athnuachan uathoibríoch sonraí stórála ar "
+"sos"
+
+#: src/bz-preferences-dialog.blp:26 src/bz-window.blp:232
+msgid "Refresh Manually"
+msgstr "Athnuachan de Láimh"
+
+#: src/bz-preferences-dialog.blp:31
+msgid "Content Filters"
+msgstr "Scagairí Ábhair"
+
+#: src/bz-preferences-dialog.blp:34
+msgid "Free Software Only"
+msgstr "Bogearraí Saor in Aisce Amháin"
+
+#: src/bz-preferences-dialog.blp:35
+msgid "Hide proprietary applications when browsing and searching"
+msgstr ""
+"Folaigh feidhmchláir dhílseánaigh agus tú ag brabhsáil agus ag cuardach"
+
+#: src/bz-preferences-dialog.blp:39
+msgid "Flathub Results Only"
+msgstr "Torthaí Flathub Amháin"
+
+#: src/bz-preferences-dialog.blp:40
+msgid ""
+"Limit search and browse results to applications only available on Flathub"
+msgstr ""
+"Teorainn a chur le cuardach agus torthaí brabhsála d’fheidhmchláir atá ar "
+"fáil ar Flathub amháin"
+
+#: src/bz-preferences-dialog.blp:44
+msgid "Verified Results Only"
+msgstr "Torthaí Fíoraithe Amháin"
+
+#: src/bz-preferences-dialog.blp:45
+msgid "Hide results that are not verified on Flathub"
+msgstr "Folaigh torthaí nach bhfuil fíoraithe ar Flathub"
+
+#: src/bz-preferences-dialog.blp:49
+msgid "Hide End-of-Life Apps"
+msgstr "Folaigh Aipeanna Deireadh Saoil"
+
+#: src/bz-preferences-dialog.blp:50
+msgid "Hide apps which are no longer supported by their developers"
+msgstr "Folaigh aipeanna nach dtacaíonn a bhforbróirí leo a thuilleadh"
+
+#: src/bz-preferences-dialog.blp:55 src/bz-window.blp:127
+msgid "Search"
+msgstr "Cuardaigh"
+
+#: src/bz-preferences-dialog.blp:58
+msgid "Delay Search Results"
+msgstr "Moill ar Thorthaí Cuardaigh"
+
+#: src/bz-preferences-dialog.blp:59
+msgid "Improve results performance by debouncing search terms"
+msgstr ""
+"Feabhas a chur ar fheidhmíocht na dtorthaí trí théarmaí cuardaigh a dhí-"
+"bhreabadh"
+
+#: src/bz-preferences-dialog.blp:64
+msgid "Progress Bar"
+msgstr "Barra Dul Chun Cinn"
+
+#: src/bz-preferences-dialog.blp:65
+msgid "Choose a theme for the progress bar!"
+msgstr "Roghnaigh téama don bharra dul chun cinn!"
+
+#: src/bz-preferences-dialog.blp:89
+msgid "Vertical Stripes"
+msgstr "Stríoca Ingearacha"
+
+#: src/bz-preferences-dialog.blp:90
+msgid "Display flag colors from left to right"
+msgstr "Taispeáin dathanna na mbratach ó chlé go deas"
+
+#: src/bz-preferences-dialog.c:32
+msgid "Accent Color"
+msgstr "Dath Aicinn"
+
+#: src/bz-preferences-dialog.c:33
+msgid "Pride Colors"
+msgstr "Dathanna Bród"
+
+#: src/bz-preferences-dialog.c:34
+msgid "Lesbian Pride Colors"
+msgstr "Dathanna Bród Leispiach"
+
+#: src/bz-preferences-dialog.c:35
+msgid "Male Homosexual Pride Colors"
+msgstr "Dathanna Bród Fir Homaighnéasacha"
+
+#: src/bz-preferences-dialog.c:36
+msgid "Transgender Pride Colors"
+msgstr "Dathanna Bród Trasinscne"
+
+#: src/bz-preferences-dialog.c:37
+msgid "Nonbinary Pride Colors"
+msgstr "Dathanna Bród Neamhdhénártha"
+
+#: src/bz-preferences-dialog.c:38
+msgid "Bisexual Pride Colors"
+msgstr "Dathanna Bród Déghnéasacha"
+
+#: src/bz-preferences-dialog.c:39
+msgid "Asexual Pride Colors"
+msgstr "Dathanna Bród Neamhghnéasacha"
+
+#: src/bz-preferences-dialog.c:40
+msgid "Pansexual Pride Colors"
+msgstr "Dathanna Bród Panghnéasacha"
+
+#: src/bz-preferences-dialog.c:41
+msgid "Aromantic Pride Colors"
+msgstr "Dathanna Bród Cumhra"
+
+#: src/bz-preferences-dialog.c:42
+msgid "Genderfluid Pride Colors"
+msgstr "Dathanna Bród Inscnefluid"
+
+#: src/bz-preferences-dialog.c:43
+msgid "Polysexual Pride Colors"
+msgstr "Dathanna Bród Ilghnéasacha"
+
+#: src/bz-preferences-dialog.c:44
+msgid "Omnisexual Pride Colors"
+msgstr "Dathanna Bród Uileghnéasacha"
+
+#: src/bz-preferences-dialog.c:45
+msgid "Aroace Pride Colors"
+msgstr "Dathanna Bród Aroace"
+
+#: src/bz-preferences-dialog.c:46
+msgid "Agender Pride Colors"
+msgstr "Dathanna Bród Agender"
+
+#: src/bz-preferences-dialog.c:47
+msgid "Genderqueer Pride Colors"
+msgstr "Dathanna Bród Inscnequeer"
+
+#: src/bz-preferences-dialog.c:48
+msgid "Intersex Pride Colors"
+msgstr "Dathanna Bród Idirghnéasacha"
+
+#: src/bz-preferences-dialog.c:49
+msgid "Demigender Pride Colors"
+msgstr "Dathanna Bród Demi-Inscne"
+
+#: src/bz-preferences-dialog.c:50
+msgid "Biromantic Pride Colors"
+msgstr "Dathanna Bród Birománsacha"
+
+#: src/bz-preferences-dialog.c:51
+msgid "Disability Pride Colors"
+msgstr "Dathanna Bród Míchumais"
+
+#: src/bz-preferences-dialog.c:52
+msgid "Femboy Pride Colors"
+msgstr "Dathanna Bród Femboy"
+
+#: src/bz-preferences-dialog.c:53
+msgid "Neutrois Pride Colors"
+msgstr "Dathanna Bród Neutrois"
+
+#: src/bz-releases-dialog.blp:5 src/bz-updates-card.c:155
+msgid "Version History"
+msgstr "Stair Leagan"
+
+#: src/bz-releases-list.blp:27
+msgid "_Version History"
+msgstr "_Stair Leagan"
+
+#. Translators: something happened less than a day ago
+#: src/bz-releases-list.c:122
+msgid "Today"
+msgstr "Inniu"
+
+#. Translators: something happened more than a day ago but less than 2 days ago
+#: src/bz-releases-list.c:125
+msgid "Yesterday"
+msgstr "Inné"
+
+#. Translators: something happened days ago
+#: src/bz-releases-list.c:128
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d lá ó shin"
+msgstr[1] "%d lá ó shin"
+msgstr[2] "%d lá ó shin"
+
+#. Translators: something happened weeks ago
+#: src/bz-releases-list.c:131
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d seachtain ó shin"
+msgstr[1] "%d seachtain ó shin"
+msgstr[2] "%d seachtain ó shin"
+
+#. Translators: something happened months ago
+#: src/bz-releases-list.c:134
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d mí ó shin"
+msgstr[1] "%d mí ó shin"
+msgstr[2] "%d mí ó shin"
+
+#. Translators: something happened years ago
+#: src/bz-releases-list.c:137
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d bliain ó shin"
+msgstr[1] "%d bliain ó shin"
+msgstr[2] "%d bliain ó shin"
+
+#. TRANSLATORS: This is the date string with: day number, month name, year.
+#. i.e. "22 March 2026"
+#: src/bz-releases-list.c:155
+msgid "%e %B %Y"
+msgstr "%e %B %Y"
+
+#: src/bz-releases-list.c:196
+#, c-format
+msgid "Version %s"
+msgstr "Leagan %s"
+
+#: src/bz-releases-list.c:251
+msgid "No details for this release"
+msgstr "Gan aon sonraí don eisiúint seo"
+
+#: src/bz-releases-list.c:263
+msgid "Get More Information"
+msgstr "Faigh Tuilleadh Eolais"
+
+#: src/bz-rich-app-tile.blp:217
+msgid "Uninstall"
+msgstr "Díshuiteáil"
+
+#. Translators: If you can't find a short enough translation, use "/" to use an icon instead.
+#: src/bz-rich-app-tile.c:369
+msgid "Get"
+msgstr "Faigh"
+
+#: src/bz-safety-calculator.c:87
+msgid "Unknown Permissions"
+msgstr "Ceadanna Anaithnid"
+
+#: src/bz-safety-calculator.c:88
+msgid "Permissions are missing for this app."
+msgstr "Tá ceadanna ar iarraidh don aip seo."
+
+#: src/bz-safety-calculator.c:101
+msgid "No Permissions"
+msgstr "Gan Ceadanna"
+
+#: src/bz-safety-calculator.c:102
+msgid "App is fully sandboxed"
+msgstr "Tá an aip bosca gainimh go hiomlán"
+
+#: src/bz-safety-calculator.c:108
+msgid "Network Access"
+msgstr "Rochtain Líonra"
+
+#: src/bz-safety-calculator.c:109
+msgid "Can access the internet"
+msgstr "Is féidir rochtain a fháil ar an idirlíon"
+
+#: src/bz-safety-calculator.c:111
+msgid "No Network Access"
+msgstr "Gan Rochtain Líonra"
+
+#: src/bz-safety-calculator.c:112
+msgid "Cannot access the internet"
+msgstr "Ní féidir rochtain a fháil ar an idirlíon"
+
+#: src/bz-safety-calculator.c:117
+msgid "User Device Access"
+msgstr "Rochtain Gléas Úsáideora"
+
+#: src/bz-safety-calculator.c:118
+msgid "Can access devices such as webcams or gaming controllers"
+msgstr ""
+"Is féidir rochtain a fháil ar fheistí ar nós ceamaraí gréasáin nó rialtóirí "
+"cearrbhachais"
+
+#: src/bz-safety-calculator.c:120
+msgid "No User Device Access"
+msgstr "Gan Rochtain ar Ghléas Úsáideora"
+
+#: src/bz-safety-calculator.c:121
+msgid "Cannot access devices such as webcams or gaming controllers"
+msgstr ""
+"Ní féidir rochtain a fháil ar fheistí ar nós ceamaraí gréasáin nó rialtóirí "
+"cearrbhachais"
+
+#: src/bz-safety-calculator.c:126
+msgid "Input Device Access"
+msgstr "Rochtain ar Ghléas Ionchuir"
+
+#: src/bz-safety-calculator.c:127
+msgid "Can access input devices"
+msgstr "Is féidir rochtain a fháil ar fheistí ionchuir"
+
+#: src/bz-safety-calculator.c:133
+msgid "Microphone Access and Audio Playback"
+msgstr "Rochtain Micreafóin agus Athsheinm Fuaime"
+
+#: src/bz-safety-calculator.c:134
+msgid "Can listen using microphones and play audio without asking permission"
+msgstr ""
+"Is féidir éisteacht le micreafóin agus fuaim a sheinm gan cead a iarraidh"
+
+#: src/bz-safety-calculator.c:140
+msgid "System Device Access"
+msgstr "Rochtain ar Ghléas an Chórais"
+
+#: src/bz-safety-calculator.c:141
+msgid "Can access system devices which require elevated permissions"
+msgstr ""
+"Is féidir rochtain a fháil ar ghléasanna córais a bhfuil ceadanna ardaithe "
+"ag teastáil uathu"
+
+#: src/bz-safety-calculator.c:147
+msgid "Screen Contents Access"
+msgstr "Rochtain ar Ábhar an Scáileáin"
+
+#: src/bz-safety-calculator.c:148
+msgid "Can access the contents of the screen or other windows"
+msgstr "Is féidir rochtain a fháil ar ábhar an scáileáin nó fuinneoga eile"
+
+#: src/bz-safety-calculator.c:154
+msgid "Legacy Windowing System"
+msgstr "Córas Fuinneoige Oidhreachta"
+
+#: src/bz-safety-calculator.c:155
+msgid "Always uses a legacy windowing system (X11)"
+msgstr "Úsáideann sé córas fuinneoige oidhreachta i gcónaí (X11)"
+
+#: src/bz-safety-calculator.c:161
+msgid "Arbitrary Permissions"
+msgstr "Ceadanna Treallacha"
+
+#: src/bz-safety-calculator.c:162
+msgid "Can acquire arbitrary permissions"
+msgstr "Is féidir ceadanna treallacha a fháil"
+
+#: src/bz-safety-calculator.c:168
+msgid "User Settings"
+msgstr "Socruithe Úsáideora"
+
+#: src/bz-safety-calculator.c:169
+msgid "Can access and change user settings"
+msgstr "Is féidir rochtain a fháil ar shocruithe úsáideora agus iad a athrú"
+
+#: src/bz-safety-calculator.c:175
+msgid "Full File System Read/Write Access"
+msgstr "Rochtain Léitheoireachta/Scríofa ar an gCóras Comhad Iomlán"
+
+#: src/bz-safety-calculator.c:176
+msgid "Can read and write all data on the file system"
+msgstr ""
+"Is féidir leis na sonraí go léir ar an gcóras comhad a léamh agus a scríobh"
+
+#: src/bz-safety-calculator.c:183
+msgid "Home Folder Read/Write Access"
+msgstr "Rochtain Léitheoireachta/Scríofa ar Fhillteán Baile"
+
+#: src/bz-safety-calculator.c:184
+msgid "Can read and write all data in your home directory"
+msgstr ""
+"Is féidir leat na sonraí go léir i do eolaire baile a léamh agus a scríobh"
+
+#: src/bz-safety-calculator.c:191
+msgid "Full File System Read Access"
+msgstr "Rochtain Léitheoireachta Iomlán an Chórais Comhad"
+
+#: src/bz-safety-calculator.c:192
+msgid "Can read all data on the file system"
+msgstr "Is féidir leis na sonraí go léir ar an gcóras comhad a léamh"
+
+#: src/bz-safety-calculator.c:200
+msgid "Home Folder Read Access"
+msgstr "Rochtain Léitheoireachta Fillteán Baile"
+
+#: src/bz-safety-calculator.c:201
+msgid "Can read all data in your home directory"
+msgstr "Is féidir leat na sonraí go léir i do eolaire baile a léamh"
+
+#: src/bz-safety-calculator.c:209
+msgid "Download Folder Read/Write Access"
+msgstr "Rochtain Léitheoireachta/Scríofa ar an bhFillteán Íoslódála"
+
+#: src/bz-safety-calculator.c:210
+msgid "Can read and write all data in your downloads directory"
+msgstr ""
+"Is féidir leat na sonraí go léir i do eolaire íoslódálacha a léamh agus a "
+"scríobh"
+
+#: src/bz-safety-calculator.c:220
+msgid "Download Folder Read Access"
+msgstr "Íoslódáil Rochtain Léitheoireachta Fillteáin"
+
+#: src/bz-safety-calculator.c:221
+msgid "Can read all data in your downloads directory"
+msgstr "Is féidir leat na sonraí go léir i do chomhadlann íoslódálacha a léamh"
+
+#: src/bz-safety-calculator.c:242
+msgid "Can read and write all data in the directory"
+msgstr "Is féidir na sonraí go léir san eolaire a léamh agus a scríobh"
+
+#: src/bz-safety-calculator.c:266
+msgid "Can read all data in the directory"
+msgstr "Is féidir na sonraí go léir san eolaire a léamh"
+
+#: src/bz-safety-calculator.c:281
+msgid "No File System Access"
+msgstr "Gan Rochtain ar Chóras Comhad"
+
+#: src/bz-safety-calculator.c:282
+msgid "Cannot access the file system at all"
+msgstr "Ní féidir rochtain a fháil ar an gcóras comhad ar chor ar bith"
+
+#: src/bz-safety-calculator.c:289
+msgid "Uses System Services"
+msgstr "Úsáideann Seirbhísí Córais"
+
+#: src/bz-safety-calculator.c:290
+msgid "Can request data from non-portal system services"
+msgstr "Is féidir sonraí a iarraidh ó sheirbhísí córais neamh-thairsí"
+
+#: src/bz-safety-calculator.c:296
+msgid "Uses Session Services"
+msgstr "Úsáideann Seirbhísí Seisiúin"
+
+#: src/bz-safety-calculator.c:297
+msgid "Can request data from non-portal session services"
+msgstr "Is féidir sonraí a iarraidh ó sheirbhísí seisiúin neamh-thairseach"
+
+#: src/bz-safety-calculator.c:345
+msgid "No Service Access"
+msgstr "Gan Rochtain Seirbhíse"
+
+#: src/bz-safety-calculator.c:346
+msgid "Cannot access non-portal session or system services at all"
+msgstr ""
+"Ní féidir rochtain a fháil ar sheirbhísí seisiúin nó córais neamh-thairseach "
+"ar chor ar bith"
+
+#: src/bz-safety-calculator.c:354
+msgid "Verified App Developer"
+msgstr "Forbróir Aipeanna Fíoraithe"
+
+#: src/bz-safety-calculator.c:355
+msgid "The developer of this app has been verified to be who they say they are"
+msgstr ""
+"Tá sé fíoraithe gurb é forbróir an aip seo an duine a deir siad a bheith"
+
+#: src/bz-safety-calculator.c:364
+msgid "Proprietary Code"
+msgstr "Cód Dílseánaigh"
+
+#: src/bz-safety-calculator.c:365
+msgid ""
+"The source code is not public, so it cannot be independently audited and "
+"might be unsafe"
+msgstr ""
+"Níl an cód foinse poiblí, mar sin ní féidir é a iniúchadh go neamhspleách "
+"agus d'fhéadfadh sé a bheith neamhshábháilte"
+
+#: src/bz-safety-calculator.c:375
+msgid "Auditable Code"
+msgstr "Cód Iniúchta"
+
+#: src/bz-safety-calculator.c:376
+msgid ""
+"The source code is public and can be independently audited, which makes the "
+"app more likely to be safe"
+msgstr ""
+"Tá an cód foinse poiblí agus is féidir é a iniúchadh go neamhspleách, rud a "
+"fhágann go bhfuil an aip níos dóchúla a bheith sábháilte"
+
+#: src/bz-safety-calculator.c:516
+#, c-format
+msgid "Use the %s System Service"
+msgstr "Bain úsáid as an Seirbhís Córais %s"
+
+#: src/bz-safety-calculator.c:520
+#, c-format
+msgid "Use the %s Session Service"
+msgstr "Bain úsáid as an tSeirbhís Seisiúin %s"
+
+#: src/bz-safety-calculator.c:524
+#, c-format
+msgid "Use the %s Service"
+msgstr "Bain úsáid as an tseirbhís %s"
+
+#: src/bz-safety-calculator.c:534
+msgid "Can see the non-portal service"
+msgstr "Is féidir an tseirbhís neamh-thairseach a fheiceáil"
+
+#: src/bz-safety-calculator.c:536
+msgid "Can talk to the non-portal service"
+msgstr "Is féidir labhairt leis an tseirbhís neamh-thairseach"
+
+#: src/bz-safety-calculator.c:538
+msgid "Can own the non-portal service"
+msgstr "Is féidir leis an tseirbhís neamh-thairsí a bheith i seilbh"
+
+#: src/bz-safety-calculator.c:553
+msgid "Global Menu Integration"
+msgstr "Comhtháthú Roghchláir Dhomhanda"
+
+#: src/bz-safety-calculator.c:554
+msgid "Can display its menus in a global menu bar"
+msgstr "Is féidir a bhiachláir a thaispeáint i mbarra roghchláir domhanda"
+
+#: src/bz-safety-calculator.c:559
+msgid "KDE Settings Integration"
+msgstr "Comhtháthú Socruithe KDE"
+
+#: src/bz-safety-calculator.c:560
+msgid "Can detect when KDE desktop settings change"
+msgstr "Is féidir a bhrath nuair a athraíonn socruithe deisce KDE"
+
+#: src/bz-safety-calculator.c:565
+msgid "KDE Global Settings"
+msgstr "Socruithe Domhanda KDE"
+
+#: src/bz-safety-calculator.c:566
+msgid "Can read KDE desktop preferences like fonts and colors"
+msgstr "Is féidir roghanna deisce KDE a léamh ar nós clónna agus dathanna"
+
+#: src/bz-safety-calculator.c:571
+msgid "Secret Storage Service"
+msgstr "Seirbhís Stórála Rúnda"
+
+#: src/bz-safety-calculator.c:572
+msgid "Can store and retrieve its own passwords using the system keyring"
+msgstr ""
+"Is féidir leis a phasfhocail féin a stóráil agus a aisghabháil ag baint "
+"úsáide as eochairfháinne an chórais"
+
+#: src/bz-safety-calculator.c:577
+msgid "Desktop Notifications Service"
+msgstr "Seirbhís Fógraí Deisce"
+
+#: src/bz-safety-calculator.c:578
+msgid "Can send desktop notifications"
+msgstr "Is féidir fógraí deisce a sheoladh"
+
+#: src/bz-safety-calculator.c:584
+msgid "System Tray Integration"
+msgstr "Comhtháthú Tráidire an Chórais"
+
+#: src/bz-safety-calculator.c:585
+msgid "Can display an icon in the system tray"
+msgstr "Is féidir deilbhín a thaispeáint sa tráidire córais"
+
+#: src/bz-safety-calculator.c:590
+msgid "KDE Connect Integration"
+msgstr "Comhtháthú KDE Connect"
+
+#: src/bz-safety-calculator.c:591
+msgid "Can interact with devices paired via KDE Connect"
+msgstr "Is féidir idirghníomhú le gléasanna atá péireáilte trí KDE Connect"
+
+#: src/bz-safety-dialog.blp:59
+msgid "App ID"
+msgstr "Aitheantas Aipe"
+
+#: src/bz-safety-dialog.blp:69
+msgid "SDK"
+msgstr "SDK"
+
+#: src/bz-safety-dialog.blp:100
+msgid ""
+"This app uses an outdated version of the software platform (SDK) and might "
+"contain bugs or security vulnerabilities which will not be fixed."
+msgstr ""
+"Úsáideann an aip seo leagan atá as dáta den ardán bogearraí (SDK) agus "
+"d'fhéadfadh fabhtanna nó leochaileachtaí slándála a bheith ann nach ndéanfar "
+"a shocrú."
+
+#: src/bz-safety-dialog.c:167
+msgid "Safety"
+msgstr "Sábháilteacht"
+
+#: src/bz-safety-dialog.c:226
+#, c-format
+msgid "%s is Safe"
+msgstr "Tá %s sábháilte"
+
+#: src/bz-safety-dialog.c:231
+#, c-format
+msgid "%s has no Unsafe Permissions"
+msgstr "Níl aon Cheadanna Neamhshábháilte ag %s"
+
+#: src/bz-safety-dialog.c:236
+#, c-format
+msgid "%s is Probably Safe"
+msgstr "Is dócha go bhfuil %s sábháilte"
+
+#: src/bz-safety-dialog.c:241
+#, c-format
+msgid "%s is Possibly Unsafe"
+msgstr "B’fhéidir go bhfuil %s neamhshábháilte"
+
+#: src/bz-safety-dialog.c:246
+#, c-format
+msgid "%s is Unsafe"
+msgstr "Tá %s neamhshábháilte"
+
+#: src/bz-screenshot-page.blp:5
+msgid "Screenshots"
+msgstr "Seat scáileáin"
+
+#: src/bz-screenshot-page.blp:61
+msgid "Previous Screenshot"
+msgstr "An seat scáileán roimhe seo"
+
+#: src/bz-screenshot-page.blp:71
+msgid "Next Screenshot"
+msgstr "An seat scáileán eile"
+
+#: src/bz-screenshot-page.blp:87
+msgid "Copy Image"
+msgstr "Cóipeáil íomhá"
+
+#: src/bz-screenshot-page.blp:150
+msgid "Reset View"
+msgstr "Athshocraigh an Amharc"
+
+#: src/bz-screenshot-page.blp:161
+msgid "Zoom Out"
+msgstr "Súmáil amach"
+
+#: src/bz-screenshot-page.blp:171
+msgid "Zoom In"
+msgstr "Súmáil isteach"
+
+#: src/bz-screenshots-carousel.blp:5
+msgid "Screenshots Carousel"
+msgstr "Roithleagán Seat scáileáin"
+
+#: src/bz-screenshots-carousel.blp:117
+msgid "Open Screenshot Viewer"
+msgstr "Oscail Amharcóir Seat scáileáin"
+
+#: src/bz-search-filter-popover.blp:18 src/bz-search-page.blp:83
+msgid "Filters"
+msgstr "Scagairí"
+
+#: src/bz-search-filter-popover.blp:35
+msgid "_Verified"
+msgstr "_Fíoraithe"
+
+#: src/bz-search-filter-popover.blp:42
+msgid "_Free/Open"
+msgstr "_Saor in Aisce/Oscailte"
+
+#: src/bz-search-filter-popover.blp:49
+msgid "Non-_EOL"
+msgstr "Neamh-_EOL"
+
+#: src/bz-search-filter-popover.blp:52
+msgid "Filter out End-of-Life apps"
+msgstr "Scag amach aipeanna atá ag deireadh a saoil"
+
+#: src/bz-search-filter-popover.blp:57
+msgid "Categories"
+msgstr "Catagóirí"
+
+#: src/bz-search-page.blp:58
+msgid "Search Apps, Games, Software"
+msgstr "Cuardaigh Aipeanna, Cluichí, Bogearraí"
+
+#: src/bz-search-page.blp:70
+msgid "Search Filters"
+msgstr "Scagairí Cuardaigh"
+
+#: src/bz-search-page.blp:100
+msgid "Clear Search"
+msgstr "Glan an Chuardach"
+
+#: src/bz-search-page.blp:192
+msgid "Categories Unavailable"
+msgstr "Catagóirí Gan Fáil"
+
+#: src/bz-search-page.blp:193
+msgid "Search for apps using the search bar above."
+msgstr "Cuardaigh aipeanna ag baint úsáide as an mbarra cuardaigh thuas."
+
+#: src/bz-search-page.blp:219
+msgid "Browse Categories"
+msgstr "Brabhsáil Catagóirí"
+
+#: src/bz-search-page.blp:361
+msgid "No Applications Found"
+msgstr "Níor aimsíodh aon fheidhmchláir"
+
+#: src/bz-search-page.c:247
+#, c-format
+msgid "No results found for \"%s\" in Flathub"
+msgstr "Níor aimsíodh aon torthaí le haghaidh \"%s\" i Flathub"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-search-pill-list.c:72
+msgid "Video"
+msgstr "Físeán"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-search-pill-list.c:82
+msgid "Office"
+msgstr "Oifig"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-search-pill-list.c:87
+msgid "PDF"
+msgstr "PDF"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-search-pill-list.c:92
+msgid "Calendar"
+msgstr "Féilire"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-search-pill-list.c:97
+msgid "Messaging"
+msgstr "Teachtaireachtaí"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-search-pill-list.c:102
+msgid "Paint"
+msgstr "Péint"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-search-pill-list.c:107
+msgid "VPN"
+msgstr "VPN"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-search-pill-list.c:112
+msgid "Torrent"
+msgstr "Torrent"
+
+#. Translators: Search suggestion: the english text will be used for the
+#. search regardless of what you put here, so don't worry about the string
+#. yielding poor search results. Focus on correctness and friendliness,
+#. etc
+#: src/bz-search-pill-list.c:117
+msgid "Emulator"
+msgstr "Aithriseoir"
+
+#: src/bz-share-list.c:55
+msgctxt "Project URL Type"
+msgid "Flathub Page"
+msgstr "Leathanach Flathub"
+
+#: src/bz-share-list.c:56
+msgctxt "Project URL Type"
+msgid "Project Website"
+msgstr "Suíomh Gréasáin an Tionscadail"
+
+#: src/bz-share-list.c:57
+msgctxt "Project URL Type"
+msgid "Issue Tracker"
+msgstr "Rianaitheoir Fadhbanna"
+
+#: src/bz-share-list.c:58
+msgctxt "Project URL Type"
+msgid "FAQ"
+msgstr "Ceisteanna Coitianta"
+
+#: src/bz-share-list.c:59
+msgctxt "Project URL Type"
+msgid "Help"
+msgstr "Cabhair"
+
+#: src/bz-share-list.c:60
+msgctxt "Project URL Type"
+msgid "Donate"
+msgstr "Tabhair Síntiús"
+
+#: src/bz-share-list.c:61
+msgctxt "Project URL Type"
+msgid "Translate"
+msgstr "Aistrigh"
+
+#: src/bz-share-list.c:62
+msgctxt "Project URL Type"
+msgid "Contact"
+msgstr "Teagmháil"
+
+#: src/bz-share-list.c:63
+msgctxt "Project URL Type"
+msgid "Source Code"
+msgstr "Cód Foinse"
+
+#: src/bz-share-list.c:64
+msgctxt "Project URL Type"
+msgid "Contribute"
+msgstr "Cuir leis"
+
+#: src/bz-share-list.c:153
+msgid "Copy Link"
+msgstr "Cóipeáil Nasc"
+
+#: src/bz-share-list.c:164
+msgid "Open Link"
+msgstr "Oscail an Nasc"
+
+#: src/bz-stats-dialog.blp:27
+msgid "Timeline"
+msgstr "Amlíne"
+
+#: src/bz-stats-dialog.blp:46
+msgid "Installs:"
+msgstr "Suiteálacha:"
+
+#: src/bz-stats-dialog.blp:55
+msgid "World"
+msgstr "Domhan"
+
+#: src/bz-stats-dialog.blp:69
+msgid "Since 4/15/2024"
+msgstr "Ó 15/4/2024"
+
+#. Translators: M is the suffix for millions
+#: src/bz-stats-dialog.c:126
+#, c-format
+msgid "%.2fM Total Installs"
+msgstr "%.2fM Suiteálacha Iomlána"
+
+#. Translators: K is the suffix for thousands
+#: src/bz-stats-dialog.c:129
+#, c-format
+msgid "%.2fK Total Installs"
+msgstr "%.2fK Suiteálacha Iomlána"
+
+#: src/bz-stats-dialog.c:131
+#, c-format
+msgid "%'d Total Installs"
+msgstr "%'d Suiteálacha Iomlána"
+
+#: src/bz-tag-list.c:78
+msgid "No Results Found"
+msgstr "Níor aimsíodh aon torthaí"
+
+#: src/bz-tag-list.c:90
+#, c-format
+msgid "Apps Tagged \"%s\""
+msgstr "Aipeanna atá tagáilte \"%s\""
+
+#: src/bz-tag-list.c:103
+msgid "Search failed"
+msgstr "Theip ar an gcuardach"
+
+#: src/bz-transaction-dialog.c:154
+msgid "Keep User Data"
+msgstr "Coinnigh Sonraí Úsáideora"
+
+#: src/bz-transaction-dialog.c:155
+msgid "Allow restoring personal settings &amp; content"
+msgstr "Ceadaigh socruithe pearsanta &amp; ábhar a athchóiriú"
+
+#: src/bz-transaction-dialog.c:164
+msgid "Delete All Data"
+msgstr "Scrios na Sonraí Uile"
+
+#: src/bz-transaction-dialog.c:165
+msgid "Permanently erase user data to save space"
+msgstr "Scrios sonraí úsáideora go buan chun spás a shábháil"
+
+#: src/bz-transaction-dialog.c:190
+#, c-format
+msgid "Install %s?"
+msgstr "Suiteáil %s?"
+
+#: src/bz-transaction-dialog.c:195
+msgid ""
+"Select which version to install. May install additional shared components"
+msgstr ""
+"Roghnaigh cén leagan atá le suiteáil. Féadfaidh comhpháirteanna comhroinnte "
+"breise a shuiteáil"
+
+#: src/bz-transaction-dialog.c:197
+msgid "May install additional shared components"
+msgstr "Féadfaidh sé comhpháirteanna comhroinnte breise a shuiteáil"
+
+#: src/bz-transaction-dialog.c:200 src/bz-transaction-dialog.c:229
+#: src/bz-transaction-dialog.c:274 src/bz-transaction-dialog.c:576
+msgid "_Cancel"
+msgstr "_Cealaigh"
+
+#: src/bz-transaction-dialog.c:201
+msgid "_Install"
+msgstr "_Suiteáil"
+
+#: src/bz-transaction-dialog.c:218
+#, c-format
+msgid "Remove %s?"
+msgstr "Bain %s?"
+
+#: src/bz-transaction-dialog.c:221
+msgid "Select which version to remove."
+msgstr "Roghnaigh cén leagan atá le baint."
+
+#: src/bz-transaction-dialog.c:223
+#, c-format
+msgid "It will not be possible to use %s after it is uninstalled."
+msgstr "Ní bheidh sé indéanta %s a úsáid tar éis é a dhíshuiteáil."
+
+#: src/bz-transaction-dialog.c:246
+#, c-format
+msgid "“%s” is High Risk"
+msgstr "Tá “%s” i mbaol ard"
+
+#: src/bz-transaction-dialog.c:250
+msgid ""
+"This app has full access to your system, including all <b>your files, "
+"browser history, saved passwords</b>, and more. It also has access to the "
+"internet, meaning it could send your data to outside parties.\n"
+"\n"
+"Because the app is proprietary, it can not be audited for what it does with "
+"these permissions."
+msgstr ""
+"Tá rochtain iomlán ag an aip seo ar do chóras, lena n-áirítear <b>do chuid "
+"comhad go léir, stair bhrabhsálaí, pasfhocail shábháilte</b>, agus "
+"tuilleadh. Tá rochtain aici ar an idirlíon freisin, rud a chiallaíonn go "
+"bhféadfadh sí do shonraí a sheoladh chuig páirtithe seachtracha.\n"
+"\n"
+"Ós rud é gur aip dhílseánaigh í, ní féidir iniúchadh a dhéanamh uirthi "
+"maidir leis an méid a dhéanann sí leis na ceadanna seo."
+
+#: src/bz-transaction-dialog.c:259
+msgid ""
+"This app uses the legacy X11 windowing system, which allows it to <b>record "
+"all keystrokes, capture screenshots, and monitor other applications</b>. It "
+"also has access to the internet, meaning it could send your data to outside "
+"parties.\n"
+"\n"
+"Because the app is proprietary, it can not be audited for what it does with "
+"these permissions."
+msgstr ""
+"Úsáideann an aip seo an seanchóras fuinneoige X11, rud a ligeann di <b>gach "
+"eochairbhuille a thaifeadadh, scáileáin a ghabháil, agus monatóireacht a "
+"dhéanamh ar fheidhmchláir eile</b>. Tá rochtain aici ar an idirlíon freisin, "
+"rud a chiallaíonn gur féidir léi do shonraí a sheoladh chuig páirtithe "
+"seachtracha.\n"
+"\n"
+"Ós rud é gur aip dhílseánaigh í, ní féidir iniúchadh a dhéanamh uirthi "
+"maidir leis an méid a dhéanann sí leis na ceadanna seo."
+
+#: src/bz-transaction-dialog.c:275
+msgid "_Install Anyway"
+msgstr "_Suiteáil Ar Aon Slí"
+
+#: src/bz-transaction-dialog.c:330
+msgid "Failed to load transaction dialog"
+msgstr "Theip ar an dialóg idirbhirt a lódáil"
+
+#: src/bz-transaction-dialog.c:547
+msgid "All apps are already installed"
+msgstr "Tá na haipeanna go léir suiteáilte cheana féin"
+
+#: src/bz-transaction-dialog.c:549
+msgid "_OK"
+msgstr "_Ceart go leor"
+
+#: src/bz-transaction-dialog.c:565
+#, c-format
+msgid "Install %u App?"
+msgid_plural "Install %u Apps?"
+msgstr[0] "Suiteáil an aip %u?"
+msgstr[1] "Suiteáil %u Aipeanna?"
+msgstr[2] "Suiteáil %u Aipeanna?"
+
+#: src/bz-transaction-dialog.c:573
+msgid ""
+"The following will be installed. Additional shared components may also be "
+"installed"
+msgstr ""
+"Suiteálfar an méid seo a leanas. Féadfar comhpháirteanna comhroinnte breise "
+"a shuiteáil freisin"
+
+#: src/bz-transaction-dialog.c:574
+#, c-format
+msgid "%d addons will be installed."
+msgstr "Suiteálfar %d breiseán."
+
+#: src/bz-transaction-dialog.c:575
+msgid "Additionally, addons will be installed."
+msgstr "Ina theannta sin, suiteálfar breiseáin."
+
+#: src/bz-transaction-dialog.c:577
+msgid "_Install All"
+msgstr "_Suiteáil Uile"
+
+#: src/bz-transaction-manager.c:795
+#, c-format
+msgid "Finished in %.02f seconds"
+msgstr "Críochnaithe i %.02f soicind"
+
+#: src/bz-transaction-tile.blp:129
+msgid "App Add-On"
+msgstr "Breiseán Aipe"
+
+#: src/bz-transaction-tile.blp:158
+msgid "Runtime"
+msgstr "Am rith"
+
+#: src/bz-transaction-tile.blp:182
+msgid "In Queue"
+msgstr "Sa Scuaine"
+
+#: src/bz-transaction-tile.blp:206
+msgid "Done"
+msgstr "Déanta"
+
+#: src/bz-transaction-tile.blp:230
+msgid "Cancelled"
+msgstr "Cealaithe"
+
+#: src/bz-transaction-tile.blp:254
+msgid "Error"
+msgstr "Earráid"
+
+#: src/bz-transaction-tile.blp:312
+msgid "Cancel Transaction"
+msgstr "Cealaigh an tIdirbheart"
+
+#: src/bz-transaction-tile.blp:436
+msgid "Show Error Info"
+msgstr "Taispeáin Eolas Earráide"
+
+#: src/bz-transaction-tile.c:107
+#, c-format
+msgid "%s Freed"
+msgstr "%s Saortha"
+
+#: src/bz-transaction-tile.c:360 src/bz-transaction-tile.c:363
+msgid "Transaction Error"
+msgstr "Earráid Idirbhirt"
+
+#: src/bz-transaction.c:344
+msgid "Pending"
+msgstr "Ar feitheamh"
+
+#: src/bz-updates-card.blp:23
+msgid "_Update All"
+msgstr "_Nuashonraigh Gach Rud"
+
+#: src/bz-updates-card.c:211
+#, c-format
+msgid "%u Runtime Update"
+msgid_plural "%u Runtime Updates"
+msgstr[0] "Nuashonrú Ama Rith %u"
+msgstr[1] "Nuashonruithe Rith-ama %u"
+msgstr[2] "Nuashonruithe Rith-ama %u"
+
+#: src/bz-user-data-page.blp:5
+msgid "Manage Leftover User Data"
+msgstr "Bainistigh Sonraí Úsáideora atá Fágtha"
+
+#: src/bz-user-data-page.blp:33
+msgid "No User Data Found"
+msgstr "Níor aimsíodh aon sonraí úsáideora"
+
+#: src/bz-user-data-page.blp:38
+msgid "User Data"
+msgstr "Sonraí Úsáideora"
+
+#: src/bz-user-data-tile.blp:74
+msgid "Trash User Data"
+msgstr "Bruscar Sonraí Úsáideora"
+
+#: src/bz-user-data-tile.c:150
+#, c-format
+msgid "Trashed User Data for %s"
+msgstr "Sonraí Úsáideora Bruscair do %s"
+
+#: src/bz-window.blp:70
+msgid "Refreshing"
+msgstr "Athnuachan"
+
+#: src/bz-window.blp:88
+msgid "Curated"
+msgstr "Coimeádta"
+
+#: src/bz-window.blp:100
+msgid "Explore"
+msgstr "Taiscéal"
+
+#: src/bz-window.blp:212
+msgid "Main Menu"
+msgstr "Príomh-Roghchlár"
+
+#: src/bz-window.blp:223
+msgid "You are running a new version of Bazaar!"
+msgstr "Tá leagan nua de Bazaar á rith agat!"
+
+#: src/bz-window.blp:224
+msgid "See What's New"
+msgstr "Féach Cad atá Nua"
+
+#: src/bz-window.blp:231
+msgid ""
+"You have a network connection but are viewing a cached version of Flathub"
+msgstr ""
+"Tá nasc líonra agat ach tá leagan taisceáilte de Flathub á fheiceáil agat"
+
+#: src/bz-window.blp:276
+msgid "_Donate to Bazaar"
+msgstr "_Tabhair Síntiús do Bazaar"
+
+#: src/bz-window.blp:283
+msgid "_Refresh"
+msgstr "_Athnuachan"
+
+#: src/bz-window.blp:288
+msgid "_Preferences"
+msgstr "_Sainroghanna"
+
+#: src/bz-window.blp:293
+msgid "_Login With Flathub"
+msgstr "_Logáil Isteach Le Flathub"
+
+#: src/bz-window.blp:299
+msgid "_Manage Leftover User Data"
+msgstr "_Bainistigh Sonraí Úsáideora atá Fágtha"
+
+#: src/bz-window.blp:304
+msgid "_Keyboard Shortcuts"
+msgstr "_Aicearraí Méarchláir"
+
+#: src/bz-window.blp:309
+msgid "_About Bazaar"
+msgstr "_Maidir le Bazaar"
+
+#: src/bz-window.blp:316
+msgid "_Quit Bazaar"
+msgstr "_Scoir den Bazaar"
+
+#: src/bz-window.blp:341
+msgid "Log Out"
+msgstr "Logáil Amach"
+
+#. Translators: %s is the title of the current page
+#: src/bz-window.c:376
+#, c-format
+msgid "Bazaar — %s"
+msgstr "Bazaar — %s"
+
+#: src/bz-window.c:596 src/bz-window.c:634
+msgid "Failed to launch application"
+msgstr "Theip ar an bhfeidhmchlár a sheoladh"
+
+#: src/bz-window.c:843
+msgid "You can't remove Bazaar from Bazaar!"
+msgstr "Ní féidir leat Bazaar a bhaint as Bazaar!"
+
+#: src/bz-window.c:1127 src/bz-window.c:1161
+msgid "Can't do that right now!"
+msgstr "Ní féidir liom é sin a dhéanamh faoi láthair!"
+
+#. Translators: As in, "1 Install" / "100 Installs"
+#: src/bz-world-map.c:604
+msgid "Install"
+msgid_plural "Installs"
+msgstr[0] "Suiteáil"
+msgstr[1] "Suiteálacha"
+msgstr[2] "Suiteálacha"
+
+#: src/shortcuts-dialog.blp:5
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "Loingseoireacht"
+
+#: src/shortcuts-dialog.blp:8
+msgctxt "shortcut window"
+msgid "Open Explore Page"
+msgstr "Oscail an Leathanach Iniúchta"
+
+#: src/shortcuts-dialog.blp:14
+msgctxt "shortcut window"
+msgid "Open Library Page"
+msgstr "Oscail Leathanach na Leabharlainne"
+
+#: src/shortcuts-dialog.blp:20
+msgctxt "shortcut window"
+msgid "Open Search Page"
+msgstr "Oscail Leathanach Cuardaigh"
+
+#: src/shortcuts-dialog.blp:25
+msgctxt "shortcut window"
+msgid "Remotes"
+msgstr "Cianrialtáin"
+
+#: src/shortcuts-dialog.blp:27
+msgctxt "shortcut window"
+msgid "Sync Remotes"
+msgstr "Cianrialtáin Sioncrónaithe"
+
+#: src/shortcuts-dialog.blp:33
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Ginearálta"
+
+#: src/shortcuts-dialog.blp:36
+msgctxt "shortcut window"
+msgid "Open Preferences"
+msgstr "Oscail Roghanna"
+
+#: src/shortcuts-dialog.blp:41
+msgctxt "shortcut window"
+msgid "Show Shortcuts"
+msgstr "Taispeáin Aicearraí"
+
+#: src/shortcuts-dialog.blp:46
+msgctxt "shortcut window"
+msgid "Close Window"
+msgstr "Dún an Fhuinneog"
+
+#: src/shortcuts-dialog.blp:52
+msgctxt "shortcut window"
+msgid "Quit Bazaar"
+msgstr "Scoir den Bazaar"
+
+#~ msgid ""
+#~ "It emphasizes supporting the developers who make the Linux desktop "
+#~ "possible. Bazaar features a \"curated\" tab that can be configured by "
+#~ "distributors to allow for a more localized experience."
+#~ msgstr ""
+#~ "Leagann sé béim ar thacaíocht a thabhairt do na forbróirí a chuireann ar "
+#~ "chumas an deasc Linux a bheith indéanta. Tá cluaisín \"coimeádta\" ar "
+#~ "fáil i Bazaar ar féidir le dáileoirí é a chumrú chun eispéireas níos "
+#~ "logánta a cheadú."
+
+#~ msgid "Adam Masciola"
+#~ msgstr "Adam Masciola"
+
+#~ msgid "Nucleus app page"
+#~ msgstr "Leathanach aip Nucleus"
+
+#~ msgid "User Data Size"
+#~ msgstr "Méid Sonraí Úsáideora"
+
+#~ msgctxt "About Dialog Developer Credit"
+#~ msgid "Adam Masciola <kolunmi@posteo.net>"
+#~ msgstr "Adam Masciola <kolunmi@posteo.net>"
+
+#~ msgctxt "About Dialog Developer Credit"
+#~ msgid "Alexander Vanhee"
+#~ msgstr "Alexander Vanhee"
+
+#~ msgid "Synchronizing..."
+#~ msgstr "Ag sioncrónú..."
+
+#, c-format
+#~ msgid "Receiving %d entries..."
+#~ msgstr "Ag fáil %d iontráil..."
+
+#~ msgid "Indexing Data..."
+#~ msgstr "Ag Innéacsú Sonraí..."
+
+#~ msgid "Close"
+#~ msgstr "Dún"
+
+#~ msgid "Copy and Close"
+#~ msgstr "Cóipeáil agus Dún"
+
+#~ msgid "Download & Install Application"
+#~ msgstr "Íoslódáil & Suiteáil Feidhmchlár"
+
+#~ msgid "Install Other Version"
+#~ msgstr "Suiteáil Leagan Eile"
+
+#~ msgid "Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród (Cothrománach)"
+
+#~ msgid "Lesbian Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Leispiach (Cothrománach)"
+
+#~ msgid "Male Homosexual Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Fir Homaighnéasacha (Cothrománach)"
+
+#~ msgid "Transgender Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Trasinscne (Cothrománach)"
+
+#~ msgid "Nonbinary Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Neamhdhénártha (Cothrománach)"
+
+#~ msgid "Bisexual Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Déghnéasacha (Cothrománach)"
+
+#~ msgid "Asexual Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Asexual (Cothrománach)"
+
+#~ msgid "Pansexual Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Panghnéasacha (Cothrománach)"
+
+#~ msgid "Aromantic Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Cumhra (Cothrománach)"
+
+#~ msgid "Genderfluid Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Inscnefluid (Cothrománach)"
+
+#~ msgid "Polysexual Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Ilghnéasacha (Cothrománach)"
+
+#~ msgid "Omnisexual Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Uileghnéasacha (Cothrománach)"
+
+#~ msgid "Aroace Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Aroace Pride (Cothrománach)"
+
+#~ msgid "Agender Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Agender (Cothrománach)"
+
+#~ msgid "Genderqueer Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Inscnequeer (Cothrománach)"
+
+#~ msgid "Intersex Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Idirghnéasacha (Cothrománach)"
+
+#~ msgid "Demigender Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Demigender (Cothrománach)"
+
+#~ msgid "Biromantic Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Biormantach (Cothrománach)"
+
+#~ msgid "Disability Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Míchumais (Cothrománach)"
+
+#~ msgid "Femboy Pride Colors (Horizontal)"
+#~ msgstr "Dathanna Bród Femboy (Cothrománach)"
+
+#~ msgid "Keep Data"
+#~ msgstr "Coinnigh Sonraí"
+
+#~ msgid "Ongoing"
+#~ msgstr "Ar siúl"
+
+#~ msgid "Finished"
+#~ msgstr "Críochnaithe"
+
+#, c-format
+#~ msgid "Transferred %s so far"
+#~ msgstr "Aistríodh %s go dtí seo"
+
+#~ msgid "Update Now"
+#~ msgstr "Nuashonraigh Anois"
+
+#~ msgid "Updates Are Available"
+#~ msgstr "Tá Nuashonruithe ar Fáil"
+
+#~ msgid ""
+#~ "The following applications are eligible for updates. Would you like to "
+#~ "install them?"
+#~ msgstr ""
+#~ "Tá na feidhmchláir seo a leanas incháilithe le haghaidh nuashonruithe. Ar "
+#~ "mhaith leat iad a shuiteáil?"
+
+#, c-format
+#~ msgid ""
+#~ "%d runtimes and/or addons are eligible for updates. Would you like to "
+#~ "install them?"
+#~ msgstr ""
+#~ "Tá %d rith-am agus/nó breiseán incháilithe le haghaidh nuashonruithe. Ar "
+#~ "mhaith leat iad a shuiteáil?"
+
+#~ msgid "Tasks"
+#~ msgstr "Tascanna"
+
+#~ msgid "Stop Active Tasks"
+#~ msgstr "Stop Tascanna Gníomhacha"
+
+#~ msgid "No Tasks Yet"
+#~ msgstr "Gan aon tascanna fós"
+
+#~ msgid "Refreshing Store Content"
+#~ msgstr "Ábhar an tSiopa á Athnuachan"
+
+#~ msgid "Flathub"
+#~ msgstr "Flathub"
+
+#~ msgid "No background tasks!"
+#~ msgstr "Gan aon tascanna cúlra!"
+
+#~ msgid "_Synchronize Remotes"
+#~ msgstr "_Sioncrónaigh Cianrialtáin"
+
+#, c-format
+#~ msgid "%d Update Available"
+#~ msgid_plural "%d Updates Available"
+#~ msgstr[0] "%d Nuashonrú Ar Fáil"
+#~ msgstr[1] "%d Nuashonruithe Ar Fáil"
+#~ msgstr[2] "%d Nuashonruithe Ar Fáil"
+
+#~ msgid ""
+#~ "The ability to inspect and install local .flatpak bundle files is coming "
+#~ "soon! In the meantime, try running\n"
+#~ "\n"
+#~ "flatpak install --bundle your-bundle.flatpak\n"
+#~ "\n"
+#~ "on the command line."
+#~ msgstr ""
+#~ "Beidh an cumas comhaid phacáiste .flatpak áitiúla a iniúchadh agus a "
+#~ "shuiteáil ag teacht go luath! Idir an dá linn, bain triail as\n"
+#~ "\n"
+#~ "flatpak install --bundle your-bundle.flatpak\n"
+#~ "\n"
+#~ "a rith ar an líne ordaithe."
+
+#~ msgid "Resume Current Tasks"
+#~ msgstr "Lean ar aghaidh le Tascanna Reatha"
+
+#~ msgid "Pause Current Tasks"
+#~ msgstr "Cuir Tascanna Reatha ar Sos"
+
+#, c-format
+#~ msgid "%s: %'u downloads"
+#~ msgstr "%s: %'u íoslódálacha"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Toggle Transaction Manager"
+#~ msgstr "Bainisteoir Idirbheart a Athrú"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Quit"
+#~ msgstr "Scoir"

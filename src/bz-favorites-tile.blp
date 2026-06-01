@@ -11,27 +11,17 @@ template $BzFavoritesTile: $BzListTile {
     orientation: horizontal;
     spacing: 10;
 
-    Picture icon_picture {
+    $BzTransactIcon {
       margin-start: 10;
       margin-top: 10;
       margin-bottom: 10;
-      height-request: 48;
       width-request: 48;
-      paintable: bind template.group as <$BzEntryGroup>.icon-paintable;
-      visible: bind $invert_boolean($is_null(template.group as <$BzEntryGroup>.icon-paintable) as <bool>) as <bool>;
-      styles ["icon-dropshadow"]
-    }
+      height-request: 48;
 
-    Image fallback_icon {
-      margin-start: 10;
-      margin-top: 10;
-      margin-bottom: 10;
-      height-request: 48;
-      width-request: 48;
-      pixel-size: 48;
-      icon-name: "application-x-executable";
-      visible: bind $is_null(template.group as <$BzEntryGroup>.icon-paintable) as <bool>;
-      styles ["icon-dropshadow"]
+      info: $BzTransactIconInfo {
+        group: bind template.group as <$BzEntryGroup>;
+        paintable: bind template.group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.icon-paintable;
+      };
     }
 
     Box {
@@ -67,7 +57,7 @@ template $BzFavoritesTile: $BzListTile {
       ]
 
       has-tooltip: true;
-      tooltip-text: _("Support this application");
+      tooltip-text: _("Support This Application");
 
       width-request: 32;
       height-request: 32;
@@ -93,6 +83,7 @@ template $BzFavoritesTile: $BzListTile {
         height-request: 32;
         valign: center;
         has-tooltip: true;
+        visible: bind $invert_boolean($logical_and($is_zero(template.group as <$BzEntryGroup>.removable) as <bool>, $is_zero(template.group as <$BzEntryGroup>.installable) as <bool>) as <bool>) as <bool>;
         tooltip-text: bind $get_install_remove_tooltip(template.group as <$BzEntryGroup>.removable) as <string>;
         sensitive: bind $switch_bool(
                           template.group as <$BzEntryGroup>.removable,
@@ -115,7 +106,7 @@ template $BzFavoritesTile: $BzListTile {
             height-request: 32;
             valign: center;
             has-tooltip: true;
-            tooltip-text: _("Remove from Favorites");
+            tooltip-text: _("Remove From Favorites");
             icon-name: "bookmark-filled-symbolic";
             clicked => $unfavorite_cb() swapped;
           };

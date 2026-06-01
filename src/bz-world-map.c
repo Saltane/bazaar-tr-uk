@@ -28,8 +28,7 @@
 #include "bz-world-map-parser.h"
 #include "bz-world-map.h"
 
-#define CARD_EDGE_THRESHOLD 160
-#define OPACITY_MULTIPLIER  2
+#define OPACITY_MULTIPLIER 2
 
 struct _BzWorldMap
 {
@@ -49,6 +48,8 @@ struct _BzWorldMap
   guint     n_paths;
 
   gboolean cache_valid;
+  int      last_width;
+  int      last_height;
 
   GtkEventController *motion;
   GtkGesture         *gesture;
@@ -60,6 +61,11 @@ struct _BzWorldMap
   double              motion_y;
 
   guint max_downloads;
+
+  GtkWidget *tooltip_box;
+  GtkWidget *tooltip_label1;
+  GtkWidget *tooltip_prefix_label;
+  GtkWidget *tooltip_label2;
 };
 
 G_DEFINE_FINAL_TYPE (BzWorldMap, bz_world_map, GTK_TYPE_WIDGET)
@@ -137,39 +143,38 @@ calculate_bounds (BzWorldMap *self)
 
   for (guint i = 0; i < n_items; i++)
     {
-      BzCountry *country     = g_list_model_get_item (self->countries, i);
-      JsonArray *coordinates = bz_country_get_coordinates (country);
+      g_autoptr (BzCountry) country = g_list_model_get_item (self->countries, i);
+      GVariant    *coordinates      = bz_country_get_coordinates (country);
+      GVariantIter poly_iter, ring_iter, point_iter;
+      GVariant    *polygon = NULL;
+      GVariant    *ring    = NULL;
+      double       lon, lat;
 
-      if (coordinates != NULL)
+      if (coordinates == NULL)
+        continue;
+
+      g_variant_iter_init (&poly_iter, coordinates);
+      while ((polygon = g_variant_iter_next_value (&poly_iter)))
         {
-          for (guint j = 0; j < json_array_get_length (coordinates); j++)
+          g_variant_iter_init (&ring_iter, polygon);
+          while ((ring = g_variant_iter_next_value (&ring_iter)))
             {
-              JsonArray *polygon_array = json_array_get_array_element (coordinates, j);
-
-              for (guint k = 0; k < json_array_get_length (polygon_array); k++)
+              g_variant_iter_init (&point_iter, ring);
+              while (g_variant_iter_next (&point_iter, "(dd)", &lon, &lat))
                 {
-                  JsonArray *ring_array = json_array_get_array_element (polygon_array, k);
-
-                  for (guint l = 0; l < json_array_get_length (ring_array); l++)
-                    {
-                      JsonArray *point_array = json_array_get_array_element (ring_array, l);
-                      double     lon         = json_array_get_double_element (point_array, 0);
-                      double     lat         = json_array_get_double_element (point_array, 1);
-
-                      if (lon < self->min_lon)
-                        self->min_lon = lon;
-                      if (lon > self->max_lon)
-                        self->max_lon = lon;
-                      if (lat < self->min_lat)
-                        self->min_lat = lat;
-                      if (lat > self->max_lat)
-                        self->max_lat = lat;
-                    }
+                  if (lon < self->min_lon)
+                    self->min_lon = lon;
+                  if (lon > self->max_lon)
+                    self->max_lon = lon;
+                  if (lat < self->min_lat)
+                    self->min_lat = lat;
+                  if (lat > self->max_lat)
+                    self->max_lat = lat;
                 }
+              g_clear_pointer (&ring, g_variant_unref);
             }
+          g_clear_pointer (&polygon, g_variant_unref);
         }
-
-      g_object_unref (country);
     }
 }
 
@@ -220,34 +225,33 @@ build_paths (BzWorldMap *self,
     {
       for (guint i = 0; i < self->n_paths; i++)
         g_clear_pointer (&self->country_paths[i], gsk_path_unref);
-      g_free (self->country_paths);
-      self->country_paths = NULL;
+      g_clear_pointer (&self->country_paths, g_free);
     }
 
-  if (self->path_to_country != NULL)
-    {
-      g_free (self->path_to_country);
-      self->path_to_country = NULL;
-    }
+  g_clear_pointer (&self->path_to_country, g_free);
 
   n_items = g_list_model_get_n_items (self->countries);
 
   self->n_paths = 0;
   for (guint i = 0; i < n_items; i++)
     {
-      BzCountry *country     = g_list_model_get_item (self->countries, i);
-      JsonArray *coordinates = bz_country_get_coordinates (country);
+      g_autoptr (BzCountry) country = NULL;
+      GVariant    *coordinates      = NULL;
+      GVariantIter poly_iter        = { 0 };
+      GVariant    *polygon          = NULL;
 
-      if (coordinates != NULL)
+      country     = g_list_model_get_item (self->countries, i);
+      coordinates = bz_country_get_coordinates (country);
+
+      if (coordinates == NULL)
+        continue;
+
+      g_variant_iter_init (&poly_iter, coordinates);
+      while ((polygon = g_variant_iter_next_value (&poly_iter)))
         {
-          for (guint j = 0; j < json_array_get_length (coordinates); j++)
-            {
-              JsonArray *polygon_array = json_array_get_array_element (coordinates, j);
-              self->n_paths += json_array_get_length (polygon_array);
-            }
+          self->n_paths += g_variant_n_children (polygon);
+          g_clear_pointer (&polygon, g_variant_unref);
         }
-
-      g_object_unref (country);
     }
 
   self->country_paths   = g_new0 (GskPath *, self->n_paths);
@@ -255,51 +259,62 @@ build_paths (BzWorldMap *self,
 
   for (guint i = 0; i < n_items; i++)
     {
-      BzCountry *country     = g_list_model_get_item (self->countries, i);
-      JsonArray *coordinates = bz_country_get_coordinates (country);
+      g_autoptr (BzCountry) country = NULL;
+      GVariant    *coordinates      = NULL;
+      GVariantIter poly_iter        = { 0 };
+      GVariant    *polygon          = NULL;
 
-      if (coordinates != NULL)
+      country     = g_list_model_get_item (self->countries, i);
+      coordinates = bz_country_get_coordinates (country);
+
+      if (coordinates == NULL)
+        continue;
+
+      g_variant_iter_init (&poly_iter, coordinates);
+      while ((polygon = g_variant_iter_next_value (&poly_iter)))
         {
-          for (guint j = 0; j < json_array_get_length (coordinates); j++)
+          GVariantIter ring_iter = { 0 };
+          GVariant    *ring      = NULL;
+
+          g_variant_iter_init (&ring_iter, polygon);
+          while ((ring = g_variant_iter_next_value (&ring_iter)))
             {
-              JsonArray *polygon_array = json_array_get_array_element (coordinates, j);
+              g_autoptr (GskPathBuilder) builder = NULL;
+              GVariantIter point_iter            = { 0 };
+              double       lon                   = 0.0;
+              double       lat                   = 0.0;
+              gboolean     first                 = TRUE;
 
-              for (guint k = 0; k < json_array_get_length (polygon_array); k++)
+              builder = gsk_path_builder_new ();
+
+              g_variant_iter_init (&point_iter, ring);
+              while (g_variant_iter_next (&point_iter, "(dd)", &lon, &lat))
                 {
-                  JsonArray *ring_array              = json_array_get_array_element (polygon_array, k);
-                  g_autoptr (GskPathBuilder) builder = gsk_path_builder_new ();
-                  gboolean first                     = TRUE;
+                  double x = 0.0;
+                  double y = 0.0;
 
-                  for (guint l = 0; l < json_array_get_length (ring_array); l++)
+                  project_point (self, lon, lat, width, height, &x, &y);
+
+                  if (first)
                     {
-                      JsonArray *point_array = json_array_get_array_element (ring_array, l);
-                      double     lon         = json_array_get_double_element (point_array, 0);
-                      double     lat         = json_array_get_double_element (point_array, 1);
-                      double     x           = 0.0;
-                      double     y           = 0.0;
-
-                      project_point (self, lon, lat, width, height, &x, &y);
-
-                      if (first)
-                        {
-                          gsk_path_builder_move_to (builder, x, y);
-                          first = FALSE;
-                        }
-                      else
-                        {
-                          gsk_path_builder_line_to (builder, x, y);
-                        }
+                      gsk_path_builder_move_to (builder, x, y);
+                      first = FALSE;
                     }
-
-                  gsk_path_builder_close (builder);
-                  self->country_paths[path_index]   = gsk_path_builder_to_path (builder);
-                  self->path_to_country[path_index] = i;
-                  path_index++;
+                  else
+                    {
+                      gsk_path_builder_line_to (builder, x, y);
+                    }
                 }
-            }
-        }
 
-      g_object_unref (country);
+              gsk_path_builder_close (builder);
+              self->country_paths[path_index]   = gsk_path_builder_to_path (builder);
+              self->path_to_country[path_index] = i;
+              path_index++;
+
+              g_clear_pointer (&ring, g_variant_unref);
+            }
+          g_clear_pointer (&polygon, g_variant_unref);
+        }
     }
 
   self->cache_valid = TRUE;
@@ -433,6 +448,9 @@ bz_world_map_dispose (GObject *object)
       self->path_to_country = NULL;
     }
 
+  if (self->tooltip_box != NULL)
+    gtk_widget_unparent (self->tooltip_box);
+
   g_clear_object (&self->countries);
   g_clear_object (&self->model);
 
@@ -485,6 +503,12 @@ bz_world_map_size_allocate (GtkWidget *widget,
                             int        baseline)
 {
   BzWorldMap *self = BZ_WORLD_MAP (widget);
+
+  if (width == self->last_width && height == self->last_height)
+    return;
+
+  self->last_width  = width;
+  self->last_height = height;
 
   invalidate_cache (self);
 }
@@ -569,66 +593,30 @@ bz_world_map_snapshot (GtkWidget   *widget,
       const char      *iso_code        = bz_country_get_iso_code (country);
       guint            download_number = get_downloads_for_country (self, iso_code);
       const char      *country_name    = bz_country_get_name (country);
-      g_autofree char *card_text       = g_strdup_printf (_ ("%s: %'u downloads"), country_name, download_number);
-      g_autoptr (PangoLayout) layout   = pango_layout_new (gtk_widget_get_pango_context (widget));
-      PangoRectangle text_extents      = { 0 };
-      double         card_width        = 0.0;
-      double         card_height       = 0.0;
-      double         card_x            = 0.0;
-      double         card_y            = 0.0;
-      GskRoundedRect text_bg_rect      = { { { 0 } } };
-      GdkRGBA        text_bg_color     = { 0 };
-      GdkRGBA        shadow_color      = { 0 };
-      GdkRGBA        text_color        = { 0 };
+      g_autofree char *label1_text     = g_strdup_printf ("<b>%s</b>", country_name);
+      g_autofree char *label2_text     = g_strdup_printf ("%'u", download_number);
+      GtkRequisition   natural_size;
+      double           card_x = 0.0;
+      double           card_y = 0.0;
 
-      pango_layout_set_text (layout, card_text, -1);
-      pango_layout_get_pixel_extents (layout, NULL, &text_extents);
+      gtk_label_set_markup (GTK_LABEL (self->tooltip_label1), label1_text);
+      /* Translators: As in, "1 Install" / "100 Installs" */
+      gtk_label_set_text (GTK_LABEL (self->tooltip_prefix_label), ngettext ("Install", "Installs", download_number));
+      gtk_label_set_text (GTK_LABEL (self->tooltip_label2), label2_text);
 
-      card_width  = text_extents.width + 16.0;
-      card_height = text_extents.height + 16.0;
+      gtk_widget_get_preferred_size (self->tooltip_box, NULL, &natural_size);
 
-      if (widget_width - self->motion_x < CARD_EDGE_THRESHOLD)
-        card_x = self->motion_x - card_width - 10.0;
+      gtk_widget_allocate (self->tooltip_box, natural_size.width, natural_size.height, -1, NULL);
+
+      if (self->motion_x > widget_width / 2.0)
+        card_x = self->motion_x - natural_size.width - 10.0;
       else
         card_x = self->motion_x + 10.0;
       card_y = self->motion_y + 10.0;
 
-      gtk_widget_get_color (widget, &text_color);
-
-      if (adw_style_manager_get_dark (style_manager))
-        {
-          text_bg_color = (GdkRGBA) { 0.18, 0.18, 0.2, 1.0 };
-          shadow_color  = (GdkRGBA) { 0.0, 0.0, 0.06, 0.20 };
-        }
-      else
-        {
-          text_bg_color = (GdkRGBA) { 1.0, 1.0, 1.0, 1.0 };
-          shadow_color  = (GdkRGBA) { 0.0, 0.0, 0.0, 0.20 };
-        }
-
-      gsk_rounded_rect_init_from_rect (
-          &text_bg_rect,
-          &GRAPHENE_RECT_INIT (card_x, card_y, card_width, card_height),
-          6.0);
-
-      gtk_snapshot_append_outset_shadow (
-          snapshot,
-          &text_bg_rect,
-          &shadow_color,
-          0.0,
-          0.0,
-          1.0,
-          3.0);
-
-      gtk_snapshot_push_rounded_clip (snapshot, &text_bg_rect);
-      gtk_snapshot_append_color (snapshot, &text_bg_color, &text_bg_rect.bounds);
-      gtk_snapshot_pop (snapshot);
-
       gtk_snapshot_save (snapshot);
-      gtk_snapshot_translate (
-          snapshot,
-          &GRAPHENE_POINT_INIT (card_x + 8.0, card_y + 8.0));
-      gtk_snapshot_append_layout (snapshot, layout, &text_color);
+      gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (card_x, card_y));
+      gtk_widget_snapshot_child (widget, self->tooltip_box, snapshot);
       gtk_snapshot_restore (snapshot);
     }
 }
@@ -661,6 +649,8 @@ bz_world_map_init (BzWorldMap *self)
 {
   AdwStyleManager *style_manager = adw_style_manager_get_default ();
   g_autoptr (GError) error       = NULL;
+  GtkWidget *inner_box           = NULL;
+  GtkWidget *label2_box          = NULL;
 
   self->parser          = bz_world_map_parser_new ();
   self->hovered_country = -1;
@@ -680,13 +670,48 @@ bz_world_map_init (BzWorldMap *self)
   g_signal_connect_swapped (self->gesture, "drag-end", G_CALLBACK (gesture_end), self);
   gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (self->gesture));
 
+  self->tooltip_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+  gtk_widget_add_css_class (self->tooltip_box, "floating-tooltip");
+  gtk_widget_add_css_class (self->tooltip_box, "card");
+
+  inner_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
+  gtk_widget_set_margin_start (inner_box, 12);
+  gtk_widget_set_margin_end (inner_box, 12);
+  gtk_widget_set_margin_top (inner_box, 12);
+  gtk_widget_set_margin_bottom (inner_box, 12);
+
+  self->tooltip_label1 = gtk_label_new ("");
+  gtk_widget_add_css_class (self->tooltip_label1, "heading");
+  gtk_label_set_xalign (GTK_LABEL (self->tooltip_label1), 0.0);
+  gtk_label_set_use_markup (GTK_LABEL (self->tooltip_label1), TRUE);
+  gtk_box_append (GTK_BOX (inner_box), self->tooltip_label1);
+
+  label2_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+
+  self->tooltip_label2 = gtk_label_new ("");
+  gtk_widget_add_css_class (self->tooltip_label2, "monospace");
+  gtk_label_set_xalign (GTK_LABEL (self->tooltip_label2), 0.0);
+  gtk_box_append (GTK_BOX (label2_box), self->tooltip_label2);
+
+  self->tooltip_prefix_label = gtk_label_new ("");
+  gtk_widget_add_css_class (self->tooltip_prefix_label, "body");
+  gtk_widget_add_css_class (self->tooltip_prefix_label, "dim-label");
+  gtk_label_set_xalign (GTK_LABEL (self->tooltip_prefix_label), 0.0);
+  gtk_box_append (GTK_BOX (label2_box), self->tooltip_prefix_label);
+
+  gtk_box_append (GTK_BOX (inner_box), label2_box);
+
+  gtk_box_append (GTK_BOX (self->tooltip_box), inner_box);
+
+  gtk_widget_set_parent (self->tooltip_box, GTK_WIDGET (self));
+
   g_signal_connect (style_manager, "notify::dark",
                     G_CALLBACK (on_style_changed), self);
   g_signal_connect (style_manager, "notify::accent-color",
                     G_CALLBACK (on_style_changed), self);
 
   if (bz_world_map_parser_load_from_resource (self->parser,
-                                              "/io/github/kolunmi/Bazaar/countries.json",
+                                              "/io/github/kolunmi/Bazaar/countries.gvariant",
                                               &error))
     {
       self->countries = g_object_ref (bz_world_map_parser_get_countries (self->parser));

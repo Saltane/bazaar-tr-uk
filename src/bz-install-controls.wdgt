@@ -1,0 +1,147 @@
+defwidget "Install Button" {
+  reference state : "BzTransactionEntryTracker";
+  var progress : "gdouble";
+
+  var lbl-install : "GtkLabel";
+  var lbl-cancel : "GtkLabel";
+  var lbl-cancelling : "GtkLabel";
+  var stack : "GtkStack";
+  var btn : "GtkButton";
+  var flag : "GtkFixed";
+
+  var start : "gdouble";
+  var end : "gdouble";
+  var opacity : "gdouble";
+
+  var corner : "gdouble";
+  var outline : "GskPath";
+  var outline-measure : "GskPathMeasure";
+  var outline-width : "gdouble";
+  var outline-opacity : "gdouble";
+
+  init {
+    set progress = #transition(state:progress, 1.1, 0.1, 10.0);
+
+    set stack = #(
+      transition-type = crossfade;
+      transition-duration = 200;
+      %set lbl-install = #child/GtkLabel(""()
+        label = C_("Install Controls", "Install");
+      );
+      %set lbl-cancel = #child/GtkLabel(""()
+        label = C_("Install Controls", "Cancel");
+      );
+      %set lbl-cancelling = #child/GtkLabel(""()
+        label = C_("Install Controls", "Cancelling");
+      );
+    );
+    allocate stack %width%, %height%, #();
+    
+    set btn = #child/(""("pill")
+      child = stack;
+      margin-start = 4;
+      margin-end = 4;
+      margin-top = 4;
+      margin-bottom = 4;
+    );
+    allocate btn %width%, %height%, #();
+
+    set flag = #child/(""("install-button-indicator")
+      can-target = false;
+    );
+    allocate flag %width%, %height%, #();
+
+    set corner = #eval(#(%height%)/2.0);
+    set outline = #GskPath(
+      move-to(#eval(#(%width%)/2.0), 0.0);
+      
+      rel-line-to(#eval(#(%width%)/2.0-#(corner)), 0.0);
+      rel-arc-to(corner, 0.0, corner, corner);
+
+      rel-line-to(0.0, #eval(#(%height%)-#(corner)*2.0));
+      rel-arc-to(0.0, corner, #eval(-#(corner)), corner);
+
+      rel-line-to(#eval(-(#(%width%)-#(corner)*2.0)), 0.0);
+      rel-arc-to(#eval(-#(corner)), 0.0, #eval(-#(corner)), #eval(-#(corner)));
+
+      rel-line-to(0.0, #eval(-(#(%height%)-#(corner)*2.0)));
+      rel-arc-to(0.0, #eval(-#(corner)), corner, #eval(-#(corner)));
+
+      rel-line-to(#eval(#(%width%)/2.0-#(corner)), 0.0);
+
+      close();
+    );
+    set outline-measure = #measure-path(outline);
+
+    snapshot {
+      do-child btn;
+
+      with opacity(outline-opacity) {
+        with stroke(
+          #GskPath(
+            add-segment(
+              outline,
+              #path-point(outline-measure, #eval((#(start)%1.0)*#(#path-length(outline-measure)))),
+              #path-point(outline-measure, #eval((#(end)%1.0)*#(#path-length(outline-measure)))),
+            );
+          ),
+          #GskStroke(outline-width, butt, round, 0.0),
+        ) {
+          do-child flag;
+        }
+      }
+    }
+  }
+
+  state-default "inactive" {
+    set btn:sensitive = true;
+    set stack:visible-child = lbl-install;
+
+    set start = 0.0;
+    set end = 0.001;
+    set outline-width = 5.0;
+    set outline-opacity = 0.0;
+    
+    transition-spring outline-width 1.0, 0.1, 15.0;
+    transition-spring outline-opacity 1.0, 0.1, 100.0;
+  }
+  
+  state "pending" {
+    set btn:sensitive = true;
+    set stack:visible-child = lbl-cancel;
+    
+    set start = #eval((#(%tick%)/3.0)%1.0);
+    set end = #eval((#(start)+0.2)%1.0);
+    set outline-width = 5.0;
+    set outline-opacity = 1.0;
+
+    transition-spring outline-width 1.0, 0.1, 10.0;
+    transition-spring outline-opacity 1.0, 0.1, 10.0;
+  }
+
+  state "fraction" {
+    set btn:sensitive = true;
+    set stack:visible-child = lbl-cancel;
+    
+    set start = 0.0;
+    set end = #eval(0.05+#(progress)*0.95);
+    set outline-width = 5.0;
+    set outline-opacity = 1.0;
+
+    transition-spring outline-width 1.1, 0.1, 10.0;
+    transition-spring outline-opacity 1.1, 0.1, 10.0;
+  }
+
+  state "cancelling" {
+    set btn:sensitive = false;
+    set stack:visible-child = lbl-cancelling;
+    
+    set start = 0.0;
+    set end = 0.001;
+    set outline-width = 0.0;
+    set outline-opacity = 1.0;
+
+    transition-spring outline-width 1.0, 0.1, 10.0;
+    transition-spring outline-opacity 1.0, 0.1, 10.0;
+  }
+}

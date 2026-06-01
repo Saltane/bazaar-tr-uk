@@ -2,7 +2,7 @@
 <schemalist gettext-domain="bazaar">
   <schema id="io.github.kolunmi.Bazaar" path="/io/github/kolunmi/Bazaar/">
     <key name="hide-eol" type="b">
-      <default>false</default>
+      <default>true</default>
       <summary>Hide EOL Entries</summary>
       <description>Hide EOL entries and entries depending on them</description>
     </key>
@@ -21,54 +21,30 @@
       <summary>Show Only Verified Content</summary>
       <description>Hide applications which are not verified on Flathub</description>
     </key>
-    <key name="search-debounce" type="b">
-      <default>true</default>
-      <summary>Debounce Search Inputs</summary>
-      <description>Add a delay before searching to prevent instant replies while typing</description>
-    </key>
     <key name="global-progress-bar-theme" type="s">
       <choices>
         <choice value="accent-color"/>
         <choice value="pride-rainbow-flag"/>
-        <choice value="pride-rainbow-flag-horizontal"/>
         <choice value="lesbian-pride-flag"/>
-        <choice value="lesbian-pride-flag-horizontal"/>
         <choice value="gay-pride-flag"/>
-        <choice value="gay-pride-flag-horizontal"/>
         <choice value="transgender-flag"/>
-        <choice value="transgender-flag-horizontal"/>
         <choice value="nonbinary-flag"/>
-        <choice value="nonbinary-flag-horizontal"/>
         <choice value="bisexual-flag"/>
-        <choice value="bisexual-flag-horizontal"/>
         <choice value="asexual-flag"/>
-        <choice value="asexual-flag-horizontal"/>
         <choice value="pansexual-flag"/>
-        <choice value="pansexual-flag-horizontal"/>
         <choice value="aromantic-flag"/>
-        <choice value="aromantic-flag-horizontal"/>
         <choice value="genderfluid-flag"/>
-        <choice value="genderfluid-flag-horizontal"/>
         <choice value="polysexual-flag"/>
-        <choice value="polysexual-flag-horizontal"/>
         <choice value="omnisexual-flag"/>
-        <choice value="omnisexual-flag-horizontal"/>
         <choice value="aroace-flag"/>
-        <choice value="aroace-flag-horizontal"/>
         <choice value="agender-flag"/>
-        <choice value="agender-flag-horizontal"/>
         <choice value="genderqueer-flag"/>
-        <choice value="genderqueer-flag-horizontal"/>
         <choice value="intersex-flag"/>
-        <choice value="intersex-flag-horizontal"/>
         <choice value="demigender-flag"/>
-        <choice value="demigender-flag-horizontal"/>
         <choice value="biromantic-flag"/>
-        <choice value="biromantic-flag-horizontal"/>
         <choice value="disability-flag"/>
-        <choice value="disability-flag-horizontal"/>
         <choice value="femboy-flag"/>
-        <choice value="femboy-flag-horizontal"/>
+	    <choice value="neutrois-flag"/>
       </choices>
       <default>'accent-color'</default>
       <summary>Global Progress Bar Theme</summary>
@@ -78,6 +54,16 @@
       <default>(1220, 900)</default>
       <summary>Saved Window Dimensions</summary>
       <description>The window dimensions to be used by the next Bazaar window</description>
+    </key>
+    <key name="force-adwaita-icons" type="b">
+      <default>true</default>
+      <summary>Force Adwaita Icon Theme</summary>
+      <description>Override the icon theme with Adwaita</description>
+    </key>
+    <key name="show-permission-banner" type="b">
+      <default>true</default>
+      <summary>Show Permission Warning Banner</summary>
+      <description>Show a warning banner on the permissions page</description>
     </key>
   </schema>
 </schemalist>

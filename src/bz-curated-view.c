@@ -24,7 +24,6 @@
 #include "bz-curated-view.h"
 #include "bz-dynamic-list-view.h"
 #include "bz-entry-group.h"
-#include "bz-inhibited-scrollable.h"
 #include "bz-root-curated-config.h"
 #include "bz-row-view.h"
 
@@ -55,7 +54,6 @@ static GParamSpec *props[LAST_PROP] = { 0 };
 
 enum
 {
-  SIGNAL_GROUP_SELECTED,
   SIGNAL_BROWSE_FLATHUB,
 
   LAST_SIGNAL,
@@ -162,21 +160,6 @@ bz_curated_view_class_init (BzCuratedViewClass *klass)
 
   g_object_class_install_properties (object_class, LAST_PROP, props);
 
-  signals[SIGNAL_GROUP_SELECTED] =
-      g_signal_new (
-          "group-selected",
-          G_OBJECT_CLASS_TYPE (klass),
-          G_SIGNAL_RUN_FIRST,
-          0,
-          NULL, NULL,
-          g_cclosure_marshal_VOID__OBJECT,
-          G_TYPE_NONE, 1,
-          BZ_TYPE_ENTRY_GROUP);
-  g_signal_set_va_marshaller (
-      signals[SIGNAL_GROUP_SELECTED],
-      G_TYPE_FROM_CLASS (klass),
-      g_cclosure_marshal_VOID__OBJECTv);
-
   signals[SIGNAL_BROWSE_FLATHUB] =
       g_signal_new (
           "browse-flathub",
@@ -191,7 +174,6 @@ bz_curated_view_class_init (BzCuratedViewClass *klass)
   g_type_ensure (BZ_TYPE_ROOT_CURATED_CONFIG);
   g_type_ensure (BZ_TYPE_CURATED_ROW);
   g_type_ensure (BZ_TYPE_DYNAMIC_LIST_VIEW);
-  g_type_ensure (BZ_TYPE_INHIBITED_SCROLLABLE);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/io/github/kolunmi/Bazaar/bz-curated-view.ui");
   gtk_widget_class_bind_template_child (widget_class, BzCuratedView, stack);

@@ -20,30 +20,21 @@
 
 #pragma once
 
-#include "bz-entry-group.h"
-#include "bz-entry.h"
 #include <adwaita.h>
 
+#include "bz-bulk-install-dialog-result.h"
+#include "bz-entry-group.h"
+#include "bz-transaction-dialog-result.h"
+
 G_BEGIN_DECLS
-
-typedef struct _BzTransactionDialogResult BzTransactionDialogResult;
-
-struct _BzTransactionDialogResult
-{
-  BzEntry *selected_entry;
-  gboolean delete_user_data;
-  gboolean confirmed;
-};
-
-BzTransactionDialogResult *bz_transaction_dialog_result_new (void);
-void                       bz_transaction_dialog_result_free (BzTransactionDialogResult *result);
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (BzTransactionDialogResult, bz_transaction_dialog_result_free)
 
 DexFuture *bz_transaction_dialog_show (GtkWidget    *parent,
                                        BzEntry      *entry,
                                        BzEntryGroup *group,
                                        gboolean      remove,
                                        gboolean      auto_confirm);
+
+DexFuture *bz_bulk_install_dialog_show (GtkWidget  *parent,
+                                        GListModel *groups);
 
 G_END_DECLS

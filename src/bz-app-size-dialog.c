@@ -20,18 +20,20 @@
 
 #include "bz-app-size-dialog.h"
 #include "bz-entry-group.h"
+#include "bz-io.h"
 #include "bz-lozenge.h"
+#include "bz-template-callbacks.h"
 
 #include <glib/gi18n.h>
 
 struct _BzAppSizeDialog
 {
-  AdwDialog parent_instance;
+  AdwBin parent_instance;
 
   BzEntryGroup *group;
 };
 
-G_DEFINE_FINAL_TYPE (BzAppSizeDialog, bz_app_size_dialog, ADW_TYPE_DIALOG)
+G_DEFINE_FINAL_TYPE (BzAppSizeDialog, bz_app_size_dialog, ADW_TYPE_BIN)
 
 enum
 {
@@ -90,22 +92,16 @@ bz_app_size_dialog_set_property (GObject      *object,
     }
 }
 
-static gboolean
-invert_boolean (gpointer object,
-                gboolean value)
+static char *
+get_runtime_size_title (gpointer object,
+                        gboolean runtime_installed)
 {
-  return !value;
-}
-
-static gboolean
-is_null (gpointer object,
-         GObject *value)
-{
-  return value == NULL;
+  return g_strdup (runtime_installed ? _ ("Installed Runtime Size") : _ ("Runtime Download Size"));
 }
 
 static char *
-format_size (gpointer object, guint64 value)
+format_size (gpointer object,
+             guint64  value)
 {
   g_autofree char *size_str = g_format_size (value);
   char            *space    = g_strrstr (size_str, "\xC2\xA0");
@@ -118,6 +114,48 @@ format_size (gpointer object, guint64 value)
     }
 
   return g_strdup (size_str);
+}
+
+static gboolean
+is_app_id (gpointer    object,
+           const char *id)
+{
+  return g_strcmp0 (id, g_application_get_application_id (g_application_get_default ())) == 0;
+}
+
+static void
+open_user_data_folder_cb (GtkWidget       *widget,
+                          BzAppSizeDialog *self)
+{
+  const char      *id                  = NULL;
+  g_autofree char *path                = NULL;
+  g_autoptr (GFile) file               = NULL;
+  g_autoptr (GtkFileLauncher) launcher = NULL;
+  GtkRoot *root                        = NULL;
+
+  if (self->group == NULL)
+    return;
+
+  id = bz_entry_group_get_id (self->group);
+  if (id == NULL)
+    return;
+
+  path     = bz_dup_user_data_path (id);
+  file     = g_file_new_for_path (path);
+  launcher = gtk_file_launcher_new (file);
+  root     = gtk_widget_get_root (widget);
+
+  gtk_file_launcher_launch (launcher, GTK_WINDOW (root), NULL, NULL, NULL);
+}
+
+static void
+delete_cache_cb (GtkWidget       *widget,
+                 BzAppSizeDialog *self)
+{
+  if (self->group == NULL)
+    return;
+
+  dex_future_disown (bz_entry_group_reap_user_cache (self->group));
 }
 
 static void
@@ -142,9 +180,12 @@ bz_app_size_dialog_class_init (BzAppSizeDialogClass *klass)
   g_type_ensure (BZ_TYPE_LOZENGE);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/io/github/kolunmi/Bazaar/bz-app-size-dialog.ui");
+  bz_widget_class_bind_all_util_callbacks (widget_class);
+  gtk_widget_class_bind_template_callback (widget_class, is_app_id);
   gtk_widget_class_bind_template_callback (widget_class, format_size);
-  gtk_widget_class_bind_template_callback (widget_class, is_null);
-  gtk_widget_class_bind_template_callback (widget_class, invert_boolean);
+  gtk_widget_class_bind_template_callback (widget_class, get_runtime_size_title);
+  gtk_widget_class_bind_template_callback (widget_class, open_user_data_folder_cb);
+  gtk_widget_class_bind_template_callback (widget_class, delete_cache_cb);
 }
 
 static void
@@ -156,12 +197,28 @@ bz_app_size_dialog_init (BzAppSizeDialog *self)
 AdwDialog *
 bz_app_size_dialog_new (BzEntryGroup *group)
 {
-  BzAppSizeDialog *app_size_dialog = NULL;
+  BzAppSizeDialog *widget = NULL;
+  AdwDialog       *dialog = NULL;
 
-  app_size_dialog = g_object_new (
-      BZ_TYPE_APP_SIZE_DIALOG,
-      "group", group,
-      NULL);
+  widget = g_object_new (BZ_TYPE_APP_SIZE_DIALOG, "group", group, NULL);
 
-  return ADW_DIALOG (app_size_dialog);
+  dialog = adw_dialog_new ();
+  adw_dialog_set_content_height (dialog, 500);
+  adw_dialog_set_content_width (dialog, 600);
+  adw_dialog_set_child (dialog, GTK_WIDGET (widget));
+
+  return dialog;
+}
+
+AdwNavigationPage *
+bz_app_size_page_new (BzEntryGroup *group)
+{
+  BzAppSizeDialog   *widget = NULL;
+  AdwNavigationPage *page   = NULL;
+
+  widget = g_object_new (BZ_TYPE_APP_SIZE_DIALOG, "group", group, NULL);
+  page   = adw_navigation_page_new (GTK_WIDGET (widget), _ ("App Size"));
+  adw_navigation_page_set_tag (page, "app-size");
+
+  return page;
 }

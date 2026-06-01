@@ -38,8 +38,6 @@ struct _BzFavoritesTile
 
   BzEntryGroup *group;
 
-  GtkPicture *icon_picture;
-  GtkImage   *fallback_icon;
   GtkLabel   *title_label;
   GtkLabel   *description_label;
   GtkButton  *install_remove_button;
@@ -59,24 +57,17 @@ enum
 
 static GParamSpec *props[LAST_PROP] = { 0 };
 
-static gboolean
-test_is_support (BzEntry *entry);
+enum
+{
+  SIGNAL_UNFAVORITED,
+  LAST_SIGNAL,
+};
 
-static BzEntry *
-find_entry (BzEntryGroup *group,
-            gboolean (*test) (BzEntry *entry),
-            GtkWidget *window,
-            GError   **error);
-
-static DexFuture *
-install_remove_fiber (BzFavoritesTile *tile);
+static guint signals[LAST_SIGNAL];
 
 static void
 install_remove_cb (BzFavoritesTile *self,
                    GtkButton       *button);
-
-static DexFuture *
-support_fiber (BzFavoritesTile *tile);
 
 static void
 support_cb (BzFavoritesTile *self,
@@ -161,9 +152,9 @@ get_install_remove_tooltip (gpointer object,
                             int      removable)
 {
   if (removable > 0)
-    return g_strdup (_ ("Uninstall"));
+    return g_strdup (C_("Install Controls", "Uninstall"));
   else
-    return g_strdup (_ ("Install"));
+    return g_strdup (C_("Install Controls", "Install"));
 }
 
 static char *
@@ -177,12 +168,20 @@ get_install_remove_icon (gpointer object,
 }
 
 static gboolean
-switch_bool (gpointer  object,
-             gboolean  condition,
-             gboolean  true_value,
-             gboolean  false_value)
+switch_bool (gpointer object,
+             gboolean condition,
+             gboolean true_value,
+             gboolean false_value)
 {
   return condition ? true_value : false_value;
+}
+
+static gboolean
+logical_and (gpointer object,
+             gboolean value1,
+             gboolean value2)
+{
+  return value1 && value2;
 }
 
 static void
@@ -204,12 +203,21 @@ bz_favorites_tile_class_init (BzFavoritesTileClass *klass)
 
   g_object_class_install_properties (object_class, LAST_PROP, props);
 
+  signals[SIGNAL_UNFAVORITED] =
+      g_signal_new (
+          "unfavorited",
+          G_OBJECT_CLASS_TYPE (klass),
+          G_SIGNAL_RUN_FIRST,
+          0,
+          NULL, NULL,
+          NULL,
+          G_TYPE_NONE, 1,
+          BZ_TYPE_ENTRY_GROUP);
+
   g_type_ensure (BZ_TYPE_LIST_TILE);
   g_type_ensure (BZ_TYPE_ENTRY_GROUP);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/io/github/kolunmi/Bazaar/bz-favorites-tile.ui");
-  gtk_widget_class_bind_template_child (widget_class, BzFavoritesTile, icon_picture);
-  gtk_widget_class_bind_template_child (widget_class, BzFavoritesTile, fallback_icon);
   gtk_widget_class_bind_template_child (widget_class, BzFavoritesTile, title_label);
   gtk_widget_class_bind_template_child (widget_class, BzFavoritesTile, description_label);
   gtk_widget_class_bind_template_child (widget_class, BzFavoritesTile, install_remove_button);
@@ -220,6 +228,7 @@ bz_favorites_tile_class_init (BzFavoritesTileClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, is_null);
   gtk_widget_class_bind_template_callback (widget_class, is_zero);
   gtk_widget_class_bind_template_callback (widget_class, switch_bool);
+  gtk_widget_class_bind_template_callback (widget_class, logical_and);
   gtk_widget_class_bind_template_callback (widget_class, get_install_remove_tooltip);
   gtk_widget_class_bind_template_callback (widget_class, get_install_remove_icon);
   gtk_widget_class_bind_template_callback (widget_class, install_remove_cb);
@@ -262,144 +271,39 @@ bz_favorites_tile_get_group (BzFavoritesTile *self)
   return self->group;
 }
 
-static gboolean
-test_is_support (BzEntry *entry)
-{
-  return bz_entry_get_donation_url (entry) != NULL;
-}
-
-static BzEntry *
-find_entry (BzEntryGroup *group,
-            gboolean (*test) (BzEntry *entry),
-            GtkWidget *window,
-            GError   **error)
-{
-  g_autoptr (GError) local_error     = NULL;
-  g_autoptr (BzEntry) entry          = NULL;
-  g_autoptr (GListModel) all_entries = NULL;
-
-  entry = bz_entry_group_find_entry (group, test, window, &local_error);
-  if (entry != NULL)
-    return g_steal_pointer (&entry);
-
-  g_clear_error (&local_error);
-
-  all_entries = dex_await_object (
-      bz_entry_group_dup_all_into_store (group),
-      error);
-  if (all_entries == NULL)
-    return NULL;
-
-  if (test == NULL)
-    {
-      if (g_list_model_get_n_items (all_entries) == 0)
-        {
-          g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-                       "No entries found in group");
-          return NULL;
-        }
-      return g_list_model_get_item (all_entries, 0);
-    }
-
-  for (guint i = 0; i < g_list_model_get_n_items (all_entries); i++)
-    {
-      g_autoptr (BzEntry) candidate = g_list_model_get_item (all_entries, i);
-
-      if (test (candidate))
-        return g_steal_pointer (&candidate);
-    }
-
-  g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-               "No entry matching criteria found");
-  return NULL;
-}
-
-static DexFuture *
-install_remove_fiber (BzFavoritesTile *tile)
-{
-  g_autoptr (GError) local_error = NULL;
-  g_autoptr (BzEntry) entry      = NULL;
-  BzFavoritesPage *page          = NULL;
-  GtkWidget       *window        = NULL;
-  int removable                  = 0;
-
-  page = BZ_FAVORITES_PAGE (gtk_widget_get_ancestor (GTK_WIDGET (tile), BZ_TYPE_FAVORITES_PAGE));
-  g_assert (page != NULL);
-
-  window = gtk_widget_get_ancestor (GTK_WIDGET (tile), GTK_TYPE_WINDOW);
-  g_assert (window != NULL);
-
-  removable = bz_entry_group_get_removable (tile->group);
-
-  if (removable > 0)
-    entry = bz_entry_group_find_entry (tile->group, NULL, window, &local_error);
-  else
-    entry = find_entry (tile->group, NULL, window, &local_error);
-
-  if (entry == NULL)
-    goto err;
-
-  if (removable > 0)
-    g_signal_emit_by_name (page, "remove", entry);
-  else
-    g_signal_emit_by_name (page, "install", entry);
-
-  return NULL;
-
-err:
-  if (local_error != NULL)
-    bz_show_error_for_widget (window, local_error->message);
-  return NULL;
-}
-
 static void
 install_remove_cb (BzFavoritesTile *self,
                    GtkButton       *button)
 {
-  dex_future_disown (dex_scheduler_spawn (
-      dex_scheduler_get_default (),
-      bz_get_dex_stack_size (),
-      (DexFiberFunc) install_remove_fiber,
-      g_object_ref (self),
-      g_object_unref));
-}
+  int removable = 0;
 
-static DexFuture *
-support_fiber (BzFavoritesTile *tile)
-{
-  g_autoptr (GError) local_error = NULL;
-  g_autoptr (BzEntry) entry      = NULL;
-  GtkWidget  *window             = NULL;
-  const char *url                = NULL;
+  if (self->group == NULL)
+    return;
 
-  window = gtk_widget_get_ancestor (GTK_WIDGET (tile), GTK_TYPE_WINDOW);
-  g_assert (window != NULL);
+  removable = bz_entry_group_get_removable (self->group);
 
-  entry = find_entry (tile->group, test_is_support, window, &local_error);
-  if (entry == NULL)
-    goto err;
-
-  url = bz_entry_get_donation_url (entry);
-  g_app_info_launch_default_for_uri (url, NULL, NULL);
-
-  return NULL;
-
-err:
-  if (local_error != NULL)
-    bz_show_error_for_widget (window, local_error->message);
-  return NULL;
+  if (removable > 0)
+    gtk_widget_activate_action (GTK_WIDGET (self), "window.remove-group", "(sb)",
+                                bz_entry_group_get_id (self->group), FALSE);
+  else
+    gtk_widget_activate_action (GTK_WIDGET (self), "window.install-group", "(sb)",
+                                bz_entry_group_get_id (self->group), TRUE);
 }
 
 static void
 support_cb (BzFavoritesTile *self,
             GtkButton       *button)
 {
-  dex_future_disown (dex_scheduler_spawn (
-      dex_scheduler_get_default (),
-      bz_get_dex_stack_size (),
-      (DexFiberFunc) support_fiber,
-      g_object_ref (self),
-      g_object_unref));
+  const char *url = NULL;
+
+  if (self->group == NULL)
+    return;
+
+  url = bz_entry_group_get_donation_url (self->group);
+  if (url == NULL)
+    return;
+
+  g_app_info_launch_default_for_uri (url, NULL, NULL);
 }
 
 static DexFuture *
@@ -446,13 +350,14 @@ unfavorite_fiber (BzFavoritesTile *tile)
       gtk_stack_set_visible_child_name (tile->unfavorite_stack, "button");
       window = gtk_widget_get_ancestor (GTK_WIDGET (tile), GTK_TYPE_WINDOW);
       if (window != NULL)
-        bz_show_error_for_widget (window, local_error->message);
+        bz_show_error_for_widget (window, _("Failed to remove favorite"), local_error->message);
     }
   else
     {
       gtk_widget_set_overflow (revealer, GTK_OVERFLOW_HIDDEN);
       gtk_revealer_set_reveal_child (GTK_REVEALER (revealer), FALSE);
       gtk_widget_add_css_class (row, "hidden");
+      g_signal_emit (tile, signals[SIGNAL_UNFAVORITED], 0, tile->group);
     }
 
   return NULL;

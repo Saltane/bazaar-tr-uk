@@ -1,5 +1,4 @@
 using Gtk 4.0;
-using Adw 1;
 
 template $BzScreenshotsCarousel: Gtk.Widget {
   accessibility {
@@ -23,29 +22,40 @@ template $BzScreenshotsCarousel: Gtk.Widget {
       halign: fill;
       valign: fill;
 
-      Adw.Carousel carousel {
+      $BgeCarousel carousel {
         vexpand: true;
         hexpand: true;
-        valign: center;
+        valign: fill;
         height-request: bind $get_carousel_height(template.compact) as <int>;
+
         allow-mouse-drag: true;
-        allow-scroll-wheel: false;
-        allow-long-swipes: true;
-        notify::position => $on_notify_position() swapped;
-        notify::n-pages => $on_notify_n_pages() swapped;
+        allow-overshoot: true;
+        allow-scroll-wheel: true;
+        allow-raise: bind $invert_boolean(template.compact) as <bool>;
+
+        create-widget => $on_create_widget(template);
+        remove-widget => $on_remove_widget(template);
+
+        model: SingleSelection selection {
+          autoselect: true;
+          model: bind template.model;
+
+          notify::selected => $on_notify_selected(template);
+          notify::model => $on_notify_model(template);
+        };
       }
 
-      Adw.CarouselIndicatorDots carousel_indicator {
-        carousel: carousel;
-        opacity: 0;
-        hexpand: true;
-        halign: center;
-
-        styles [
-          "boxed-indicator",
-          "indicator-box",
-        ]
-      }
+      // $BzCarouselIndicatorDots carousel_indicator {
+      //   carousel: carousel;
+      //   opacity: 0;
+      //   hexpand: true;
+      //   halign: center;
+      //
+      //   styles [
+      //     "boxed-indicator",
+      //     "indicator-box",
+      //   ]
+      // }
     };
 
     [overlay]
@@ -54,6 +64,7 @@ template $BzScreenshotsCarousel: Gtk.Widget {
       reveal-child: false;
       halign: start;
       valign: center;
+      can-focus: false;
 
       Gtk.Button prev_button {
         icon-name: "go-previous-symbolic";
@@ -74,6 +85,7 @@ template $BzScreenshotsCarousel: Gtk.Widget {
       reveal-child: false;
       halign: end;
       valign: center;
+      can-focus: false;
 
       Gtk.Button next_button {
         icon-name: "go-next-symbolic";
@@ -98,6 +110,7 @@ template $BzScreenshotsCarousel: Gtk.Widget {
       margin-bottom: 8;
       halign: end;
       valign: end;
+      can-focus:false;
 
       Gtk.Button {
         icon-name: "pip-out-symbolic";

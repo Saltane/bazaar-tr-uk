@@ -89,9 +89,11 @@ find_and_maybe_transfer (GListStore    *from,
                          gpointer      *out);
 
 static void
-tracker_update (BzTransactionPrivate          *priv,
-                BzBackendTransactionOpPayload *payload,
-                gboolean                       transfer);
+tracker_update (BzTransactionPrivate                  *priv,
+                BzBackendTransactionOpPayload         *payload,
+                BzBackendTransactionOpProgressPayload *progress_payload,
+                gboolean                               transfer,
+                gboolean                               set_done);
 
 static void
 bz_transaction_dispose (GObject *object)
@@ -388,6 +390,9 @@ bz_transaction_new_full (BzEntry **installs,
     bz_transaction_entry_tracker_set_finished_ops (tracker, G_LIST_MODEL (finished_ops));  \
     bz_transaction_entry_tracker_set_kind (tracker, transaction_type);                     \
     bz_transaction_entry_tracker_set_status (tracker, BZ_TRANSACTION_ENTRY_STATUS_QUEUED); \
+    bz_transaction_entry_tracker_set_pending (tracker, TRUE);                              \
+    if ((transaction_type) == BZ_TRANSACTION_ENTRY_KIND_REMOVAL)                           \
+      bz_transaction_entry_tracker_set_active (tracker, TRUE);                             \
                                                                                            \
     g_list_store_append (priv->trackers, tracker);                                         \
   }                                                                                        \
@@ -490,6 +495,17 @@ bz_transaction_get_removals (BzTransaction *self)
   return G_LIST_MODEL (priv->removals);
 }
 
+GListModel *
+bz_transaction_get_trackers (BzTransaction *self)
+{
+  BzTransactionPrivate *priv = NULL;
+
+  g_return_val_if_fail (BZ_IS_TRANSACTION (self), NULL);
+
+  priv = bz_transaction_get_instance_private (self);
+  return G_LIST_MODEL (priv->trackers);
+}
+
 void
 bz_transaction_hold (BzTransaction *self)
 {
@@ -583,6 +599,9 @@ bz_transaction_add_task (BzTransaction                 *self,
     {
       GListModel *current_ops = NULL;
 
+      if (bz_transaction_entry_tracker_get_kind (tracker) == BZ_TRANSACTION_ENTRY_KIND_UPDATE)
+        bz_backend_transaction_op_payload_set_download_size (payload, (guint64) -1);
+
       current_ops = bz_transaction_entry_tracker_get_current_ops (tracker);
       g_list_store_append (G_LIST_STORE (current_ops), task);
       g_object_notify (G_OBJECT (tracker), "current-ops");
@@ -613,7 +632,7 @@ bz_transaction_update_task (BzTransaction                         *self,
   if (result)
     bz_transaction_task_set_last_progress (task, payload);
 
-  tracker_update (priv, op, FALSE);
+  tracker_update (priv, op, payload, FALSE, FALSE);
 }
 
 void
@@ -634,7 +653,7 @@ bz_transaction_finish_task (BzTransaction                 *self,
       (GEqualFuncFull) find_payload_eq_func,
       NULL);
 
-  tracker_update (priv, payload, TRUE);
+  tracker_update (priv, payload, NULL, TRUE, FALSE);
 }
 
 void
@@ -661,7 +680,7 @@ bz_transaction_error_out_task (BzTransaction                 *self,
   if (result)
     bz_transaction_task_set_error (task, message);
 
-  tracker_update (priv, payload, TRUE);
+  tracker_update (priv, payload, NULL, TRUE, TRUE);
 }
 
 static void
@@ -675,7 +694,15 @@ finish (BzTransactionPrivate *priv)
       g_autoptr (BzTransactionEntryTracker) tracker = NULL;
 
       tracker = g_list_model_get_item (G_LIST_MODEL (priv->trackers), i);
-      bz_transaction_entry_tracker_set_status (tracker, BZ_TRANSACTION_ENTRY_STATUS_DONE);
+      bz_transaction_entry_tracker_set_active (tracker, FALSE);
+      bz_transaction_entry_tracker_set_pending (tracker, FALSE);
+      if (bz_transaction_entry_tracker_get_status (tracker) == BZ_TRANSACTION_ENTRY_STATUS_CANCELLED)
+        continue;
+      bz_transaction_entry_tracker_set_status (
+          tracker,
+          priv->success
+              ? BZ_TRANSACTION_ENTRY_STATUS_DONE
+              : BZ_TRANSACTION_ENTRY_STATUS_CANCELLED);
     }
 }
 
@@ -728,30 +755,40 @@ find_and_maybe_transfer (GListStore    *from,
 }
 
 static void
-tracker_update (BzTransactionPrivate          *priv,
-                BzBackendTransactionOpPayload *payload,
-                gboolean                       transfer)
+tracker_update (BzTransactionPrivate                  *priv,
+                BzBackendTransactionOpPayload         *payload,
+                BzBackendTransactionOpProgressPayload *progress_payload,
+                gboolean                               transfer,
+                gboolean                               set_done)
 {
   BzEntry *entry                                = NULL;
   g_autoptr (BzTransactionEntryTracker) tracker = NULL;
   gboolean result                               = FALSE;
 
-  entry = bz_backend_transaction_op_payload_get_entry (payload);
-
+  entry  = bz_backend_transaction_op_payload_get_entry (payload);
   result = find_and_maybe_transfer (
       priv->trackers,
       NULL,
       entry,
       (GEqualFuncFull) find_entry_eq_func,
       (gpointer *) &tracker);
+
   if (result)
     {
+      BzTransactionEntryStatus existing_status = 0;
+
+      existing_status = bz_transaction_entry_tracker_get_status (tracker);
       if (transfer)
         {
           GListModel *from = NULL;
           GListModel *to   = NULL;
 
-          bz_transaction_entry_tracker_set_status (tracker, BZ_TRANSACTION_ENTRY_STATUS_DONE);
+          if (set_done)
+            {
+              bz_transaction_entry_tracker_set_active (tracker, FALSE);
+              bz_transaction_entry_tracker_set_status (tracker, BZ_TRANSACTION_ENTRY_STATUS_DONE);
+              bz_transaction_entry_tracker_set_pending (tracker, FALSE);
+            }
 
           from   = bz_transaction_entry_tracker_get_current_ops (tracker);
           to     = bz_transaction_entry_tracker_get_finished_ops (tracker);
@@ -766,6 +803,26 @@ tracker_update (BzTransactionPrivate          *priv,
           g_object_notify (G_OBJECT (tracker), "finished-ops");
         }
       else
-        bz_transaction_entry_tracker_set_status (tracker, BZ_TRANSACTION_ENTRY_STATUS_ONGOING);
+        {
+          if (progress_payload != NULL)
+            {
+              double   progress   = 0.0;
+              double   scaled     = 0.0;
+              gboolean estimating = FALSE;
+
+              progress   = bz_backend_transaction_op_progress_payload_get_total_progress (progress_payload);
+              scaled     = progress >= 1.0 ? 1.0 : progress * 0.9;
+              estimating = bz_backend_transaction_op_progress_payload_get_is_estimating (progress_payload);
+
+              g_object_set (tracker,
+                            "progress", scaled,
+                            "pending", estimating && progress == 0.0,
+                            NULL);
+            }
+          bz_transaction_entry_tracker_set_active (tracker, TRUE);
+
+          if (existing_status != BZ_TRANSACTION_ENTRY_STATUS_CANCELLED)
+            bz_transaction_entry_tracker_set_status (tracker, BZ_TRANSACTION_ENTRY_STATUS_ONGOING);
+        }
     }
 }

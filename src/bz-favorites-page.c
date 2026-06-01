@@ -24,7 +24,6 @@
 #include <json-glib/json-glib.h>
 
 #include "bz-application-map-factory.h"
-#include "bz-entry-group-util.h"
 #include "bz-env.h"
 #include "bz-error.h"
 #include "bz-favorites-page.h"
@@ -39,6 +38,7 @@ struct _BzFavoritesPage
 
   BzStateInfo *state;
   GListModel  *model;
+  GListModel  *favorites;
   gboolean     show_sidebar;
 
   AdwViewStack *stack;
@@ -52,31 +52,22 @@ enum
 
   PROP_STATE,
   PROP_MODEL,
+  PROP_FAVORITES,
   PROP_SHOW_SIDEBAR,
 
   LAST_PROP
 };
 static GParamSpec *props[LAST_PROP] = { 0 };
 
-enum
-{
-  SIGNAL_INSTALL,
-  SIGNAL_REMOVE,
-  SIGNAL_SHOW,
-
-  LAST_SIGNAL,
-};
-static guint signals[LAST_SIGNAL];
-
 static DexFuture *
 fetch_favorites_fiber (GWeakRef *wr);
 
 static void
-items_changed (BzFavoritesPage *self,
-               guint            position,
-               guint            removed,
-               guint            added,
-               GListModel      *model);
+favorites_changed (BzFavoritesPage *self,
+                   guint            position,
+                   guint            removed,
+                   guint            added,
+                   GListModel      *model);
 
 static void
 set_page (BzFavoritesPage *self);
@@ -86,8 +77,9 @@ bz_favorites_page_dispose (GObject *object)
 {
   BzFavoritesPage *self = BZ_FAVORITES_PAGE (object);
 
-  if (self->model != NULL)
-    g_signal_handlers_disconnect_by_func (self->model, items_changed, self);
+  if (self->favorites != NULL)
+    g_signal_handlers_disconnect_by_func (self->favorites, favorites_changed, self);
+  g_clear_object (&self->favorites);
   g_clear_object (&self->model);
   g_clear_object (&self->state);
 
@@ -109,6 +101,9 @@ bz_favorites_page_get_property (GObject    *object,
       break;
     case PROP_MODEL:
       g_value_set_object (value, self->model);
+      break;
+    case PROP_FAVORITES:
+      g_value_set_object (value, self->favorites);
       break;
     case PROP_SHOW_SIDEBAR:
       g_value_set_boolean (value, self->show_sidebar);
@@ -171,67 +166,93 @@ invert_boolean (gpointer object,
   return !value;
 }
 
-static DexFuture *
-tile_activated_fiber (GWeakRef *wr)
+static gboolean
+is_empty (gpointer    object,
+          GListModel *model)
 {
-  g_autoptr (BzFavoritesTile) tile   = NULL;
-  g_autoptr (GError) local_error     = NULL;
-  g_autoptr (BzEntry) entry          = NULL;
-  g_autoptr (GListModel) all_entries = NULL;
-  BzFavoritesPage *self              = NULL;
-  GtkWidget       *window            = NULL;
-  BzEntryGroup    *group             = NULL;
+  if (model == NULL)
+    return TRUE;
+  return g_list_model_get_n_items (model) == 0;
+}
 
-  bz_weak_get_or_return_reject (tile, wr);
+static gboolean
+is_favorited (GListModel   *favorites,
+              BzEntryGroup *group)
+{
+  if (favorites == NULL || group == NULL)
+    return FALSE;
 
-  self = (BzFavoritesPage *) gtk_widget_get_ancestor (GTK_WIDGET (tile), BZ_TYPE_FAVORITES_PAGE);
-  if (self == NULL)
-    return NULL;
-  if (self->model == NULL)
-    goto err;
-
-  window = gtk_widget_get_ancestor (GTK_WIDGET (self), GTK_TYPE_WINDOW);
-  if (window == NULL)
-    goto err;
-
-  group = bz_favorites_tile_get_group (tile);
-  if (group == NULL)
-    goto err;
-
-  entry = bz_entry_group_find_entry (group, NULL, window, &local_error);
-  if (entry == NULL)
-    {
-      if (local_error != NULL)
-        g_clear_error (&local_error);
-
-      all_entries = dex_await_object (
-          bz_entry_group_dup_all_into_store (group),
-          &local_error);
-      if (all_entries == NULL || g_list_model_get_n_items (all_entries) == 0)
-        goto err;
-
-      entry = g_list_model_get_item (all_entries, 0);
-    }
-
-  g_signal_emit (self, signals[SIGNAL_SHOW], 0, entry);
-  return NULL;
-
-err:
-  if (local_error != NULL)
-    bz_show_error_for_widget (window, local_error->message);
-  return NULL;
+  return g_list_store_find (G_LIST_STORE (favorites), group, NULL);
 }
 
 static void
 tile_activated_cb (BzFavoritesTile *tile)
 {
+  BzEntryGroup *group = NULL;
+
   g_assert (BZ_IS_FAVORITES_TILE (tile));
 
-  dex_future_disown (dex_scheduler_spawn (
-      dex_scheduler_get_default (),
-      bz_get_dex_stack_size (),
-      (DexFiberFunc) tile_activated_fiber,
-      bz_track_weak (tile), bz_weak_release));
+  group = bz_favorites_tile_get_group (tile);
+  if (group == NULL)
+    return;
+
+  gtk_widget_activate_action (GTK_WIDGET (tile), "window.show-group", "s",
+                              bz_entry_group_get_id (group));
+}
+
+static void
+unfavorite_cb (BzFavoritesTile *tile,
+               BzEntryGroup    *group,
+               gpointer         user_data)
+{
+  BzFavoritesPage *self     = NULL;
+  guint            position = 0;
+
+  g_assert (BZ_IS_FAVORITES_TILE (tile));
+  g_assert (BZ_IS_ENTRY_GROUP (group));
+
+  self = BZ_FAVORITES_PAGE (gtk_widget_get_ancestor (GTK_WIDGET (tile), BZ_TYPE_FAVORITES_PAGE));
+  if (self == NULL)
+    return;
+
+  if (self->favorites == NULL)
+    return;
+
+  if (g_list_store_find (G_LIST_STORE (self->favorites), group, &position))
+    {
+      g_list_store_remove (G_LIST_STORE (self->favorites), position);
+      g_object_notify_by_pspec (G_OBJECT (self), props[PROP_FAVORITES]);
+    }
+}
+
+static void
+install_all_cb (BzFavoritesPage *self,
+                GtkButton       *button)
+{
+  GVariantBuilder builder = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE ("as"));
+  guint n_items           = 0;
+
+  g_return_if_fail (BZ_IS_FAVORITES_PAGE (self));
+
+  if (self->model == NULL || self->favorites == NULL)
+    return;
+
+  n_items = g_list_model_get_n_items (self->favorites);
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr (BzEntryGroup) group = NULL;
+
+      group = g_list_model_get_item (self->favorites, i);
+
+      if (!is_favorited (self->favorites, group))
+        continue;
+
+      g_variant_builder_add (&builder, "s", bz_entry_group_get_id (group));
+    }
+
+  gtk_widget_activate_action (GTK_WIDGET (self), "window.bulk-install", "as",
+                              &builder);
 }
 
 static void
@@ -259,6 +280,13 @@ bz_favorites_page_class_init (BzFavoritesPageClass *klass)
           G_TYPE_LIST_MODEL,
           G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+  props[PROP_FAVORITES] =
+      g_param_spec_object (
+          "favorites",
+          NULL, NULL,
+          G_TYPE_LIST_MODEL,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
   props[PROP_SHOW_SIDEBAR] =
       g_param_spec_boolean (
           "show-sidebar",
@@ -268,58 +296,16 @@ bz_favorites_page_class_init (BzFavoritesPageClass *klass)
 
   g_object_class_install_properties (object_class, LAST_PROP, props);
 
-  signals[SIGNAL_INSTALL] =
-      g_signal_new (
-          "install",
-          G_OBJECT_CLASS_TYPE (klass),
-          G_SIGNAL_RUN_FIRST,
-          0,
-          NULL, NULL,
-          g_cclosure_marshal_VOID__OBJECT,
-          G_TYPE_NONE, 1,
-          BZ_TYPE_ENTRY);
-  g_signal_set_va_marshaller (
-      signals[SIGNAL_INSTALL],
-      G_TYPE_FROM_CLASS (klass),
-      g_cclosure_marshal_VOID__OBJECTv);
-
-  signals[SIGNAL_REMOVE] =
-      g_signal_new (
-          "remove",
-          G_OBJECT_CLASS_TYPE (klass),
-          G_SIGNAL_RUN_FIRST,
-          0,
-          NULL, NULL,
-          g_cclosure_marshal_VOID__OBJECT,
-          G_TYPE_NONE, 1,
-          BZ_TYPE_ENTRY);
-  g_signal_set_va_marshaller (
-      signals[SIGNAL_REMOVE],
-      G_TYPE_FROM_CLASS (klass),
-      g_cclosure_marshal_VOID__OBJECTv);
-
-  signals[SIGNAL_SHOW] =
-      g_signal_new (
-          "show-entry",
-          G_OBJECT_CLASS_TYPE (klass),
-          G_SIGNAL_RUN_FIRST,
-          0,
-          NULL, NULL,
-          g_cclosure_marshal_VOID__OBJECT,
-          G_TYPE_NONE, 1,
-          BZ_TYPE_ENTRY);
-  g_signal_set_va_marshaller (
-      signals[SIGNAL_SHOW],
-      G_TYPE_FROM_CLASS (klass),
-      g_cclosure_marshal_VOID__OBJECTv);
-
   g_type_ensure (BZ_TYPE_FAVORITES_TILE);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/io/github/kolunmi/Bazaar/bz-favorites-page.ui");
   gtk_widget_class_bind_template_child (widget_class, BzFavoritesPage, stack);
   gtk_widget_class_bind_template_callback (widget_class, is_zero);
   gtk_widget_class_bind_template_callback (widget_class, invert_boolean);
+  gtk_widget_class_bind_template_callback (widget_class, is_empty);
   gtk_widget_class_bind_template_callback (widget_class, tile_activated_cb);
+  gtk_widget_class_bind_template_callback (widget_class, unfavorite_cb);
+  gtk_widget_class_bind_template_callback (widget_class, install_all_cb);
 }
 
 static void
@@ -337,11 +323,11 @@ bz_favorites_page_new (BzStateInfo *state)
 }
 
 static void
-items_changed (BzFavoritesPage *self,
-               guint            position,
-               guint            removed,
-               guint            added,
-               GListModel      *model)
+favorites_changed (BzFavoritesPage *self,
+                   guint            position,
+                   guint            removed,
+                   guint            added,
+                   GListModel      *model)
 {
   set_page (self);
 }
@@ -349,8 +335,8 @@ items_changed (BzFavoritesPage *self,
 static void
 set_page (BzFavoritesPage *self)
 {
-  if (self->model != NULL &&
-      g_list_model_get_n_items (G_LIST_MODEL (self->model)) > 0)
+  if (self->favorites != NULL &&
+      g_list_model_get_n_items (self->favorites) > 0)
     adw_view_stack_set_visible_child_name (self->stack, "content");
   else
     adw_view_stack_set_visible_child_name (self->stack, "empty");
@@ -368,18 +354,19 @@ compare_entry_groups_by_title (BzEntryGroup *group_a,
 static DexFuture *
 fetch_favorites_fiber (GWeakRef *wr)
 {
-  g_autoptr (BzFavoritesPage) self    = NULL;
-  g_autoptr (GError) local_error      = NULL;
-  g_autoptr (GtkStringList) id_list   = NULL;
-  g_autoptr (GListModel) model        = NULL;
-  g_autoptr (GListStore) sorted_store = NULL;
-  g_autoptr (JsonNode) node           = NULL;
-  BzApplicationMapFactory *factory    = NULL;
-  BzAuthState *auth_state             = NULL;
-  const char  *token                  = NULL;
-  JsonArray   *array                  = NULL;
-  guint        n_favorites            = 0;
-  guint        n_items                = 0;
+  g_autoptr (BzFavoritesPage) self       = NULL;
+  g_autoptr (GError) local_error         = NULL;
+  g_autoptr (GtkStringList) id_list      = NULL;
+  g_autoptr (GListModel) model           = NULL;
+  g_autoptr (GListStore) sorted_store    = NULL;
+  g_autoptr (GListStore) favorites_store = NULL;
+  g_autoptr (JsonNode) node              = NULL;
+  BzApplicationMapFactory *factory       = NULL;
+  BzAuthState             *auth_state    = NULL;
+  const char              *token         = NULL;
+  JsonArray               *array         = NULL;
+  guint                    n_favorites   = 0;
+  guint                    n_items       = 0;
 
   self = g_weak_ref_get (wr);
   if (self == NULL)
@@ -428,25 +415,31 @@ done:
   factory = bz_state_info_get_application_factory (self->state);
   model   = bz_application_map_factory_generate (factory, G_LIST_MODEL (id_list));
 
-  sorted_store = g_list_store_new (BZ_TYPE_ENTRY_GROUP);
-  n_items      = g_list_model_get_n_items (model);
+  sorted_store    = g_list_store_new (BZ_TYPE_ENTRY_GROUP);
+  favorites_store = g_list_store_new (BZ_TYPE_ENTRY_GROUP);
+  n_items         = g_list_model_get_n_items (model);
   for (guint i = 0; i < n_items; i++)
     {
       g_autoptr (BzEntryGroup) group = g_list_model_get_item (model, i);
       g_list_store_append (sorted_store, group);
+      g_list_store_append (favorites_store, group);
     }
   g_list_store_sort (sorted_store, (GCompareDataFunc) compare_entry_groups_by_title, NULL);
-
-  if (self->model != NULL)
-    g_signal_handlers_disconnect_by_func (self->model, items_changed, self);
 
   g_clear_object (&self->model);
   self->model = G_LIST_MODEL (g_steal_pointer (&sorted_store));
 
-  g_signal_connect_swapped (self->model, "items-changed", G_CALLBACK (items_changed), self);
+  if (self->favorites != NULL)
+    g_signal_handlers_disconnect_by_func (self->favorites, favorites_changed, self);
+
+  g_clear_object (&self->favorites);
+  self->favorites = G_LIST_MODEL (g_steal_pointer (&favorites_store));
+
+  g_signal_connect_swapped (self->favorites, "items-changed", G_CALLBACK (favorites_changed), self);
   set_page (self);
 
   g_object_notify_by_pspec (G_OBJECT (self), props[PROP_MODEL]);
+  g_object_notify_by_pspec (G_OBJECT (self), props[PROP_FAVORITES]);
 
   return dex_future_new_true ();
 }

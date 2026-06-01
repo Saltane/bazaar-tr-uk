@@ -22,32 +22,30 @@
 
 #include <glib/gi18n.h>
 
-#include "bz-app-permissions.h"
 #include "bz-context-row.h"
-#include "bz-entry-group.h"
 #include "bz-entry.h"
 #include "bz-lozenge.h"
-#include "bz-result.h"
 #include "bz-safety-calculator.h"
 #include "bz-safety-dialog.h"
 #include "bz-safety-row.h"
+#include "bz-template-callbacks.h"
 
 struct _BzSafetyDialog
 {
-  AdwDialog parent_instance;
+  AdwBin parent_instance;
 
-  BzEntryGroup *group;
+  BzEntry *entry;
 
   BzLozenge  *lozenge;
   GtkListBox *permissions_list;
 };
 
-G_DEFINE_FINAL_TYPE (BzSafetyDialog, bz_safety_dialog, ADW_TYPE_DIALOG)
+G_DEFINE_FINAL_TYPE (BzSafetyDialog, bz_safety_dialog, ADW_TYPE_BIN)
 
 enum
 {
   PROP_0,
-  PROP_GROUP,
+  PROP_ENTRY,
   LAST_PROP
 };
 
@@ -55,17 +53,13 @@ static GParamSpec *props[LAST_PROP] = { 0 };
 
 static AdwActionRow *create_permission_row (BzSafetyRow *row_data);
 static void          update_permissions_list (BzSafetyDialog *self);
-static gboolean      invert_boolean (gpointer object, gboolean value);
-static gboolean      is_null (gpointer object, GObject *value);
 
 static void
 bz_safety_dialog_dispose (GObject *object)
 {
-  BzSafetyDialog *self;
+  BzSafetyDialog *self = BZ_SAFETY_DIALOG (object);
 
-  self = BZ_SAFETY_DIALOG (object);
-
-  g_clear_object (&self->group);
+  g_clear_object (&self->entry);
 
   G_OBJECT_CLASS (bz_safety_dialog_parent_class)->dispose (object);
 }
@@ -76,14 +70,12 @@ bz_safety_dialog_get_property (GObject    *object,
                                GValue     *value,
                                GParamSpec *pspec)
 {
-  BzSafetyDialog *self;
-
-  self = BZ_SAFETY_DIALOG (object);
+  BzSafetyDialog *self = BZ_SAFETY_DIALOG (object);
 
   switch (prop_id)
     {
-    case PROP_GROUP:
-      g_value_set_object (value, self->group);
+    case PROP_ENTRY:
+      g_value_set_object (value, self->entry);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -102,9 +94,9 @@ bz_safety_dialog_set_property (GObject      *object,
 
   switch (prop_id)
     {
-    case PROP_GROUP:
-      g_clear_object (&self->group);
-      self->group = g_value_dup_object (value);
+    case PROP_ENTRY:
+      g_clear_object (&self->entry);
+      self->entry = g_value_dup_object (value);
       update_permissions_list (self);
       break;
     default:
@@ -125,10 +117,10 @@ bz_safety_dialog_class_init (BzSafetyDialogClass *klass)
   object_class->get_property = bz_safety_dialog_get_property;
   object_class->set_property = bz_safety_dialog_set_property;
 
-  props[PROP_GROUP] =
-      g_param_spec_object ("group",
+  props[PROP_ENTRY] =
+      g_param_spec_object ("entry",
                            NULL, NULL,
-                           BZ_TYPE_ENTRY_GROUP,
+                           BZ_TYPE_ENTRY,
                            G_PARAM_READWRITE);
 
   g_object_class_install_properties (object_class, LAST_PROP, props);
@@ -137,11 +129,10 @@ bz_safety_dialog_class_init (BzSafetyDialogClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class,
                                                "/io/github/kolunmi/Bazaar/bz-safety-dialog.ui");
+  bz_widget_class_bind_all_util_callbacks (widget_class);
 
   gtk_widget_class_bind_template_child (widget_class, BzSafetyDialog, lozenge);
   gtk_widget_class_bind_template_child (widget_class, BzSafetyDialog, permissions_list);
-  gtk_widget_class_bind_template_callback (widget_class, is_null);
-  gtk_widget_class_bind_template_callback (widget_class, invert_boolean);
 }
 
 static void
@@ -151,11 +142,32 @@ bz_safety_dialog_init (BzSafetyDialog *self)
 }
 
 AdwDialog *
-bz_safety_dialog_new (BzEntryGroup *group)
+bz_safety_dialog_new (BzEntry *entry)
 {
-  return g_object_new (BZ_TYPE_SAFETY_DIALOG,
-                       "group", group,
-                       NULL);
+  BzSafetyDialog *widget = NULL;
+  AdwDialog      *dialog = NULL;
+
+  widget = g_object_new (BZ_TYPE_SAFETY_DIALOG, "entry", entry, NULL);
+
+  dialog = adw_dialog_new ();
+  adw_dialog_set_content_height (dialog, 576);
+  adw_dialog_set_content_width (dialog, 640);
+  adw_dialog_set_child (dialog, GTK_WIDGET (widget));
+
+  return dialog;
+}
+
+AdwNavigationPage *
+bz_safety_dialog_page_new (BzEntry *entry)
+{
+  BzSafetyDialog    *widget = NULL;
+  AdwNavigationPage *page   = NULL;
+
+  widget = g_object_new (BZ_TYPE_SAFETY_DIALOG, "entry", entry, NULL);
+  page   = adw_navigation_page_new (GTK_WIDGET (widget), _ ("Safety"));
+  adw_navigation_page_set_tag (page, "safety");
+
+  return page;
 }
 
 static AdwActionRow *
@@ -171,47 +183,39 @@ static void
 update_permissions_list (BzSafetyDialog *self)
 {
   const char      *icon_names[2];
-  const char      *app_name   = NULL;
-  g_autofree char *title_text = NULL;
-  BzImportance     importance = BZ_IMPORTANCE_UNIMPORTANT;
-  BzEntry         *entry      = NULL;
-  BzResult        *result     = NULL;
-  GtkWidget       *child;
+  const char      *app_name    = NULL;
+  g_autofree char *title_text  = NULL;
+  BzImportance     importance  = BZ_IMPORTANCE_UNIMPORTANT;
+  GtkWidget       *child       = NULL;
   g_autoptr (GListModel) model = NULL;
   guint n_items                = 0;
-  guint i                      = 0;
 
   while ((child = gtk_widget_get_first_child (GTK_WIDGET (self->permissions_list))) != NULL)
     gtk_list_box_remove (self->permissions_list, child);
 
-  if (self->group == NULL)
+  if (self->entry == NULL)
     return;
 
-  g_object_get (self->group, "ui-entry", &result, NULL);
-  if (result == NULL)
-    return;
+  app_name = bz_entry_get_title (self->entry);
 
-  entry = bz_result_get_object (result);
-  if (entry == NULL)
+  model      = bz_safety_calculator_analyze_entry (self->entry);
+  importance = bz_safety_calculator_calculate_rating (self->entry);
+  n_items    = g_list_model_get_n_items (model);
+  for (gint level = BZ_IMPORTANCE_IMPORTANT; level >= BZ_IMPORTANCE_UNIMPORTANT; level--)
     {
-      g_clear_object (&result);
-      return;
-    }
+      for (gint j = 0; j < n_items; j++)
+        {
+          g_autoptr (BzSafetyRow) row_data = NULL;
+          AdwActionRow *row                = NULL;
+          BzImportance  row_importance     = 0;
 
-  app_name = bz_entry_get_title (entry);
-
-  model      = bz_safety_calculator_analyze_entry (entry);
-  importance = bz_safety_calculator_calculate_rating (entry);
-
-  n_items = g_list_model_get_n_items (model);
-  for (i = 0; i < n_items; i++)
-    {
-      g_autoptr (BzSafetyRow) row_data;
-      AdwActionRow *row;
-
-      row_data = g_list_model_get_item (model, i);
-      row      = create_permission_row (row_data);
-      gtk_list_box_append (self->permissions_list, GTK_WIDGET (row));
+          row_data       = g_list_model_get_item (model, j);
+          row_importance = bz_safety_row_get_importance (row_data);
+          if (row_importance != level)
+            continue;
+          row = create_permission_row (row_data);
+          gtk_list_box_append (self->permissions_list, GTK_WIDGET (row));
+        }
     }
 
   switch (importance)
@@ -248,20 +252,4 @@ update_permissions_list (BzSafetyDialog *self)
   bz_lozenge_set_icon_names (self->lozenge, icon_names);
   bz_lozenge_set_title (self->lozenge, title_text);
   bz_lozenge_set_importance (self->lozenge, importance);
-
-  g_clear_object (&result);
-}
-
-static gboolean
-invert_boolean (gpointer object,
-                gboolean value)
-{
-  return !value;
-}
-
-static gboolean
-is_null (gpointer object,
-         GObject *value)
-{
-  return value == NULL;
 }

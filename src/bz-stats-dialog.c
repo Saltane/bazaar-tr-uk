@@ -23,22 +23,24 @@
 
 #include "bz-data-graph.h"
 #include "bz-stats-dialog.h"
+#include "bz-template-callbacks.h"
 #include "bz-world-map.h"
 
 struct _BzStatsDialog
 {
-  AdwDialog parent_instance;
+  AdwBreakpointBin parent_instance;
 
   GListModel *model;
   GListModel *country_model;
   int         total_downloads;
 
   /* Template widgets */
-  BzDataGraph *graph;
-  BzWorldMap  *world_map;
+  AdwViewStack *stack;
+  BzDataGraph  *graph;
+  BzWorldMap   *world_map;
 };
 
-G_DEFINE_FINAL_TYPE (BzStatsDialog, bz_stats_dialog, ADW_TYPE_DIALOG)
+G_DEFINE_FINAL_TYPE (BzStatsDialog, bz_stats_dialog, ADW_TYPE_BREAKPOINT_BIN)
 
 enum
 {
@@ -121,12 +123,21 @@ format_total_downloads (gpointer object,
     return g_strdup ("---");
   if (value >= 1000000)
     /* Translators: M is the suffix for millions */
-    return g_strdup_printf ("%.2fM Total Installs", value / 1000000.0);
+    return g_strdup_printf (_ ("%.2fM Total Installs"), value / 1000000.0);
   else if (value >= 1000)
     /* Translators: K is the suffix for thousands*/
-    return g_strdup_printf ("%.2fK Total Installs", value / 1000.0);
+    return g_strdup_printf (_ ("%.2fK Total Installs"), value / 1000.0);
   else
-    return g_strdup_printf ("%'d Total Installs", value);
+    return g_strdup_printf (_ ("%'d Total Installs"), value);
+}
+
+static gboolean
+model_has_enough_points (gpointer    object,
+                         GListModel *model)
+{
+  if (model == NULL)
+    return FALSE;
+  return g_list_model_get_n_items (model) >= 10;
 }
 
 static void
@@ -166,7 +177,12 @@ bz_stats_dialog_class_init (BzStatsDialogClass *klass)
   g_type_ensure (BZ_TYPE_WORLD_MAP);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/io/github/kolunmi/Bazaar/bz-stats-dialog.ui");
+
+  bz_widget_class_bind_all_util_callbacks (widget_class);
+
   gtk_widget_class_bind_template_callback (widget_class, format_total_downloads);
+  gtk_widget_class_bind_template_callback (widget_class, model_has_enough_points);
+  gtk_widget_class_bind_template_child (widget_class, BzStatsDialog, stack);
   gtk_widget_class_bind_template_child (widget_class, BzStatsDialog, graph);
   gtk_widget_class_bind_template_child (widget_class, BzStatsDialog, world_map);
 }
@@ -177,7 +193,7 @@ bz_stats_dialog_init (BzStatsDialog *self)
   gtk_widget_init_template (GTK_WIDGET (self));
 }
 
-AdwDialog *
+AdwBreakpointBin *
 bz_stats_dialog_new (GListModel *model,
                      GListModel *country_model,
                      int         total_downloads)
@@ -191,7 +207,7 @@ bz_stats_dialog_new (GListModel *model,
       "total-downloads", total_downloads,
       NULL);
 
-  return ADW_DIALOG (stats_dialog);
+  return ADW_BREAKPOINT_BIN (stats_dialog);
 }
 
 void

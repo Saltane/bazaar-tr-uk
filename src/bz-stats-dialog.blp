@@ -1,17 +1,16 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $BzStatsDialog: Adw.Dialog {
+template $BzStatsDialog: Adw.BreakpointBin {
   width-request: 360;
   height-request: 450;
-  content-width: 2000;
-  content-height: 1500;
   child: Adw.ToolbarView {
     bottom-bar-style: raised_border;
 
     [top]
     Adw.HeaderBar {
       title-widget: Adw.ViewSwitcher switcher_title {
+        visible: bind $logical_and($model_has_enough_points(template.model) as <bool>, $invert_boolean($is_null(template.country-model) as <bool>) as <bool>) as <bool>;
         stack: stack;
         policy: wide;
       };
@@ -27,6 +26,7 @@ template $BzStatsDialog: Adw.Dialog {
           name: "graph";
           title: _("Timeline");
           icon-name: "graph2-symbolic";
+          visible: bind $model_has_enough_points(template.model) as <bool>;
 
           child: Box {
             orientation: vertical;
@@ -55,15 +55,31 @@ template $BzStatsDialog: Adw.Dialog {
           title: _("World");
           icon-name: "globe-symbolic";
 
-          child: $BzWorldMap world_map {
+          child: Box {
+            orientation: vertical;
+            margin-top:10;
+            margin-bottom: 10;
+
+            $BzWorldMap world_map {
               model: bind template.country-model;
-              margin-top:10;
-              margin-bottom: 10;
+              vexpand: true;
+            }
+
+            Label {
+              label: _("Since 4/15/2024");
+              halign: center;
+
+              styles [
+                "dimmed",
+                "caption"
+              ]
+            }
           };
         }
       }
 
       Adw.ViewSwitcherBar switcher_bar {
+        visible: bind $invert_boolean($is_null(template.country-model) as <bool>) as <bool>;
         stack: stack;
       }
     };
@@ -75,7 +91,6 @@ template $BzStatsDialog: Adw.Dialog {
     setters {
       switcher_title.stack: null;
       switcher_bar.reveal: true;
-      template.content-height: 300;
     }
   }
 }

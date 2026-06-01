@@ -31,7 +31,7 @@ template $BzFeaturedTile: Button {
         margin-bottom: 50;
 
         Image image {
-          paintable: bind template.group as <$BzEntryGroup>.icon-paintable;
+          paintable: bind template.group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.icon-paintable;
           margin-bottom: 12;
           pixel-size: 128;
 
@@ -62,38 +62,14 @@ template $BzFeaturedTile: Button {
               lines: 1;
               justify: center;
               label: bind template.group as <$BzEntryGroup>.description;
+              wrap: true;
+              wrap-mode: word_char;
 
               styles [
                 "caption",
               ]
             }
-
-            Box {
-              spacing: 4;
-              halign: center;
-              margin-top: 4;
-
-              visible: bind template.is-aotd;
-
-              Image {
-                icon-name: "starred-symbolic";
-                pixel-size: 12;
-              }
-
-              Label {
-                ellipsize: end;
-                xalign: 0.5;
-                lines: 1;
-                justify: center;
-                label: _("App of the Day");
-
-                styles [
-                  "caption",
-                ]
-              }
-            }
           }
-
         }
       }
       $BzScreenshot screenshot {

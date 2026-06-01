@@ -1,0 +1,40 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $BzUpdatesCard: Adw.Bin {
+  child: ListBox {
+    selection-mode: none;
+    margin-start: 4;
+    margin-end: 4;
+    margin-bottom: 4;
+
+    styles [
+      "boxed-list",
+    ]
+
+    Adw.ExpanderRow expander_row {
+      title: bind $format_update_count(template.state as <$BzStateInfo>.available-updates) as <string>;
+      notify::expanded => $on_expander_expanded_cb();
+
+      [suffix]
+      Box {
+        height-request: 60;
+        Button {
+          label: _("_Update All");
+          use-underline: true;
+          valign: center;
+          clicked => $update_all_cb();
+
+          styles [
+            "suggested-action",
+          ]
+        }
+      }
+    }
+  };
+}
+
+FilterListModel runtimes_filter_model {
+  filter: CustomFilter runtimes_filter {};
+  model: bind template.state as <$BzStateInfo>.available-updates;
+}

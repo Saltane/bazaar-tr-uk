@@ -69,6 +69,12 @@ bz_flathub_category_get_short_name (BzFlathubCategory *self);
 const char *
 bz_flathub_category_get_more_of_name (BzFlathubCategory *self);
 
+gboolean
+bz_flathub_category_get_is_xdg (BzFlathubCategory *self);
+
+const char *
+bz_flathub_category_get_symbolic_icon_name (BzFlathubCategory *self);
+
 const char *
 bz_flathub_category_get_icon_name (BzFlathubCategory *self);
 
@@ -85,6 +91,9 @@ bz_flathub_category_get_is_spotlight (BzFlathubCategory *self);
 void
 bz_flathub_category_set_is_spotlight (BzFlathubCategory *self,
                                       gboolean           is_spotlight);
+
+GListModel *
+bz_flathub_category_get_subcategories (BzFlathubCategory *self);
 
 GListModel *
 bz_flathub_category_list_from_appstream (GPtrArray *as_categories);

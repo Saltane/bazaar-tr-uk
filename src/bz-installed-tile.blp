@@ -10,27 +10,19 @@ template $BzInstalledTile: $BzListTile {
     orientation: horizontal;
     spacing: 10;
 
-    Picture icon_picture {
+    $BzTransactIcon {
       margin-start: 10;
       margin-top: 10;
       margin-bottom: 10;
-      height-request: 64;
       width-request: 64;
-      paintable: bind template.group as <$BzEntryGroup>.icon-paintable;
-      visible: bind $invert_boolean($is_null(template.group as <$BzEntryGroup>.icon-paintable) as <bool>) as <bool>;
-      styles ["icon-dropshadow"]
-    }
+      height-request: 64;
+      valign: center;
+      halign: center;
 
-    Image fallback_icon {
-      margin-start: 10;
-      margin-top: 10;
-      margin-bottom: 10;
-      height-request: 64;
-      width-request: 64;
-      pixel-size: 64;
-      icon-name: "application-x-executable";
-      visible: bind $is_null(template.group as <$BzEntryGroup>.icon-paintable) as <bool>;
-      styles ["icon-dropshadow"]
+      info: $BzTransactIconInfo {
+        group: bind template.group as <$BzEntryGroup>;
+        paintable: bind template.group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.icon-paintable;
+      };
     }
 
     Box {
@@ -49,7 +41,9 @@ template $BzInstalledTile: $BzListTile {
 
       Label description_label {
         halign: start;
-        label: bind $format_size(template.group as <$BzEntryGroup>.installed-size) as <string>;
+        ellipsize: end;
+        single-line-mode: true;
+        label: bind $format_description(template.group as <$BzEntryGroup>.installed-size, template.group as <$BzEntryGroup>.installed-versions) as <string>;
         styles ["dimmed", "caption", "installed-size"]
       }
 
@@ -72,7 +66,7 @@ template $BzInstalledTile: $BzListTile {
       ]
 
       has-tooltip: true;
-      tooltip-text: _("Support this application");
+      tooltip-text: _("Support This Application");
 
       width-request: 32;
       height-request: 32;
@@ -95,15 +89,10 @@ template $BzInstalledTile: $BzListTile {
           "flat"
         ]
 
-        has-tooltip: true;
-        tooltip-text: _("Manage Add-ons");
-
-        width-request: 32;
-        height-request: 32;
-        valign: center;
-        icon-name: "puzzle-piece-symbolic";
-        sensitive: bind $invert_boolean($is_zero(template.group as <$BzEntryGroup>.removable-and-available) as <bool>) as <bool>;
+        tooltip-text: _("Manage Add-Ons");
         visible: bind $invert_boolean($is_zero(template.group as <$BzEntryGroup>.n-addons as <int>) as <bool>) as <bool>;
+        valign: center;
+        icon-name: "application-x-addon-symbolic";
 
         clicked => $install_addons_cb() swapped;
       }
@@ -113,13 +102,10 @@ template $BzInstalledTile: $BzListTile {
           "flat",
         ]
 
-        has-tooltip: true;
         tooltip-text: _("Remove");
-
-        width-request: 32;
-        height-request: 32;
         valign: center;
         icon-name: "user-trash-symbolic";
+        visible: bind $invert_boolean($is_zero(template.group as <$BzEntryGroup>.removable) as <bool>) as <bool>;
         sensitive: bind $invert_boolean($is_zero(template.group as <$BzEntryGroup>.removable-and-available) as <bool>) as <bool>;
 
         clicked => $remove_cb() swapped;

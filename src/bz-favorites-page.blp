@@ -9,40 +9,21 @@ template $BzFavoritesPage: Adw.NavigationPage {
     Adw.HeaderBar {
 
       [end]
-      Revealer {
-        transition-type: slide_right;
-        reveal-child: bind $invert_boolean(template.show-sidebar as <bool>) as <bool>;
-
-        child: ToggleButton {
-          styles [
-            "flat",
-          ]
-
-          has-tooltip: true;
-          tooltip-text: _("Toggle transaction sidebar");
-          active: bind template.show-sidebar bidirectional;
-
-          child: $BzGlobalProgress download_bar {
-            expand-size: 125;
-            active: bind template.state as <$BzStateInfo>.transaction-manager as <$BzTransactionManager>.active;
-            pending: bind template.state as <$BzStateInfo>.transaction-manager as <$BzTransactionManager>.pending;
-            fraction: bind template.state as <$BzStateInfo>.transaction-manager as <$BzTransactionManager>.current-progress;
-            settings: bind template.state as <$BzStateInfo>.settings;
-
-            child: Image {
-              halign: end;
-              icon-name: "folder-download-symbolic";
-            };
-          };
-        };
+      Button install_all_button {
+        styles [
+          "flat",
+        ]
+        has-tooltip: true;
+        tooltip-text: _("Install All");
+        icon-name: "list-add-symbolic";
+        sensitive: bind $invert_boolean($is_empty(template.favorites) as <bool>) as <bool>;
+        clicked => $install_all_cb() swapped;
       }
-
-
     }
 
     content: Adw.BreakpointBin {
       width-request: 360;
-      height-request: 450;
+      height-request: 100;
 
       child: Adw.ViewStack stack {
         enable-transitions: true;
@@ -100,6 +81,7 @@ template $BzFavoritesPage: Adw.NavigationPage {
                       child: $BzFavoritesTile {
                         group: bind template.item as <$BzEntryGroup>;
                         activated => $tile_activated_cb();
+                        unfavorited => $unfavorite_cb();
                       };
                     };
                   }

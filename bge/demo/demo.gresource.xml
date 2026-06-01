@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/io/github/kolunmi/BgeDemo">
+    <file>window.ui</file>
+    <file>style.css</file>
+    <file>test.wdgt</file>
+    <file alias="example-markdown.md">../../docs/overview.md</file>
+  </gresource>
+</gresources>

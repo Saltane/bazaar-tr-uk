@@ -22,6 +22,7 @@
 
 #include "config.h"
 
+#include <bge.h>
 #include <glib/gi18n.h>
 #include <libdex.h>
 
@@ -36,7 +37,7 @@ main (int   argc,
 
   if (argc > 1 && g_strcmp0 (argv[1], "--version") == 0)
     {
-      g_print ("%s\n", PACKAGE_VERSION);
+      g_print ("%s\n", PACKAGE_VCS_VERSION);
       return 0;
     }
 
@@ -47,6 +48,9 @@ main (int   argc,
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
+
+  /* Init Bazaar GTK Extensions */
+  bge_init ();
 
   g_debug ("Constructing main application object...");
   app = g_object_new (

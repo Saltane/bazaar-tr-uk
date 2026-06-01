@@ -43,19 +43,25 @@ add_row_if_permission (GListStore  *store,
                        const char  *title_without_permission,
                        const char  *description_without_permission);
 
+static gboolean
+lookup_well_known_bus_policy (const char  *bus_name,
+                              const char **out_title,
+                              const char **out_description);
+
 GListModel *
 bz_safety_calculator_analyze_entry (BzEntry *entry)
 {
   GListStore               *store           = NULL;
   BzAppPermissions         *permissions     = NULL;
   BzAppPermissionsFlags     perm_flags      = BZ_APP_PERMISSIONS_FLAGS_NONE;
-  BzImportance              license_rating  = BZ_IMPORTANCE_NEUTRAL;
   gboolean                  is_verified     = FALSE;
   gboolean                  is_foss         = FALSE;
   const GPtrArray          *filesystem_read = NULL;
   const GPtrArray          *filesystem_full = NULL;
   const BzBusPolicy *const *bus_policies    = NULL;
   size_t                    n_bus_policies  = 0;
+  gboolean                  has_system_tray = FALSE;
+  BzImportance              fs_importance   = BZ_IMPORTANCE_WARNING;
   guint                     i               = 0;
 
   g_return_val_if_fail (BZ_IS_ENTRY (entry), NULL);
@@ -67,6 +73,10 @@ bz_safety_calculator_analyze_entry (BzEntry *entry)
   g_object_get (entry, "permissions", &permissions, NULL);
   if (permissions != NULL)
     perm_flags = bz_app_permissions_get_flags (permissions);
+
+  fs_importance = (perm_flags & BZ_APP_PERMISSIONS_FLAGS_NETWORK)
+                      ? BZ_IMPORTANCE_WARNING
+                      : BZ_IMPORTANCE_INFORMATION;
 
   if (permissions == NULL)
     {
@@ -102,7 +112,7 @@ bz_safety_calculator_analyze_entry (BzEntry *entry)
                              _ ("Cannot access the internet"));
       add_row_if_permission (store,
                              (perm_flags & BZ_APP_PERMISSIONS_FLAGS_DEVICES) != 0,
-                             BZ_IMPORTANCE_WARNING,
+                             (perm_flags & BZ_APP_PERMISSIONS_FLAGS_NETWORK) ? BZ_IMPORTANCE_WARNING : BZ_IMPORTANCE_INFORMATION,
                              "camera-photo-symbolic",
                              _ ("User Device Access"),
                              _ ("Can access devices such as webcams or gaming controllers"),
@@ -142,7 +152,7 @@ bz_safety_calculator_analyze_entry (BzEntry *entry)
                              BZ_IMPORTANCE_IMPORTANT,
                              "permissions-legacy-windowing-system-symbolic",
                              _ ("Legacy Windowing System"),
-                             _ ("Uses a legacy windowing system"),
+                             _ ("Always uses a legacy windowing system (X11)"),
                              NULL, NULL, NULL);
       add_row_if_permission (store,
                              (perm_flags & BZ_APP_PERMISSIONS_FLAGS_ESCAPE_SANDBOX) != 0,
@@ -194,7 +204,7 @@ bz_safety_calculator_analyze_entry (BzEntry *entry)
                              ((perm_flags & BZ_APP_PERMISSIONS_FLAGS_DOWNLOADS_FULL) != 0 &&
                               !(perm_flags & (BZ_APP_PERMISSIONS_FLAGS_FILESYSTEM_FULL |
                                               BZ_APP_PERMISSIONS_FLAGS_HOME_FULL))),
-                             BZ_IMPORTANCE_WARNING,
+                             fs_importance,
                              "folder-download-symbolic",
                              _ ("Download Folder Read/Write Access"),
                              _ ("Can read and write all data in your downloads directory"),
@@ -205,7 +215,7 @@ bz_safety_calculator_analyze_entry (BzEntry *entry)
                                               BZ_APP_PERMISSIONS_FLAGS_FILESYSTEM_READ |
                                               BZ_APP_PERMISSIONS_FLAGS_HOME_FULL |
                                               BZ_APP_PERMISSIONS_FLAGS_HOME_READ))),
-                             BZ_IMPORTANCE_WARNING,
+                             fs_importance,
                              "folder-download-symbolic",
                              _ ("Download Folder Read Access"),
                              _ ("Can read all data in your downloads directory"),
@@ -216,9 +226,17 @@ bz_safety_calculator_analyze_entry (BzEntry *entry)
           const BzFilesystemPath *path     = g_ptr_array_index (filesystem_full, i);
           g_autofree char        *fs_title = bz_filesystem_path_to_display_string (path);
           const char             *fs_icon  = bz_filesystem_path_to_icon_name (path);
+
+          if (perm_flags & BZ_APP_PERMISSIONS_FLAGS_FILESYSTEM_FULL)
+            continue;
+
+          if ((perm_flags & BZ_APP_PERMISSIONS_FLAGS_HOME_FULL) &&
+              path->type == BZ_FILESYSTEM_PATH_HOME_SUBDIR)
+            continue;
+
           add_row_if_permission (store,
                                  TRUE,
-                                 BZ_IMPORTANCE_WARNING,
+                                 fs_importance,
                                  fs_icon,
                                  fs_title,
                                  _ ("Can read and write all data in the directory"),
@@ -230,9 +248,19 @@ bz_safety_calculator_analyze_entry (BzEntry *entry)
           const BzFilesystemPath *path     = g_ptr_array_index (filesystem_read, i);
           g_autofree char        *fs_title = bz_filesystem_path_to_display_string (path);
           const char             *fs_icon  = bz_filesystem_path_to_icon_name (path);
+
+          if (perm_flags & BZ_APP_PERMISSIONS_FLAGS_FILESYSTEM_FULL)
+            continue;
+
+          if ((perm_flags & (BZ_APP_PERMISSIONS_FLAGS_FILESYSTEM_READ |
+                             BZ_APP_PERMISSIONS_FLAGS_HOME_FULL |
+                             BZ_APP_PERMISSIONS_FLAGS_HOME_READ)) &&
+              path->type == BZ_FILESYSTEM_PATH_HOME_SUBDIR)
+            continue;
+
           add_row_if_permission (store,
                                  TRUE,
-                                 BZ_IMPORTANCE_WARNING,
+                                 fs_importance,
                                  fs_icon,
                                  fs_title,
                                  _ ("Can read all data in the directory"),
@@ -271,9 +299,32 @@ bz_safety_calculator_analyze_entry (BzEntry *entry)
 
       for (i = 0; i < n_bus_policies; i++)
         {
-          const BzBusPolicy *policy          = bus_policies[i];
-          g_autofree char   *bus_title       = format_bus_policy_title (policy);
-          const char        *bus_description = format_bus_policy_subtitle (policy);
+          const BzBusPolicy *policy           = bus_policies[i];
+          const char        *well_known_title = NULL;
+          const char        *well_known_desc  = NULL;
+          g_autofree char   *bus_title        = NULL;
+          const char        *bus_description  = NULL;
+          gboolean           is_system_tray   = FALSE;
+
+          is_system_tray = g_str_equal (policy->bus_name, "org.kde.StatusNotifierWatcher") ||
+                           g_str_equal (policy->bus_name, "com.canonical.indicator.application");
+
+          if (is_system_tray && has_system_tray) // if not filtered, then there would be 2 entries for tray icon
+            continue;
+
+          if (is_system_tray)
+            has_system_tray = TRUE;
+
+          if (lookup_well_known_bus_policy (policy->bus_name, &well_known_title, &well_known_desc))
+            {
+              bus_title       = g_strdup (well_known_title);
+              bus_description = well_known_desc;
+            }
+          else
+            {
+              bus_title       = format_bus_policy_title (policy);
+              bus_description = format_bus_policy_subtitle (policy);
+            }
 
           add_row_if_permission (store,
                                  TRUE,
@@ -308,7 +359,7 @@ bz_safety_calculator_analyze_entry (BzEntry *entry)
     {
       add_row_if_permission (store,
                              TRUE,
-                             license_rating,
+                             BZ_IMPORTANCE_INFORMATION,
                              "proprietary-code-symbolic",
                              _ ("Proprietary Code"),
                              _ ("The source code is not public, so it cannot be independently audited and might be unsafe"),
@@ -318,7 +369,7 @@ bz_safety_calculator_analyze_entry (BzEntry *entry)
     {
       add_row_if_permission (store,
                              FALSE,
-                             license_rating,
+                             BZ_IMPORTANCE_NEUTRAL,
                              NULL, NULL, NULL,
                              "auditable-code-symbolic",
                              _ ("Auditable Code"),
@@ -335,17 +386,17 @@ bz_safety_calculator_get_top_icon (BzEntry *entry,
                                    int      index)
 {
   g_autoptr (GListModel) model = NULL;
-  const char            *icons[2] = {NULL, NULL};
-  guint                  icon_count = 0;
-  guint                  n_items = 0;
-  BzImportance priorities[] = {BZ_IMPORTANCE_IMPORTANT, BZ_IMPORTANCE_WARNING, BZ_IMPORTANCE_INFORMATION};
+  const char  *icons[2]        = { NULL, NULL };
+  guint        icon_count      = 0;
+  guint        n_items         = 0;
+  BzImportance priorities[]    = { BZ_IMPORTANCE_IMPORTANT, BZ_IMPORTANCE_WARNING, BZ_IMPORTANCE_INFORMATION };
 
   g_return_val_if_fail (BZ_IS_ENTRY (entry), NULL);
 
   if (index < 0 || index > 1)
     return NULL;
 
-  model = bz_safety_calculator_analyze_entry (entry);
+  model   = bz_safety_calculator_analyze_entry (entry);
   n_items = g_list_model_get_n_items (model);
 
   for (guint priority_idx = 0; priority_idx < 3 && icon_count < 2; priority_idx++)
@@ -355,9 +406,9 @@ bz_safety_calculator_get_top_icon (BzEntry *entry,
       for (guint i = 0; i < n_items && icon_count < 2; i++)
         {
           g_autoptr (BzSafetyRow) row = g_list_model_get_item (model, i);
-          BzImportance importance = BZ_IMPORTANCE_UNIMPORTANT;
-          const char *icon_name = NULL;
-          gboolean duplicate = FALSE;
+          BzImportance importance     = BZ_IMPORTANCE_UNIMPORTANT;
+          const char  *icon_name      = NULL;
+          gboolean     duplicate      = FALSE;
 
           g_object_get (row, "importance", &importance, "icon-name", &icon_name, NULL);
 
@@ -427,6 +478,36 @@ bz_safety_calculator_calculate_rating (BzEntry *entry)
   return max_rating;
 }
 
+BzHighRiskGroup
+bz_safety_calculator_get_high_risk_groups (BzEntry *entry)
+{
+  BzAppPermissions     *permissions = NULL;
+  BzAppPermissionsFlags perm_flags  = BZ_APP_PERMISSIONS_FLAGS_NONE;
+  BzHighRiskGroup       result      = BZ_HIGH_RISK_GROUP_NONE;
+
+  g_return_val_if_fail (BZ_IS_ENTRY (entry), BZ_HIGH_RISK_GROUP_NONE);
+
+  g_object_get (entry, "permissions", &permissions, NULL);
+  if (permissions == NULL)
+    return BZ_HIGH_RISK_GROUP_NONE;
+
+  perm_flags = bz_app_permissions_get_flags (permissions);
+
+  if (perm_flags & BZ_APP_PERMISSIONS_FLAGS_X11)
+    result |= BZ_HIGH_RISK_GROUP_X11;
+
+  if (perm_flags & (BZ_APP_PERMISSIONS_FLAGS_FILESYSTEM_FULL |
+                    BZ_APP_PERMISSIONS_FLAGS_FILESYSTEM_READ |
+                    BZ_APP_PERMISSIONS_FLAGS_HOME_FULL |
+                    BZ_APP_PERMISSIONS_FLAGS_HOME_READ |
+                    BZ_APP_PERMISSIONS_FLAGS_ESCAPE_SANDBOX))
+    result |= BZ_HIGH_RISK_GROUP_DISK;
+
+  g_clear_object (&permissions);
+
+  return result;
+}
+
 static char *
 format_bus_policy_title (const BzBusPolicy *bus_policy)
 {
@@ -460,6 +541,58 @@ format_bus_policy_subtitle (const BzBusPolicy *bus_policy)
     default:
       g_assert_not_reached ();
     }
+}
+
+static gboolean
+lookup_well_known_bus_policy (const char  *bus_name,
+                              const char **out_title,
+                              const char **out_description)
+{
+  if (g_str_equal (bus_name, "com.canonical.AppMenu.Registrar"))
+    {
+      *out_title       = _ ("Global Menu Integration");
+      *out_description = _ ("Can display its menus in a global menu bar");
+      return TRUE;
+    }
+  if (g_str_equal (bus_name, "org.kde.kconfig.notify"))
+    {
+      *out_title       = _ ("KDE Settings Integration");
+      *out_description = _ ("Can detect when KDE desktop settings change");
+      return TRUE;
+    }
+  if (g_str_equal (bus_name, "org.kde.KGlobalSettings"))
+    {
+      *out_title       = _ ("KDE Global Settings");
+      *out_description = _ ("Can read KDE desktop preferences like fonts and colors");
+      return TRUE;
+    }
+  if (g_str_equal (bus_name, "org.freedesktop.secrets"))
+    {
+      *out_title       = _ ("Secret Storage Service");
+      *out_description = _ ("Can store and retrieve its own passwords using the system keyring");
+      return TRUE;
+    }
+  if (g_str_equal (bus_name, "org.freedesktop.Notifications"))
+    {
+      *out_title       = _ ("Desktop Notifications Service");
+      *out_description = _ ("Can send desktop notifications");
+      return TRUE;
+    }
+  if (g_str_equal (bus_name, "org.kde.StatusNotifierWatcher") ||
+      g_str_equal (bus_name, "com.canonical.indicator.application"))
+    {
+      *out_title       = _ ("System Tray Integration");
+      *out_description = _ ("Can display an icon in the system tray");
+      return TRUE;
+    }
+  if (g_str_equal (bus_name, "org.kde.kdeconnect"))
+    {
+      *out_title       = _ ("KDE Connect Integration");
+      *out_description = _ ("Can interact with devices paired via KDE Connect");
+      return TRUE;
+    }
+
+  return FALSE;
 }
 
 static void

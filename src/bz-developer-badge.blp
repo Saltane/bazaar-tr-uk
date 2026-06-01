@@ -7,9 +7,12 @@ template $BzDeveloperBadge: Box {
   visible: bind $invert_boolean($is_null(template.entry as <$BzEntry>.developer) as <bool>) as <bool>;
 
   Label developer_label {
-    label: bind $get_developer_name(template.entry) as <string>;
+    label: bind $get_developer_link(template.entry, template.entry as <$BzEntry>.verification-status) as <string>;
+    use-markup: true;
     xalign: 0.0;
     wrap: true;
+    lines: 3;
+    ellipsize: end;
     wrap-mode: word_char;
     natural-wrap-mode: word;
 
@@ -26,6 +29,9 @@ template $BzDeveloperBadge: Box {
     styles [
       "developer-badge",
     ]
+
+    has-tooltip: true;
+    tooltip-text: bind $get_verified_tooltip(template.entry as <$BzEntry>.verification-status) as <string>;
 
     EventControllerMotion {
       enter => $on_info_button_enter();
@@ -51,6 +57,7 @@ Popover popover {
       xalign: 0.0;
       max-width-chars: 40;
       use-markup: true;
+      activate-link => $on_popover_label_activate_link();
     }
   };
 }

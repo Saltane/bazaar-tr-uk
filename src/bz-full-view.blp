@@ -4,44 +4,21 @@ using Adw 1;
 
 template $BzFullView: Adw.Bin {
   child: Adw.ToolbarView {
+
     [top]
     Adw.HeaderBar header_bar {
-      [end]
+      overflow: hidden;
+
+      [title]
       Revealer {
-        transition-type: slide_right;
-        reveal-child: bind $invert_boolean(template.show-sidebar as <bool>) as <bool>;
-
-        child: ToggleButton {
-          styles [
-            "flat",
-          ]
-
-          has-tooltip: true;
-          tooltip-text: _("Toggle transaction sidebar");
-          active: bind template.show-sidebar bidirectional;
-
-          child: $BzGlobalProgress download_bar {
-            expand-size: 125;
-            active: bind template.transaction-manager as <$BzTransactionManager>.active;
-            pending: bind template.transaction-manager as <$BzTransactionManager>.pending;
-            fraction: bind template.transaction-manager as <$BzTransactionManager>.current-progress;
-            settings: bind template.state as <$BzStateInfo>.settings;
-
-            child: Image {
-              halign: end;
-              icon-name: "folder-download-symbolic";
-            };
-          };
+        reveal-child: bind $is_scrolled_down(main_scroll.vadjustment as <Adjustment>.value) as <bool>;
+        transition-type: slide_up;
+        transition-duration: 500;
+        overflow: visible;
+        child: Label {
+          label: bind template.entry-group as <$BzEntryGroup>.title;
+          styles ["title"]
         };
-      }
-
-      [end]
-      MenuButton {
-        primary: true;
-        icon-name: "open-menu-symbolic";
-        has-tooltip: true;
-        tooltip-text: _("Main Menu");
-        menu-model: bind template.main-menu;
       }
     }
 
@@ -65,7 +42,7 @@ template $BzFullView: Adw.Bin {
 
         child: Adw.BreakpointBin {
           width-request: 360;
-          height-request: 450;
+          height-request: 100;
 
           Adw.Breakpoint {
             condition ("max-width: 700px")
@@ -73,22 +50,23 @@ template $BzFullView: Adw.Bin {
             setters {
               context_bar.orientation: vertical;
               context_bar.spacing: 4;
+              context_bar.homogeneous: false;
               header_box.spacing: 12;
               app_name_box.spacing: 0;
-              download_bar.expand-size: 60;
               formfactor_support_tile_wide.visible: false;
               formfactor_support_tile_narrow.visible: true;
               screenshots.compact: true;
               header_bar.show-title: false;
+              link_list.dual-column: false;
             }
           }
 
           child: Adw.BreakpointBin breakpoint_bin {
             width-request: 360;
-            height-request: 450;
+            height-request: 100;
 
             Adw.Breakpoint breakpoint {
-              condition ("max-width: 500px")
+              condition ("max-width: 525px")
 
               setters {
                 top_box.margin-start: 10;
@@ -115,13 +93,27 @@ template $BzFullView: Adw.Bin {
                 child: Box main_box {
                   orientation: vertical;
                   vexpand: false;
-                  margin-top: 15;
                   margin-bottom: 15;
                   spacing: 20;
 
+                  // Adw.Banner {
+                  //   title: _("Installing .flatpak bundles is not yet supported");
+                  //   visible: bind template.ui-entry as <$BzResult>.object as <$BzFlatpakEntry>.is-bundle as <bool>;
+                  //   revealed: true;
+                  // }
+
+                  Adw.Banner {
+                    title: _("This is a local preview, some details may differ from the published listing");
+                    visible: bind $metainfo_banner_visible(template.ui-entry as <$BzResult>.object as <$BzFlatpakEntry>.remote-repo-name) as <bool>;
+                    revealed: true;
+                    button-label: _("Preview Store Appearance");
+                    button-clicked => $preview_other_metainfo_cb(template);
+                  }
+
                   Adw.Clamp {
-                    maximum-size: 860;
-                    tightening-threshold: 1000;
+                    maximum-size: 910;
+                    tightening-threshold: 576;
+                    margin-top: 15;
 
                     child: Box top_box {
                       orientation: vertical;
@@ -137,8 +129,8 @@ template $BzFullView: Adw.Bin {
                           valign: center;
                           halign: center;
                           pixel-size: 128;
-                          paintable: bind template.entry-group as <$BzEntryGroup>.icon-paintable;
-                          visible: bind $invert_boolean($is_null(template.entry-group as <$BzEntryGroup>.icon-paintable) as <bool>) as <bool>;
+                          paintable: bind template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.icon-paintable;
+                          visible: bind $invert_boolean($is_null(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.icon-paintable) as <bool>) as <bool>;
 
                           styles [
                             "icon-dropshadow",
@@ -150,7 +142,7 @@ template $BzFullView: Adw.Bin {
                           halign: center;
                           pixel-size: 128;
                           icon-name: "application-x-executable";
-                          visible: bind $is_null(template.entry-group as <$BzEntryGroup>.icon-paintable) as <bool>;
+                          visible: bind $is_null(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.icon-paintable) as <bool>;
 
                           styles [
                             "icon-dropshadow",
@@ -178,9 +170,38 @@ template $BzFullView: Adw.Bin {
 
                               xalign: 0.0;
                               wrap: true;
+                              lines: 2;
+                              ellipsize: end;
                               wrap-mode: word_char;
                               natural-wrap-mode: word;
                               label: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.title;
+                            }
+
+                            Box {
+                              styles [
+                                "bz-debug",
+                              ]
+
+                              halign: start;
+                              orientation: horizontal;
+                              spacing: 6;
+                              visible: bind template.state as <$BzStateInfo>.debug-mode;
+
+                              Button {
+                                icon-name: "edit-copy-symbolic";
+                                clicked => $copy_id_cb(template);
+                              }
+                              Label {
+                                styles [
+                                  "bz-monospace",
+                                ]
+                                selectable: true;
+                                label: bind template.entry-group as <$BzEntryGroup>.id;
+                              }
+                              Button {
+                                label: "Inspect UI Entry";
+                                clicked => $debug_id_inspect_cb(template);
+                              }
                             }
 
                             $BzDeveloperBadge {
@@ -188,7 +209,10 @@ template $BzFullView: Adw.Bin {
                             }
 
                             Box {
-                              spacing: 8;
+                              layout-manager: Adw.WrapLayout {
+                                child-spacing: 4;
+                                line-spacing: 0;
+                              };
 
                               Button {
                                 visible: bind $invert_boolean($is_null(template.ui-entry as <$BzResult>.object as <$BzEntry>.donation-url) as <bool>) as <bool>;
@@ -207,7 +231,8 @@ template $BzFullView: Adw.Bin {
                                 clicked => $support_cb(template);
 
                                 child: Adw.ButtonContent {
-                                  label: _("Support");
+                                  use-underline: true;
+                                  label: _("_Support");
                                   icon-name: "heart-filled-symbolic";
                                 };
                               }
@@ -218,66 +243,12 @@ template $BzFullView: Adw.Bin {
                               }
                             }
                           }
-
-                          Box wide_install_controls {
-                            orientation: horizontal;
-                            spacing: 10;
-                            valign: center;
-
-                            Button wide_open_button {
-                              styles [
-                                "pill",
-                              ]
-
-                              has-tooltip: true;
-                              label: _("Open");
-                              visible: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>;
-                              sensitive: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable-and-available) as <bool>) as <bool>;
-                              clicked => $run_cb(template);
-                            }
-
-                            Button wide_install_button {
-                              styles [
-                                "suggested-action",
-                                "pill",
-                              ]
-
-                              has-tooltip: true;
-                              tooltip-text: _("Download & Install Application");
-                              visible: bind $logical_and($invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.installable) as <bool>) as <bool>, $is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>;
-                              sensitive: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.installable-and-available) as <bool>) as <bool>;
-                              label: _("Install");
-                              clicked => $install_cb(template);
-                            }
-
-                            Button {
-                              styles [
-                                "destructive-action",
-                                "circular",
-                              ]
-
-                              width-request: 45;
-                              has-tooltip: true;
-                              tooltip-text: _("Uninstall Application");
-                              visible: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>;
-                              sensitive: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable-and-available) as <bool>) as <bool>;
-                              icon-name: "user-trash-symbolic";
-                              clicked => $remove_cb(template);
-                            }
-
-                            Button {
-                              styles [
-                                "circular",
-                              ]
-
-                              width-request: 45;
-                              has-tooltip: true;
-                              icon-name: "download-plus-symbolic";
-                              tooltip-text: _("Install Other Version");
-                              visible: bind $logical_and($invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.installable) as <bool>) as <bool>, $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>) as <bool>;
-                              sensitive: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.installable-and-available) as <bool>) as <bool>;
-                              clicked => $install_cb(template);
-                            }
+                          $BzInstallControls wide_install_controls {
+                            wide: true;
+                            entry-group: bind template.entry-group as <$BzEntryGroup>;
+                            state: bind template.state as <$BzStateInfo>;
+                            settings: bind template.state as <$BzStateInfo>.settings;
+                            update => $update_cb(template);
                           }
                         }
                       }
@@ -297,15 +268,20 @@ template $BzFullView: Adw.Bin {
                           homogeneous: true;
 
                           $BzContextTile download_size_tile {
-                            label: _("Size");
+                            label: bind try {$get_size_label(
+                              $is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>,
+                              template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzFlatpakEntry>.runtime as <$BzResult>.object as <$BzEntry>.installed,
+                              template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzFlatpakEntry>.runtime as <$BzResult>.object as <$BzEntry>.size,
+                            ) as <string>, $get_size_label($is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>,0,0) as <string>};
                             has-tooltip: true;
                             tooltip-text: bind $format_size_tooltip(template.ui-entry as <$BzResult>.object as <$BzEntry>.size) as <string>;
                             lozenge-style: "grey";
+                            sensitive: bind $invert_boolean($is_zero($get_size_type(template.ui-entry as <$BzResult>.object as <$BzEntry>, $is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <uint64>) as <bool>) as <bool>;
                             clicked => $size_cb(template);
 
                             lozenge-child: Label {
                               justify: center;
-                              label: bind $format_size(template.ui-entry as <$BzResult>.object as <$BzEntry>.size) as <string>;
+                              label: bind $format_size($get_size_type(template.ui-entry as <$BzResult>.object as <$BzEntry>, $is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <uint64>) as <string>;
                               lines: 3;
                               ellipsize: end;
                               halign: center;
@@ -336,7 +312,6 @@ template $BzFullView: Adw.Bin {
                           }
 
                           $BzContextTile {
-                            can-target: bind template.entry-group as <$BzEntryGroup>.is_flathub as <bool>;
                             clicked => $safety_cb(template);
                             label: bind $get_safety_rating_label(template.ui-entry as <$BzResult>.object as <$BzEntry>) as <string>;
                             lozenge-style: bind $get_safety_rating_style(template.ui-entry as <$BzResult>.object as <$BzEntry>) as <string>;
@@ -390,17 +365,22 @@ template $BzFullView: Adw.Bin {
                           }
 
                           $BzContextTile formfactor_support_tile_narrow {
-                            visible: false;
                             label: bind $get_formfactor_label(template.ui-entry as <$BzResult>.object as <$BzEntry>.is-mobile-friendly) as <string>;
                             has-tooltip: true;
                             tooltip-text: bind $get_formfactor_tooltip(template.ui-entry as <$BzResult>.object as <$BzEntry>.is-mobile-friendly) as <string>;
-                            lozenge-style: bind $bool_to_string(template.ui-entry as <$BzResult>.object as <$BzEntry>.is-mobile-friendly, "grey", "error") as <string>;
                             clicked => $formfactor_cb(template);
+                            lozenge-style: bind $bool_to_string(template.ui-entry as <$BzResult>.object as <$BzEntry>.is-mobile-friendly, "grey", "error") as <string>;
+                            visible: false;
 
                             lozenge-child: Box {
                               Image {
                                 visible: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.is-mobile-friendly as <bool>;
-                                icon-name: "smartphone2-symbolic";
+                                icon-name: "device-support-adaptive-symbolic";
+                                pixel-size: 56;
+
+                                styles [
+                                  "wide-image",
+                                ]
                               }
 
                               Image {
@@ -427,7 +407,7 @@ template $BzFullView: Adw.Bin {
                             can-target: bind $invert_boolean($is_null(template.ui-entry) as <bool>) as <bool>;
                             sensitive: bind $invert_boolean($is_null(template.ui-entry as <$BzResult>.object as <$BzEntry>.recent-downloads) as <bool>) as <bool>;
                             clicked => $dl_stats_cb(template);
-                            label: _("Downloads /mo");
+                            label: _("Downloads/Month");
                             has-tooltip: bind $invert_boolean($is_null(template.ui-entry as <$BzResult>.object as <$BzEntry>.recent-downloads) as <bool>) as <bool>;
                             tooltip-text: bind $format_recent_downloads_tooltip(template.ui-entry as <$BzResult>.object as <$BzEntry>.recent-downloads) as <string>;
                             lozenge-style: "grey";
@@ -442,74 +422,13 @@ template $BzFullView: Adw.Bin {
                         }
                       }
 
-                      Box narrow_install_controls {
-                        orientation: horizontal;
-                        spacing: 8;
-                        margin-start: 4;
-                        margin-end: 4;
-                        valign: center;
+                      $BzInstallControls narrow_install_controls {
+                        wide: false;
                         visible: false;
-
-                        Box {
-                          homogeneous: true;
-                          spacing: 8;
-                          hexpand: true;
-
-                          Button narrow_install_button {
-                            styles [
-                              "suggested-action",
-                              "pill",
-                            ]
-
-                            hexpand: true;
-                            has-tooltip: true;
-                            tooltip-text: _("Download & Install Application");
-                            visible: bind $logical_and($invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.installable) as <bool>) as <bool>, $is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>;
-                            sensitive: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.installable-and-available) as <bool>) as <bool>;
-                            label: _("Install");
-                            clicked => $install_cb(template);
-                          }
-
-                          Button {
-                            styles [
-                              "destructive-action",
-                              "circular",
-                            ]
-
-                            hexpand: true;
-                            visible: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>;
-                            sensitive: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable-and-available) as <bool>) as <bool>;
-                            label: _("Remove");
-                            clicked => $remove_cb(template);
-                          }
-
-                          Button narrow_open_button {
-                            styles [
-                              "pill",
-                            ]
-
-                            hexpand: true;
-                            has-tooltip: true;
-                            label: _("Open");
-                            visible: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>;
-                            sensitive: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable-and-available) as <bool>) as <bool>;
-                            clicked => $run_cb(template);
-                          }
-                        }
-
-                        Button {
-                          styles [
-                            "circular",
-                          ]
-
-                          width-request: 45;
-                          has-tooltip: true;
-                          icon-name: "download-plus-symbolic";
-                          tooltip-text: _("Install Other Version");
-                          visible: bind $logical_and($invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.installable) as <bool>) as <bool>, $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>) as <bool>;
-                          sensitive: bind $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.installable-and-available) as <bool>) as <bool>;
-                          clicked => $install_cb(template);
-                        }
+                        entry-group: bind template.entry-group as <$BzEntryGroup>;
+                        state: bind template.state as <$BzStateInfo>;
+                        settings: bind template.state as <$BzStateInfo>.settings;
+                        update => $update_cb(template);
                       }
 
                       Box {
@@ -567,15 +486,13 @@ template $BzFullView: Adw.Bin {
                       light-accent-color: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.light-accent-color;
                       dark-accent-color: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.dark-accent-color;
 
-                      model: $BzLazyAsyncTextureModel {
-                        model: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.screenshot-paintables;
-                      };
+                      model: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.screenshot-paintables;
                     }
                   }
 
                   Adw.Clamp {
-                    maximum-size: 860;
-                    tightening-threshold: 1000;
+                    maximum-size: 910;
+                    tightening-threshold: 576;
 
                     child: Box {
                       orientation: vertical;
@@ -586,12 +503,15 @@ template $BzFullView: Adw.Bin {
                         margin-end: 25;
                         margin-bottom: 20;
                         margin-top: 10;
-                        spacing: 20;
+                        spacing: 15;
 
                         Revealer {
                           transition-type: slide_down;
-                          reveal-child: bind $logical_and($invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.user-data-size) as <bool>) as <bool>, $is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>;
-
+                          reveal-child: bind $logical_and(
+                              $logical_and($invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.user-data-size) as <bool>) as <bool>,$is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>,
+                              $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.installable-and-available) as <bool>) as <bool>
+                            ) as <bool>;
+                          visible: bind $invert_boolean($logical_and($is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>, $is_zero(template.entry-group as <$BzEntryGroup>.installable) as <bool>) as <bool>) as <bool>;
                           child: Box {
                             height-request: 50;
                             margin-bottom: 10;
@@ -606,10 +526,11 @@ template $BzFullView: Adw.Bin {
                             Label {
                               halign: start;
                               valign: center;
+                              xalign: 0;
                               hexpand: true;
                               margin-start: 12;
-                              margin-top: 8;
-                              margin-bottom: 8;
+                              margin-top: 12;
+                              margin-bottom: 12;
                               label: bind $format_leftover_label(template.ui-entry as <$BzResult>.object as <$BzEntry>.title, template.entry-group as <$BzEntryGroup>.user-data-size) as <string>;
                               use-markup: true;
                               wrap: true;
@@ -639,7 +560,6 @@ template $BzFullView: Adw.Bin {
                               "title-2",
                             ]
 
-                            margin-start: 5;
                             valign: start;
                             xalign: 0;
                             wrap: true;
@@ -653,7 +573,6 @@ template $BzFullView: Adw.Bin {
 
                             child: $BzAppstreamDescriptionRender {
                               appstream-description: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.long-description;
-                              margin-start: 5;
                             };
                           }
                         }
@@ -673,41 +592,91 @@ template $BzFullView: Adw.Bin {
                           };
                         }
 
-                        Adw.PreferencesGroup {
-                          visible: bind $logical_and($invert_boolean($is_null(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.addons) as <bool>) as <bool>, $invert_boolean($is_zero(template.entry-group as <$BzEntryGroup>.removable) as <bool>) as <bool>) as <bool>;
-
-                          Adw.ActionRow {
-                            [prefix]
-                            Image {
-                              icon-name: "puzzle-piece-symbolic";
-                            }
-
-                            [suffix]
-                            Image {
-                              icon-name: "go-next-symbolic";
-
-                              styles [
-                                "dimmed",
-                              ]
-                            }
-
-                            title: _("Manage Add-ons");
-                            activatable: true;
-                            activated => $install_addons_cb(template);
-                          }
-                        }
-
-                        $BzShareList {
-                          urls: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.share-urls;
-                        }
-
                         $BzReleasesList releases_list {
                           version-history: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.version-history;
+                          installed-versions: bind template.entry-group as <$BzEntryGroup>.installed-versions;
                         }
 
                         Box {
                           orientation: vertical;
-                          visible: bind $has_other_apps(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>) as <bool>;
+                          spacing: bind $choose(addons_more_btn.visible, 15, 3) as <int>;
+                          Box {
+                            orientation: vertical;
+                            visible: bind $invert_boolean($is_zero(addon_model.n-items) as <int>) as <bool>;
+
+                            Label {
+                              styles ["heading"]
+                              halign: start;
+                              label: _("Add-ons");
+                              margin-top: 5;
+                              margin-start: 3;
+                            }
+
+                            ListView {
+                              styles [
+                                "navigation-sidebar",
+                                "installed-list-view",
+                                "full-view-addons"
+                              ]
+                              overflow: visible;
+
+                              model: NoSelection addon_model {
+                                model: bind $get_addon_groups(template.entry-group);
+                              };
+
+                              factory: BuilderListItemFactory {
+                                template ListItem {
+                                  activatable: false;
+                                  selectable: false;
+                                  focusable: false;
+
+                                  child: $BzAddonTile {
+                                    group: bind template.item as <$BzEntryGroup>;
+                                    activated => $addon_tile_activated_cb();
+                                  };
+                                }
+                              };
+                            }
+
+                            Adw.PreferencesGroup addons_more_btn {
+                              visible: bind $should_show_addon_overflow(template.entry-group);
+
+                              Adw.ButtonRow {
+                                title: _("More Add-Ons");
+                                end-icon-name: "go-next-symbolic";
+                                activated => $install_addons_cb(template);
+                              }
+                            }
+                          }
+                          Box {
+                            orientation: vertical;
+
+                            Label {
+                              halign: start;
+                              label: _("Links");
+                              margin-top: 5;
+                              margin-bottom: 8;
+                              margin-start: 3;
+                              visible: bind $logical_and(
+                                  $invert_boolean($is_empty(template.ui-entry as <$BzResult>.object as <$BzEntry>.share-urls) as <bool>) as <bool>,
+                                  $invert_boolean($is_zero(addon_model.n-items) as <int>) as <bool>
+                                ) as <bool>;
+
+                              styles [
+                                "heading",
+                              ]
+                            }
+
+                            $BzShareList link_list {
+                              urls: bind template.ui-entry as <$BzResult>.object as <$BzEntry>.share-urls;
+                              dual-column: true;
+                            }
+                          }
+                        }
+
+                        Box {
+                          orientation: vertical;
+                          visible: bind $invert_boolean($is_zero(other_apps_model.n-items) as <int>) as <bool>;
 
                           Label {
                             styles [
@@ -717,7 +686,10 @@ template $BzFullView: Adw.Bin {
 
                             label: bind $format_other_apps_label(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer) as <string>;
                             xalign: 0;
-                            margin-bottom: 6;
+                            wrap: true;
+                            wrap-mode: word_char;
+                            margin-top: 5;
+                            margin-bottom: 8;
                             margin-start: 3;
                           }
 
@@ -727,11 +699,11 @@ template $BzFullView: Adw.Bin {
                             noscroll-kind: flow-box;
                             child-type: "BzAppTile";
                             child-prop: "group";
-                            max-children-per-line: 3;
+                            max-children-per-line: bind $get_dev_apps_max_children_per_line(other_apps_model.model) as <int>;
                             bind-widget => $bind_app_tile_cb(template);
                             unbind-widget => $unbind_app_tile_cb(template);
 
-                            model: SliceListModel {
+                            model: SliceListModel other_apps_model {
                               offset: 0;
                               size: 6;
                               model: bind $get_developer_apps_entries(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>) as <Gio.ListModel>;
@@ -740,35 +712,22 @@ template $BzFullView: Adw.Bin {
 
                           Button {
                             visible: bind $is_longer(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer-apps, 6) as <bool>;
-                            label: bind $format_more_other_apps_label(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer) as <string>;
                             clicked => $more_apps_button_clicked_cb(template);
                             halign: center;
-                            margin-top: 11;
+                            margin-top: 15;
                             margin-bottom: 8;
+
+                            child: Label {
+                              label: bind $format_more_other_apps_label(template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.developer) as <string>;
+                              justify: center;
+                              wrap: true;
+                              wrap-mode: word_char;
+                            };
 
                             styles [
                               "pill",
                             ]
                           }
-                        }
-
-                        $BzTagList {
-                          margin-top: 8;
-                          flathub-state: bind template.state as <$BzStateInfo>.flathub;
-                          select => $tag_list_select_cb(template);
-
-                          prefix: Label {
-                            label: _("Tags:");
-
-                            styles [
-                              "dimmed",
-                            ]
-                          };
-
-                          model: SliceListModel {
-                            size: 5;
-                            model: bind template.entry-group as <$BzEntryGroup>.ui-entry as <$BzResult>.object as <$BzEntry>.keywords;
-                          };
                         }
                       }
                     };

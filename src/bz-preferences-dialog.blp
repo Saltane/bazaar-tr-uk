@@ -2,11 +2,10 @@ using Gtk 4.0;
 using Adw 1;
 
 template $BzPreferencesDialog: Adw.PreferencesDialog {
-  follows-content-size: true;
   content-height: 500;
   search-enabled: true;
   width-request: 350;
-  height-request: 500;
+  height-request: 100;
 
   Adw.Breakpoint {
     condition ("max-width: 625sp")
@@ -23,8 +22,8 @@ template $BzPreferencesDialog: Adw.PreferencesDialog {
     banner: Adw.Banner {
       sensitive: bind $invert_boolean(template.state as <$BzStateInfo>.syncing as <bool>) as <bool>;
       revealed: bind template.state as <$BzStateInfo>.metered_connection as <bool>;
-      title: _("Network connection is metered — automatic store data sync is paused");
-      button-label: _("Sync Manually");
+      title: _("Network connection is metered — automatic store data refresh is paused");
+      button-label: _("Refresh Manually");
       action-name: "app.sync-remotes";
     };
 
@@ -47,23 +46,13 @@ template $BzPreferencesDialog: Adw.PreferencesDialog {
       }
 
       Adw.SwitchRow hide_eol_switch {
-        title: _("Hide EOL Apps");
+        title: _("Hide End-of-Life Apps");
         subtitle: _("Hide apps which are no longer supported by their developers");
       }
     }
 
     Adw.PreferencesGroup {
-      title: _("Search");
-
-      Adw.SwitchRow search_debounce_switch {
-        title: _("Delay Search Results");
-        subtitle: _("Improve results performance by debouncing search terms");
-      }
-    }
-
-    Adw.PreferencesGroup {
-      title: _("Progress Bar");
-      description: _("Choose a theme for the progress bar!");
+      title: _("Progress Bar Theme");
 
       Adw.ActionRow {
         child: Box {
@@ -81,7 +70,7 @@ template $BzPreferencesDialog: Adw.PreferencesDialog {
             row-spacing: 4;
             halign: center;
             homogeneous: true;
-            max-children-per-line: 12;
+            max-children-per-line: 11;
             selection-mode: none;
           }
         };

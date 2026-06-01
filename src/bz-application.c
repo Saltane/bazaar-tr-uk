@@ -30,22 +30,30 @@
 
 #include "bz-application-map-factory.h"
 #include "bz-application.h"
+#include "bz-appstream-parser.h"
 #include "bz-auth-state.h"
 #include "bz-backend-notification.h"
+#include "bz-bundle-install-dialog.h"
 #include "bz-content-provider.h"
+#include "bz-donations-dialog.h"
+#include "bz-download-worker.h"
 #include "bz-entry-cache-manager.h"
 #include "bz-entry-group.h"
 #include "bz-env.h"
 #include "bz-error.h"
 #include "bz-favorites-page.h"
 #include "bz-flathub-state.h"
+#include "bz-flatpak-bundle-result.h"
 #include "bz-flatpak-entry.h"
 #include "bz-flatpak-instance.h"
 #include "bz-gnome-shell-search-provider.h"
 #include "bz-hash-table-object.h"
 #include "bz-inspector.h"
+#include "bz-internal-config.h"
 #include "bz-io.h"
 #include "bz-login-page.h"
+#include "bz-malcontent-service.h"
+#include "bz-metainfo-preview.h"
 #include "bz-newline-parser.h"
 #include "bz-parser.h"
 #include "bz-preferences-dialog.h"
@@ -74,7 +82,9 @@ struct _BzApplication
   BzFlathubState             *tmp_flathub;
   BzFlatpakInstance          *flatpak;
   BzGnomeShellSearchProvider *gs_search;
+  BzInternalConfig           *internal_config;
   BzMainConfig               *config;
+  BzMalcontentService        *malcontent;
   BzNewlineParser            *txt_blocklist_parser;
   BzSearchEngine             *search_engine;
   BzStateInfo                *state;
@@ -84,14 +94,19 @@ struct _BzApplication
   DexChannel                 *flatpak_notifs;
   DexFuture                  *notif_watch;
   DexFuture                  *sync;
+  DexPromise                 *first_window_opened;
   DexPromise                 *ready_to_open_files;
   GHashTable                 *eol_runtimes;
   GHashTable                 *ids_to_groups;
+  GHashTable                 *ignore_eol_set;
   GHashTable                 *installed_set;
   GHashTable                 *sys_name_to_addons;
+  GHashTable                 *sys_ref_to_addon_group_ids;
   GHashTable                 *usr_name_to_addons;
+  GHashTable                 *usr_ref_to_addon_group_ids;
   GListStore                 *groups;
   GListStore                 *installed_apps;
+  GListStore                 *search_biases_backing;
   GNetworkMonitor            *network;
   GPtrArray                  *blocklist_regexes;
   GPtrArray                  *txt_blocked_id_sets;
@@ -101,15 +116,18 @@ struct _BzApplication
   GtkCustomFilter            *appid_filter;
   GtkCustomFilter            *group_filter;
   GtkFilterListModel         *group_filter_model;
+  GtkFlattenListModel        *search_biases;
   GtkMapListModel            *blocklists_to_files;
   GtkMapListModel            *curated_configs_to_files;
   GtkMapListModel            *txt_blocklists_to_files;
   GtkStringList              *blocklists;
   GtkStringList              *curated_configs;
   GtkStringList              *txt_blocklists;
+  gboolean                    flathub_remote_initialized;
   gboolean                    running;
   guint                       periodic_timeout_source;
-  int                         n_notifications_incoming;
+  int                         n_entries_incoming;
+  int                         n_remotes_syncing;
 };
 
 G_DEFINE_FINAL_TYPE (BzApplication, bz_application, ADW_TYPE_APPLICATION)
@@ -136,6 +154,17 @@ BZ_DEFINE_DATA (
     BZ_RELEASE_DATA (notif, g_object_unref))
 
 BZ_DEFINE_DATA (
+    cache_write_back,
+    CacheWriteBack,
+    {
+      GWeakRef  *self;
+      GPtrArray *notify_groups;
+      gboolean   update_filters;
+    },
+    BZ_RELEASE_DATA (self, bz_weak_release);
+    BZ_RELEASE_DATA (notify_groups, g_ptr_array_unref))
+
+BZ_DEFINE_DATA (
     open_flatpakref,
     OpenFlatpakref,
     {
@@ -152,11 +181,17 @@ BZ_DEFINE_DATA (
       GWeakRef *self;
       char     *id;
     },
-    BZ_RELEASE_DATA (self, g_object_unref);
+    BZ_RELEASE_DATA (self, bz_weak_release);
     BZ_RELEASE_DATA (id, g_free))
 
 static DexFuture *
 init_fiber (GWeakRef *wr);
+
+static DexFuture *
+enumerate_disk_entries_fiber (GWeakRef *wr);
+
+static DexFuture *
+check_for_updates_fiber (GWeakRef *wr);
 
 static DexFuture *
 cache_flathub_fiber (GWeakRef *wr);
@@ -187,12 +222,24 @@ flathub_update_finally (DexFuture *future,
                         GWeakRef  *wr);
 
 static DexFuture *
-sync_then (DexFuture *future,
-           GWeakRef  *wr);
+cache_write_back_finally (DexFuture          *future,
+                          CacheWriteBackData *data);
+
+static DexFuture *
+sync_finally (DexFuture *future,
+              GWeakRef  *wr);
 
 static DexFuture *
 watch_backend_notifs_then_loop_cb (DexFuture *future,
                                    GWeakRef  *wr);
+
+static BzEntryGroup *
+ensure_group_and_add (BzApplication *self,
+                      const char    *id,
+                      BzEntry       *entry,
+                      BzEntry       *eol_runtime,
+                      gboolean       ignore_eol,
+                      gboolean       installed);
 
 static void
 fiber_replace_entry (BzApplication *self,
@@ -215,6 +262,11 @@ static void
 network_status_changed (BzApplication   *self,
                         GParamSpec      *pspec,
                         GNetworkMonitor *network);
+
+static void
+disable_blocklists_changed (BzApplication *self,
+                            GParamSpec    *pspec,
+                            BzStateInfo   *state);
 
 static void
 show_hide_app_setting_changed (BzApplication *self,
@@ -246,6 +298,9 @@ init_service_struct (BzApplication *self,
                      GtkStringList *curated_configs);
 
 static GtkWindow *
+get_or_create_window (BzApplication *self);
+
+static GtkWindow *
 new_window (BzApplication *self);
 
 static void
@@ -264,6 +319,10 @@ command_line_open_location (BzApplication           *self,
 static void
 open_generic_id (BzApplication *self,
                  const char    *generic_id);
+
+static DexFuture *
+preview_metainfo_then (DexFuture *future,
+                       GWeakRef  *wr);
 
 static gpointer
 map_strings_to_files (GtkStringObject *string,
@@ -306,6 +365,9 @@ static void
 finish_with_background_task_label (BzApplication *self);
 
 static void
+state_info_set_icon_themes (BzStateInfo *state);
+
+static void
 bz_application_dispose (GObject *object)
 {
   BzApplication *self = BZ_APPLICATION (object);
@@ -313,6 +375,7 @@ bz_application_dispose (GObject *object)
   dex_clear (&self->flatpak_notifs);
   dex_clear (&self->notif_watch);
   dex_clear (&self->ready_to_open_files);
+  dex_clear (&self->first_window_opened);
   dex_clear (&self->sync);
   g_clear_handle_id (&self->periodic_timeout_source, g_source_remove);
   g_clear_object (&self->appid_filter);
@@ -334,7 +397,11 @@ bz_application_dispose (GObject *object)
   g_clear_object (&self->groups);
   g_clear_object (&self->gs_search);
   g_clear_object (&self->installed_apps);
+  g_clear_object (&self->malcontent);
+  g_clear_object (&self->internal_config);
   g_clear_object (&self->network);
+  g_clear_object (&self->search_biases);
+  g_clear_object (&self->search_biases_backing);
   g_clear_object (&self->search_engine);
   g_clear_object (&self->settings);
   g_clear_object (&self->state);
@@ -347,11 +414,14 @@ bz_application_dispose (GObject *object)
   g_clear_pointer (&self->blocklist_regexes, g_ptr_array_unref);
   g_clear_pointer (&self->eol_runtimes, g_hash_table_unref);
   g_clear_pointer (&self->ids_to_groups, g_hash_table_unref);
+  g_clear_pointer (&self->ignore_eol_set, g_hash_table_unref);
   g_clear_pointer (&self->init_timer, g_timer_destroy);
   g_clear_pointer (&self->installed_set, g_hash_table_unref);
   g_clear_pointer (&self->sys_name_to_addons, g_hash_table_unref);
   g_clear_pointer (&self->txt_blocked_id_sets, g_ptr_array_unref);
   g_clear_pointer (&self->usr_name_to_addons, g_hash_table_unref);
+  g_clear_pointer (&self->sys_ref_to_addon_group_ids, g_hash_table_unref);
+  g_clear_pointer (&self->usr_ref_to_addon_group_ids, g_hash_table_unref);
   g_weak_ref_clear (&self->main_window);
 
   G_OBJECT_CLASS (bz_application_parent_class)->dispose (object);
@@ -378,6 +448,7 @@ bz_application_command_line (GApplication            *app,
   g_auto (GStrv) blocklists_strv      = NULL;
   g_auto (GStrv) content_configs_strv = NULL;
   g_auto (GStrv) locations            = NULL;
+  gboolean preview_metainfo           = FALSE;
 
   GOptionEntry main_entries[] = {
     { "help", 0, 0, G_OPTION_ARG_NONE, &help, "Print help" },
@@ -386,6 +457,7 @@ bz_application_command_line (GApplication            *app,
     { "extra-curated-config", 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &content_configs_strv, "Add an extra yaml file with which to configure the app browser" },
     /* Here for backwards compat */
     { "extra-content-config", 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &content_configs_strv, "Add an extra yaml file with which to configure the app browser (backwards compat)" },
+    { "preview-metainfo", 0, 0, G_OPTION_ARG_NONE, &preview_metainfo, "Preview a metainfo file by selecting it via file dialog" },
     { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &locations, "flatpakref file to open" },
     { NULL }
   };
@@ -483,11 +555,29 @@ bz_application_command_line (GApplication            *app,
       dex_future_disown (g_steal_pointer (&init));
     }
 
-  if (!no_window)
-    new_window (self);
+  if (!no_window && !preview_metainfo)
+    {
+      if (locations == NULL || *locations == NULL)
+        new_window (self);
+      else
+        get_or_create_window (self);
+    }
 
   if (locations != NULL && *locations != NULL)
     command_line_open_location (self, cmdline, locations[0]);
+
+  if (preview_metainfo)
+    {
+      g_autoptr (DexFuture) future = NULL;
+
+      future = bz_metainfo_preview_pick_files ();
+      future = dex_future_then (
+          g_steal_pointer (&future),
+          (DexFutureCallback) preview_metainfo_then,
+          bz_track_weak (self),
+          bz_weak_release);
+      dex_future_disown (g_steal_pointer (&future));
+    }
 
   return EXIT_SUCCESS;
 }
@@ -566,49 +656,21 @@ bz_application_bazaar_inspector_action (GSimpleAction *action,
 }
 
 static void
-bz_application_flatseal_action (GSimpleAction *action,
-                                GVariant      *parameter,
-                                gpointer       user_data)
-{
-  BzApplication *self   = user_data;
-  GtkWindow     *window = NULL;
-
-  g_assert (BZ_IS_APPLICATION (self));
-
-  window = gtk_application_get_active_window (GTK_APPLICATION (self));
-  if (window != NULL)
-    bz_show_error_for_widget (
-        GTK_WIDGET (window),
-        _ ("This functionality is currently disabled. It is recommended "
-           "you download and install Flatseal to manage app permissions."));
-}
-
-static void
 bz_application_donate_action (GSimpleAction *action,
                               GVariant      *parameter,
                               gpointer       user_data)
 {
-  BzApplication *self = user_data;
-
-  g_assert (BZ_IS_APPLICATION (self));
-
-  g_app_info_launch_default_for_uri (
-      DONATE_LINK, NULL, NULL);
-}
-
-static void
-bz_application_toggle_transactions_action (GSimpleAction *action,
-                                           GVariant      *parameter,
-                                           gpointer       user_data)
-{
   BzApplication *self   = user_data;
   GtkWindow     *window = NULL;
+  AdwDialog     *dialog = NULL;
 
   g_assert (BZ_IS_APPLICATION (self));
 
-  window = gtk_application_get_active_window (GTK_APPLICATION (self));
+  window = get_or_create_window (self);
+  dialog = bz_donations_dialog_new ();
+  adw_dialog_present (dialog, GTK_WIDGET (window));
 
-  bz_window_toggle_transactions (BZ_WINDOW (window));
+  bz_state_info_set_donation_prompt_dismissed (self->state, TRUE);
 }
 
 static void
@@ -622,9 +684,7 @@ bz_application_search_action (GSimpleAction *action,
 
   g_assert (BZ_IS_APPLICATION (self));
 
-  window = gtk_application_get_active_window (GTK_APPLICATION (self));
-  if (window == NULL)
-    window = new_window (self);
+  window = get_or_create_window (self);
 
   if (parameter != NULL)
     initial_text = g_variant_get_string (parameter, NULL);
@@ -643,9 +703,7 @@ bz_application_show_app_id_action (GSimpleAction *action,
 
   g_assert (BZ_IS_APPLICATION (self));
 
-  window = gtk_application_get_active_window (GTK_APPLICATION (self));
-  if (window == NULL)
-    window = new_window (self);
+  window = get_or_create_window (self);
 
   if (parameter != NULL)
     {
@@ -676,16 +734,13 @@ bz_application_about_action (GSimpleAction *action,
                              GVariant      *parameter,
                              gpointer       user_data)
 {
-  BzApplication *self                    = user_data;
-  GtkWindow     *window                  = NULL;
-  AdwDialog     *dialog                  = NULL;
-  g_autoptr (GBytes) release_notes_bytes = NULL;
-  const char *release_notes_text         = NULL;
+  BzApplication *self   = user_data;
+  GtkWindow     *window = NULL;
+  AdwDialog     *dialog = NULL;
 
   const char *developers[] = {
-    C_ ("About Dialog Developer Credit", "Adam Masciola <kolunmi@posteo.net>"),
-    C_ ("About Dialog Developer Credit", "Alexander Vanhee"),
-    /* This array MUST be NULL terminated */
+    "Adam Masciola <kolunmi@posteo.net>",
+    "Alexander Vanhee",
     NULL
   };
 
@@ -700,28 +755,19 @@ bz_application_about_action (GSimpleAction *action,
   window = gtk_application_get_active_window (GTK_APPLICATION (self));
   dialog = adw_about_dialog_new ();
 
-  release_notes_bytes = g_resources_lookup_data (
-      "/io/github/kolunmi/Bazaar/release-notes.xml",
-      G_RESOURCE_LOOKUP_FLAGS_NONE,
-      NULL);
-
-  if (release_notes_bytes != NULL)
-    release_notes_text = g_bytes_get_data (release_notes_bytes, NULL);
-
   g_object_set (
       dialog,
       "application-name", "Bazaar",
       "application-icon", "io.github.kolunmi.Bazaar",
-      "developer-name", _ ("Adam Masciola"),
+      "developer-name", _ ("The Bazaar Contributors"),
       "developers", developers,
       // Translators: Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
       "translator-credits", _ ("translator-credits"),
-      "version", PACKAGE_VERSION,
-      "copyright", "© 2025 Adam Masciola",
+      "version", PACKAGE_VCS_VERSION,
+      "copyright", "© 2025-2026 The Bazaar Contributors",
       "license-type", GTK_LICENSE_GPL_3_0,
-      "website", "https://github.com/kolunmi/bazaar",
-      "issue-url", "https://github.com/kolunmi/bazaar/issues",
-      "release-notes", release_notes_text,
+      "website", "https://usebazaar.org",
+      "issue-url", "https://github.com/bazaar-org/bazaar/issues",
       NULL);
 
   adw_about_dialog_add_acknowledgement_section (
@@ -798,10 +844,7 @@ bz_application_flathub_favorites_action (GSimpleAction *action,
 
   g_assert (BZ_IS_APPLICATION (self));
 
-  window = gtk_application_get_active_window (GTK_APPLICATION (self));
-  if (window == NULL)
-    window = new_window (self);
-
+  window         = get_or_create_window (self);
   favorites_page = ADW_NAVIGATION_PAGE (bz_favorites_page_new (self->state));
 
   bz_window_push_page (BZ_WINDOW (window), favorites_page);
@@ -820,20 +863,18 @@ bz_application_quit_action (GSimpleAction *action,
 }
 
 static const GActionEntry app_actions[] = {
-  {       "flathub-login",       bz_application_flathub_login_action, NULL },
-  {      "flathub-logout",      bz_application_flathub_logout_action, NULL },
-  {   "flathub-favorites",   bz_application_flathub_favorites_action, NULL },
-  {                "quit",                bz_application_quit_action, NULL },
-  {         "preferences",         bz_application_preferences_action, NULL },
-  {               "about",               bz_application_about_action, NULL },
-  {        "sync-remotes",        bz_application_sync_remotes_action, NULL },
-  {              "search",              bz_application_search_action,  "s" },
-  {         "show-app-id",         bz_application_show_app_id_action,  "s" },
-  { "toggle-transactions", bz_application_toggle_transactions_action, NULL },
-  {              "donate",              bz_application_donate_action, NULL },
-  {            "flatseal",            bz_application_flatseal_action, NULL },
-  {    "bazaar-inspector",    bz_application_bazaar_inspector_action, NULL },
-  {   "toggle-debug-mode",   bz_application_toggle_debug_mode_action, NULL },
+  {     "flathub-login",     bz_application_flathub_login_action, NULL },
+  {    "flathub-logout",    bz_application_flathub_logout_action, NULL },
+  { "flathub-favorites", bz_application_flathub_favorites_action, NULL },
+  {              "quit",              bz_application_quit_action, NULL },
+  {       "preferences",       bz_application_preferences_action, NULL },
+  {             "about",             bz_application_about_action, NULL },
+  {      "sync-remotes",      bz_application_sync_remotes_action, NULL },
+  {            "search",            bz_application_search_action,  "s" },
+  {       "show-app-id",       bz_application_show_app_id_action,  "s" },
+  {            "donate",            bz_application_donate_action, NULL },
+  {  "bazaar-inspector",  bz_application_bazaar_inspector_action, NULL },
+  { "toggle-debug-mode", bz_application_toggle_debug_mode_action, NULL },
 };
 
 static void
@@ -852,31 +893,27 @@ bz_application_init (BzApplication *self)
   gtk_application_set_accels_for_action (
       GTK_APPLICATION (self),
       "app.quit",
-      (const char *[]) { "<primary>q", NULL });
+      (const char *[]){ "<primary>q", NULL });
   gtk_application_set_accels_for_action (
       GTK_APPLICATION (self),
       "app.preferences",
-      (const char *[]) { "<primary>comma", NULL });
+      (const char *[]){ "<primary>comma", NULL });
   gtk_application_set_accels_for_action (
       GTK_APPLICATION (self),
       "app.sync-remotes",
-      (const char *[]) { "<primary>r", NULL });
+      (const char *[]){ "<primary>r", NULL });
   gtk_application_set_accels_for_action (
       GTK_APPLICATION (self),
       "app.search('')",
-      (const char *[]) { "<primary>f", NULL });
-  gtk_application_set_accels_for_action (
-      GTK_APPLICATION (self),
-      "app.toggle-transactions",
-      (const char *[]) { "<primary>d", NULL });
+      (const char *[]){ "<primary>f", NULL });
   gtk_application_set_accels_for_action (
       GTK_APPLICATION (self),
       "app.bazaar-inspector",
-      (const char *[]) { "<primary><alt><shift>i", NULL });
+      (const char *[]){ "<primary><alt><shift>i", NULL });
   gtk_application_set_accels_for_action (
       GTK_APPLICATION (self),
       "app.toggle-debug-mode",
-      (const char *[]) { "<primary><alt>d", NULL });
+      (const char *[]){ "<primary><alt>d", NULL });
 }
 
 BzStateInfo *
@@ -887,7 +924,23 @@ bz_state_info_get_default (void)
 
   app = g_application_get_default ();
   if G_UNLIKELY (app == NULL)
-    return NULL;
+    {
+      static BzStateInfo *fallback_state = NULL;
+
+      if (g_once_init_enter_pointer (&fallback_state))
+        {
+          g_autoptr (BzStateInfo) tmp = NULL;
+
+          tmp = bz_state_info_new ();
+          // state_info_set_icon_themes (tmp);
+
+          g_once_init_leave_pointer (
+              &fallback_state,
+              g_steal_pointer (&tmp));
+        }
+
+      return fallback_state;
+    }
 
   self = (BzApplication *) app;
   g_assert (BZ_IS_APPLICATION (self));
@@ -902,9 +955,10 @@ init_fiber (GWeakRef *wr)
   g_autoptr (GError) local_error        = NULL;
   g_autofree char *root_cache_dir       = NULL;
   g_autoptr (GFile) root_cache_dir_file = NULL;
-  gboolean has_flathub                  = FALSE;
-  gboolean result                       = FALSE;
-  g_autoptr (GHashTable) cached_set     = NULL;
+  g_autoptr (GListModel) repos          = NULL;
+  gboolean         has_flathub          = FALSE;
+  gboolean         cache_has_flathub    = FALSE;
+  gboolean         result               = FALSE;
   g_autofree char *flathub_cache        = NULL;
   g_autoptr (GFile) flathub_cache_file  = NULL;
 
@@ -912,7 +966,7 @@ init_fiber (GWeakRef *wr)
 
   bz_state_info_set_online (self->state, TRUE);
   bz_state_info_set_busy (self->state, TRUE);
-  bz_state_info_set_background_task_label (self->state, _ ("Performing setup..."));
+  bz_state_info_set_background_task_label (self->state, _ ("Performing setup…"));
 
   root_cache_dir      = bz_dup_root_cache_dir ();
   root_cache_dir_file = g_file_new_for_path (root_cache_dir);
@@ -946,6 +1000,8 @@ init_fiber (GWeakRef *wr)
 
       if (wipe_cache)
         {
+          bz_state_info_set_donation_prompt_dismissed (self->state, FALSE);
+
           g_info ("Version incompatibility detected: clearing cache");
           dex_await (bz_reap_file_dex (root_cache_dir_file), NULL);
         }
@@ -963,6 +1019,8 @@ init_fiber (GWeakRef *wr)
                      NULL);
         }
     }
+  else
+    bz_state_info_set_donation_prompt_dismissed (self->state, TRUE);
 
   g_clear_object (&self->flatpak);
   self->flatpak = dex_await_object (bz_flatpak_instance_new (), &local_error);
@@ -981,37 +1039,50 @@ init_fiber (GWeakRef *wr)
     {
       GtkWindow       *window   = NULL;
       g_autofree char *response = NULL;
+      AdwDialog       *alert    = NULL;
+
+      dex_await (DEX_FUTURE (self->first_window_opened), NULL);
 
       window = gtk_application_get_active_window (GTK_APPLICATION (self));
-      if (window != NULL)
-        {
-          AdwDialog *alert = NULL;
+      if (window == NULL)
+        window = new_window (self);
 
-          alert = adw_alert_dialog_new (NULL, NULL);
-          adw_alert_dialog_set_prefer_wide_layout (ADW_ALERT_DIALOG (alert), TRUE);
-          adw_alert_dialog_format_heading (
-              ADW_ALERT_DIALOG (alert),
-              _ ("Set Up Flathub"));
-          adw_alert_dialog_format_body (
-              ADW_ALERT_DIALOG (alert),
-              _ ("Flathub is not set up on this system. "
-                 "You will not be able to browse and install applications in Bazaar if its unavailable.\n\n"
-                 "You can still use Bazaar to browse and remove already installed apps."));
-          adw_alert_dialog_add_responses (
-              ADW_ALERT_DIALOG (alert),
-              "later", _ ("Later"),
-              "add", _ ("Set Up Flathub"),
-              NULL);
-          adw_alert_dialog_set_response_appearance (
-              ADW_ALERT_DIALOG (alert), "add", ADW_RESPONSE_SUGGESTED);
-          adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (alert), "add");
-          adw_alert_dialog_set_close_response (ADW_ALERT_DIALOG (alert), "later");
+      alert = adw_alert_dialog_new (NULL, NULL);
 
-          adw_dialog_present (alert, GTK_WIDGET (window));
-          response = dex_await_string (
-              bz_make_alert_dialog_future (ADW_ALERT_DIALOG (alert)),
-              NULL);
-        }
+#ifdef SANDBOXED_LIBFLATPAK
+      adw_alert_dialog_format_heading (
+          ADW_ALERT_DIALOG (alert),
+          _ ("Set Up System Flathub?"));
+      adw_alert_dialog_format_body (
+          ADW_ALERT_DIALOG (alert),
+          _ ("The system Flathub remote is not set up. Bazaar requires "
+             "Flathub to be configured on the system Flatpak installation "
+             "to browse and install applications.\n\n"
+             "You can still use Bazaar to browse and remove already installed apps."));
+#else
+      adw_alert_dialog_format_heading (
+          ADW_ALERT_DIALOG (alert),
+          _ ("Set Up Flathub?"));
+      adw_alert_dialog_format_body (
+          ADW_ALERT_DIALOG (alert),
+          _ ("Flathub is not set up on this system. "
+             "You will not be able to browse and install applications in Bazaar if its unavailable.\n\n"
+             "You can still use Bazaar to browse and remove already installed apps."));
+#endif
+      adw_alert_dialog_add_responses (
+          ADW_ALERT_DIALOG (alert),
+          "later", _ ("Later"),
+          "add", _ ("Set Up Flathub"),
+          NULL);
+      adw_alert_dialog_set_response_appearance (
+          ADW_ALERT_DIALOG (alert), "add", ADW_RESPONSE_SUGGESTED);
+      adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (alert), "add");
+      adw_alert_dialog_set_close_response (ADW_ALERT_DIALOG (alert), "later");
+
+      adw_dialog_present (alert, GTK_WIDGET (window));
+      response = dex_await_string (
+          bz_make_alert_dialog_future (ADW_ALERT_DIALOG (alert)),
+          NULL);
 
       if (response != NULL &&
           g_strcmp0 (response, "add") == 0)
@@ -1019,7 +1090,9 @@ init_fiber (GWeakRef *wr)
           result = dex_await (
               bz_flatpak_instance_ensure_has_flathub (self->flatpak, NULL),
               &local_error);
-          if (!result)
+          if (result)
+            has_flathub = TRUE;
+          else
             {
               g_warning ("Failed to install flathub: %s",
                          local_error->message);
@@ -1027,6 +1100,7 @@ init_fiber (GWeakRef *wr)
             }
         }
     }
+  bz_state_info_set_has_flathub (self->state, has_flathub);
 
   self->installed_set = dex_await_boxed (
       bz_backend_retrieve_install_ids (
@@ -1040,78 +1114,30 @@ init_fiber (GWeakRef *wr)
       g_clear_error (&local_error);
 
       self->installed_set = g_hash_table_new_full (
-          g_str_hash, g_str_equal, g_free, NULL);
+          g_str_hash, g_str_equal, g_free, g_free);
+    }
+
+  repos = dex_await_object (
+      bz_backend_list_repositories (BZ_BACKEND (self->flatpak), NULL),
+      &local_error);
+
+  if (repos != NULL)
+    bz_state_info_set_repositories (self->state, repos);
+  else
+    {
+      g_warning ("Failed to enumerate repositories: %s", local_error->message);
+      g_clear_error (&local_error);
     }
 
   /* Revive old cache from previous Bazaar process */
-  cached_set = dex_await_boxed (
-      bz_entry_cache_manager_enumerate_disk (self->cache),
-      &local_error);
-  if (cached_set != NULL)
-    {
-      g_autoptr (GPtrArray) futures = NULL;
-      GHashTableIter iter           = { 0 };
-      g_autoptr (GPtrArray) entries = NULL;
-
-      futures = g_ptr_array_new_with_free_func (dex_unref);
-
-      g_hash_table_iter_init (&iter, cached_set);
-      for (;;)
-        {
-          char *checksum = NULL;
-
-          if (!g_hash_table_iter_next (
-                  &iter, (gpointer *) &checksum, NULL))
-            break;
-
-          g_ptr_array_add (
-              futures,
-              bz_entry_cache_manager_get_by_checksum (
-                  self->cache, checksum));
-        }
-      g_clear_pointer (&cached_set, g_hash_table_unref);
-
-      if (futures->len > 0)
-        dex_await (dex_future_allv (
-                       (DexFuture *const *) futures->pdata,
-                       futures->len),
-                   NULL);
-
-      entries = g_ptr_array_new_with_free_func (g_object_unref);
-      for (guint i = 0; i < futures->len; i++)
-        {
-          DexFuture    *future = NULL;
-          const GValue *value  = NULL;
-
-          future = g_ptr_array_index (futures, i);
-          value  = dex_future_get_value (future, &local_error);
-          if (value != NULL)
-            g_ptr_array_add (entries, g_value_dup_object (value));
-          else
-            {
-              g_warning ("Unable to retrieve cached entry: %s", local_error->message);
-              g_clear_error (&local_error);
-            }
-        }
-
-      g_ptr_array_sort_values_with_data (
-          entries, (GCompareDataFunc) cmp_entry, NULL);
-      for (guint i = 0; i < entries->len; i++)
-        {
-          BzEntry *entry = NULL;
-
-          entry = g_ptr_array_index (entries, i);
-          fiber_replace_entry (self, entry);
-        }
-
-      gtk_filter_changed (GTK_FILTER (self->group_filter), GTK_FILTER_CHANGE_LESS_STRICT);
-      gtk_filter_changed (GTK_FILTER (self->appid_filter), GTK_FILTER_CHANGE_LESS_STRICT);
-    }
-  else
-    {
-      g_warning ("Unable to enumerate cached entries: %s", local_error->message);
-      g_clear_error (&local_error);
-    }
+  cache_has_flathub = dex_await_boolean (
+      dex_scheduler_spawn (
+          dex_scheduler_get_default (),
+          bz_get_dex_stack_size (),
+          (DexFiberFunc) enumerate_disk_entries_fiber,
+          bz_track_weak (self),
+          bz_weak_release),
+      NULL);
 
   flathub_cache_file = fiber_dup_flathub_cache_file (&flathub_cache, &local_error);
   if (flathub_cache_file != NULL)
@@ -1145,8 +1171,11 @@ init_fiber (GWeakRef *wr)
                   bz_flathub_state_set_map_factory (self->flathub, self->application_factory);
                   bz_state_info_set_flathub (self->state, self->flathub);
 
-                  bz_state_info_set_busy (self->state, FALSE);
-                  dex_promise_resolve_boolean (self->ready_to_open_files, TRUE);
+                  if (cache_has_flathub)
+                    {
+                      dex_promise_resolve_boolean (self->ready_to_open_files, TRUE);
+                      bz_state_info_set_busy (self->state, FALSE);
+                    }
                 }
               else
                 {
@@ -1168,6 +1197,120 @@ init_fiber (GWeakRef *wr)
       g_warning ("Unable to ensure cache directory: %s", local_error->message);
       g_clear_error (&local_error);
     }
+
+  return dex_future_new_true ();
+}
+
+static DexFuture *
+enumerate_disk_entries_fiber (GWeakRef *wr)
+{
+  g_autoptr (BzApplication) self    = NULL;
+  g_autoptr (GError) local_error    = NULL;
+  g_autoptr (GHashTable) cached_set = NULL;
+  g_autoptr (GPtrArray) futures     = NULL;
+  GHashTableIter iter               = { 0 };
+  g_autoptr (GPtrArray) entries     = NULL;
+  gboolean has_flathub_entry        = FALSE;
+
+  bz_weak_get_or_return_reject (self, wr);
+
+  cached_set = dex_await_boxed (
+      bz_entry_cache_manager_enumerate_disk (self->cache),
+      &local_error);
+  if (cached_set == NULL)
+    {
+      g_warning ("Unable to enumerate cached entries: %s", local_error->message);
+      return dex_future_new_for_error (g_steal_pointer (&local_error));
+    }
+
+  futures = g_ptr_array_new_with_free_func (dex_unref);
+
+  g_hash_table_iter_init (&iter, cached_set);
+  for (;;)
+    {
+      char *checksum = NULL;
+
+      if (!g_hash_table_iter_next (
+              &iter, (gpointer *) &checksum, NULL))
+        break;
+
+      g_ptr_array_add (
+          futures,
+          bz_entry_cache_manager_get_by_checksum (
+              self->cache, checksum));
+    }
+  g_clear_pointer (&cached_set, g_hash_table_unref);
+
+  if (futures->len > 0)
+    dex_await (dex_future_allv (
+                   (DexFuture *const *) futures->pdata,
+                   futures->len),
+               NULL);
+
+  entries = g_ptr_array_new_with_free_func (g_object_unref);
+  for (guint i = 0; i < futures->len; i++)
+    {
+      DexFuture    *future = NULL;
+      const GValue *value  = NULL;
+
+      future = g_ptr_array_index (futures, i);
+      value  = dex_future_get_value (future, &local_error);
+      if (value != NULL)
+        {
+          g_autoptr (BzEntry) entry = NULL;
+
+          entry = g_value_dup_object (value);
+          if (BZ_IS_FLATPAK_ENTRY (entry) &&
+              bz_flatpak_entry_get_bundle_path (BZ_FLATPAK_ENTRY (entry)) != NULL)
+            /* refrain from restoring bundle entries */
+            continue;
+
+          if (!has_flathub_entry &&
+              BZ_IS_FLATPAK_ENTRY (entry) &&
+              g_strcmp0 (bz_entry_get_remote_repo_name (entry), "flathub") == 0)
+            has_flathub_entry = TRUE;
+
+          g_ptr_array_add (entries, g_steal_pointer (&entry));
+        }
+      else
+        {
+          g_warning ("Unable to retrieve cached entry: %s", local_error->message);
+          g_clear_error (&local_error);
+        }
+    }
+
+  g_ptr_array_sort_values_with_data (
+      entries, (GCompareDataFunc) cmp_entry, NULL);
+  for (guint i = 0; i < entries->len; i++)
+    {
+      BzEntry *entry = NULL;
+
+      entry = g_ptr_array_index (entries, i);
+      fiber_replace_entry (self, entry);
+    }
+
+  gtk_filter_changed (GTK_FILTER (self->group_filter), GTK_FILTER_CHANGE_LESS_STRICT);
+  gtk_filter_changed (GTK_FILTER (self->appid_filter), GTK_FILTER_CHANGE_LESS_STRICT);
+
+  dex_future_disown (dex_scheduler_spawn (
+      dex_scheduler_get_default (),
+      bz_get_dex_stack_size (),
+      (DexFiberFunc) check_for_updates_fiber,
+      bz_track_weak (self),
+      bz_weak_release));
+
+  return dex_future_new_for_boolean (has_flathub_entry);
+}
+
+static DexFuture *
+check_for_updates_fiber (GWeakRef *wr)
+{
+  g_autoptr (BzApplication) self = NULL;
+
+  bz_weak_get_or_return_reject (self, wr);
+
+  fiber_check_for_updates (self);
+  finish_with_background_task_label (self);
 
   return dex_future_new_true ();
 }
@@ -1220,62 +1363,62 @@ cache_flathub_fiber (GWeakRef *wr)
 static DexFuture *
 respond_to_flatpak_fiber (RespondToFlatpakData *data)
 {
-  g_autoptr (BzApplication) self      = NULL;
-  BzBackendNotification *notif        = data->notif;
-  g_autoptr (GError) local_error      = NULL;
-  GtkWindow     *window               = NULL;
-  GdkFrameClock *clock                = NULL;
-  double         reread_timeout       = 0.0;
-  g_autoptr (GPtrArray) build_futures = NULL;
-  g_autoptr (DexFuture) read_future   = NULL;
-  g_autoptr (GTimer) timer            = NULL;
-  gboolean update_labels              = FALSE;
-  gboolean update_filter              = FALSE;
+  g_autoptr (BzApplication) self            = NULL;
+  BzBackendNotification *notif              = data->notif;
+  g_autoptr (GError) local_error            = NULL;
+  g_autoptr (GPtrArray) build_futures       = NULL;
+  g_autoptr (GPtrArray) build_notify_groups = NULL;
+  g_autoptr (DexFuture) read_future         = NULL;
+  g_autoptr (DexFuture) reread_timeout      = NULL;
+  gboolean update_labels                    = FALSE;
+  gboolean update_filters                   = FALSE;
 
   bz_weak_get_or_return_reject (self, data->self);
 
-  window = gtk_application_get_active_window (GTK_APPLICATION (self));
-  if (window != NULL)
-    clock = gtk_widget_get_frame_clock (GTK_WIDGET (window));
+  build_futures       = g_ptr_array_new_with_free_func (dex_unref);
+  build_notify_groups = g_ptr_array_new_with_free_func (g_object_unref);
+
+  read_future = dex_future_new_for_object (notif);
 
   /* `reread_timeout` defines how long we are allowed to spend adding to
-   `build-futures` on which we will await later */
-  if (clock != NULL)
-    {
-      gint64 refresh_interval  = 0;
-      gint64 presentation_time = 0;
-
-      gdk_frame_clock_get_refresh_info (
-          clock,
-          g_get_monotonic_time (),
-          &refresh_interval,
-          &presentation_time);
-      reread_timeout = (double) refresh_interval / (double) G_USEC_PER_SEC;
-
-      /* take no longer than half a refresh interval */
-      reread_timeout /= 2.0;
-    }
-  else
-    reread_timeout = 1.0 / 60.0;
-
-  clock  = NULL;
-  window = NULL;
-
-  build_futures = g_ptr_array_new_with_free_func (dex_unref);
-  read_future   = dex_future_new_for_object (notif);
-
-  timer = g_timer_new ();
-  while (dex_future_is_resolved (read_future))
+     `build-futures` before we update the UI later */
+  reread_timeout = dex_timeout_new_msec (100);
+  for (;;)
     {
       BzBackendNotificationKind kind = 0;
+
+      if (!dex_future_is_resolved (read_future))
+        {
+          g_autoptr (DexFuture) future = NULL;
+
+          future = dex_future_all_race (
+              dex_ref (reread_timeout),
+              dex_ref (read_future),
+              NULL);
+          dex_await (g_steal_pointer (&future), NULL);
+          if (!dex_future_is_pending (reread_timeout))
+            break;
+        }
 
       notif = g_value_get_object (dex_future_get_value (read_future, NULL));
       kind  = bz_backend_notification_get_kind (notif);
       switch (kind)
         {
+        case BZ_BACKEND_NOTIFICATION_KIND_PRESENT_ID:
+          {
+            const char *id = NULL;
+
+            id = bz_backend_notification_get_generic_id (notif);
+            if (id == NULL)
+              break;
+
+            open_generic_id (self, id);
+          }
+          break;
         case BZ_BACKEND_NOTIFICATION_KIND_ERROR:
           {
-            const char *error = NULL;
+            const char *error  = NULL;
+            GtkWindow  *window = NULL;
 
             error = bz_backend_notification_get_error (notif);
             if (error == NULL)
@@ -1285,7 +1428,7 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
 
             window = gtk_application_get_active_window (GTK_APPLICATION (self));
             if (window != NULL)
-              bz_show_error_for_widget (GTK_WIDGET (window), error);
+              bz_show_error_for_widget (GTK_WIDGET (window), _ ("A backend error occurred"), error);
           }
           break;
         case BZ_BACKEND_NOTIFICATION_KIND_TELL_INCOMING:
@@ -1293,7 +1436,7 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
             int n_incoming = 0;
 
             n_incoming = bz_backend_notification_get_n_incoming (notif);
-            self->n_notifications_incoming += n_incoming;
+            self->n_entries_incoming += n_incoming;
 
             update_labels = TRUE;
           }
@@ -1307,10 +1450,68 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
 
             g_ptr_array_add (build_futures, bz_entry_cache_manager_add (self->cache, entry));
             if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_APPLICATION))
-              update_filter = TRUE;
+              {
+                const char   *id    = NULL;
+                BzEntryGroup *group = NULL;
 
-            self->n_notifications_incoming--;
+                update_filters = TRUE;
+
+                id    = bz_entry_get_id (entry);
+                group = g_hash_table_lookup (self->ids_to_groups, id);
+                if (group != NULL)
+                  g_ptr_array_add (build_notify_groups, g_object_ref (group));
+              }
+
+            self->n_entries_incoming--;
             update_labels = TRUE;
+          }
+          break;
+        case BZ_BACKEND_NOTIFICATION_KIND_REMOTE_SYNC_START:
+          {
+            const char *remote_name = NULL;
+
+            remote_name = bz_backend_notification_get_remote_name (notif);
+
+            if (bz_state_info_get_has_flathub (self->state))
+              /* We only count instances of the "flathub" remote if we have
+                 flathub, since that's all we care about for the UI */
+              {
+                if (g_strcmp0 (remote_name, "flathub") == 0)
+                  self->n_remotes_syncing++;
+              }
+            else
+              self->n_remotes_syncing++;
+
+            g_debug ("remote '%s' has begun synchronization; "
+                     "now currently syncing %u remote(s)",
+                     remote_name, self->n_remotes_syncing);
+          }
+          break;
+        case BZ_BACKEND_NOTIFICATION_KIND_REMOTE_SYNC_FINISH:
+          {
+            const char *remote_name = NULL;
+
+            remote_name = bz_backend_notification_get_remote_name (notif);
+
+            if (bz_state_info_get_has_flathub (self->state))
+              {
+                if (g_strcmp0 (remote_name, "flathub") == 0)
+                  {
+                    self->n_remotes_syncing--;
+                    if (self->n_remotes_syncing == 0)
+                      self->flathub_remote_initialized = TRUE;
+                  }
+              }
+            else
+              {
+                self->n_remotes_syncing--;
+                if (self->n_remotes_syncing == 0)
+                  bz_state_info_set_busy (self->state, FALSE);
+              }
+
+            g_debug ("remote '%s' has finished synchronization; "
+                     "now currently syncing %u remote(s)",
+                     remote_name, self->n_remotes_syncing);
           }
           break;
         case BZ_BACKEND_NOTIFICATION_KIND_INSTALL_DONE:
@@ -1336,8 +1537,13 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
               {
               case BZ_BACKEND_NOTIFICATION_KIND_INSTALL_DONE:
                 {
+                  const char *version = NULL;
+
+                  version = bz_backend_notification_get_version (notif);
+
+                  g_hash_table_replace (self->installed_set, g_strdup (unique_id), g_strdup (version));
+                  bz_entry_set_installed_version (entry, version);
                   bz_entry_set_installed (entry, TRUE);
-                  g_hash_table_replace (self->installed_set, g_strdup (unique_id), NULL);
 
                   if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_APPLICATION))
                     {
@@ -1358,10 +1564,15 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
                 break;
               case BZ_BACKEND_NOTIFICATION_KIND_UPDATE_DONE:
                 {
+                  const char *version = NULL;
+
+                  version = bz_backend_notification_get_version (notif);
+                  g_hash_table_replace (self->installed_set, g_strdup (unique_id), g_strdup (version));
                 }
                 break;
               case BZ_BACKEND_NOTIFICATION_KIND_REMOVE_DONE:
                 {
+                  bz_entry_set_installed_version (entry, NULL);
                   bz_entry_set_installed (entry, FALSE);
                   g_hash_table_remove (self->installed_set, unique_id);
 
@@ -1383,25 +1594,53 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
                 }
                 break;
               case BZ_BACKEND_NOTIFICATION_KIND_ERROR:
-              case BZ_BACKEND_NOTIFICATION_KIND_TELL_INCOMING:
-              case BZ_BACKEND_NOTIFICATION_KIND_REPLACE_ENTRY:
               case BZ_BACKEND_NOTIFICATION_KIND_EXTERNAL_CHANGE:
+              case BZ_BACKEND_NOTIFICATION_KIND_INVALIDATE_REMOTES:
+              case BZ_BACKEND_NOTIFICATION_KIND_PRESENT_ID:
+              case BZ_BACKEND_NOTIFICATION_KIND_REMOTE_SYNC_FINISH:
+              case BZ_BACKEND_NOTIFICATION_KIND_REMOTE_SYNC_START:
+              case BZ_BACKEND_NOTIFICATION_KIND_REPLACE_ENTRY:
+              case BZ_BACKEND_NOTIFICATION_KIND_TELL_INCOMING:
               default:
                 g_assert_not_reached ();
               };
 
             g_ptr_array_add (build_futures, bz_entry_cache_manager_add (self->cache, entry));
+            if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_APPLICATION))
+              {
+                const char   *id    = NULL;
+                BzEntryGroup *group = NULL;
+
+                id    = bz_entry_get_id (entry);
+                group = g_hash_table_lookup (self->ids_to_groups, id);
+                if (group != NULL)
+                  g_ptr_array_add (build_notify_groups, g_object_ref (group));
+              }
           }
           break;
+        case BZ_BACKEND_NOTIFICATION_KIND_INVALIDATE_REMOTES:
         case BZ_BACKEND_NOTIFICATION_KIND_EXTERNAL_CHANGE:
           {
+            g_autoptr (GListModel) repos         = NULL;
             g_autoptr (GHashTable) installed_set = NULL;
             g_autoptr (GPtrArray) diff_reads     = NULL;
             GHashTableIter old_iter              = { 0 };
             GHashTableIter new_iter              = { 0 };
             g_autoptr (GPtrArray) diff_writes    = NULL;
 
-            bz_state_info_set_background_task_label (self->state, _ ("Synchronizing..."));
+            bz_state_info_set_background_task_label (self->state, _ ("Refreshing…"));
+
+            repos = dex_await_object (
+                bz_backend_list_repositories (BZ_BACKEND (self->flatpak), NULL),
+                &local_error);
+
+            if (repos != NULL)
+              bz_state_info_set_repositories (self->state, repos);
+            else
+              {
+                g_warning ("Failed to enumerate repositories: %s", local_error->message);
+                g_clear_error (&local_error);
+              }
 
             installed_set = dex_await_boxed (
                 bz_backend_retrieve_install_ids (
@@ -1466,6 +1705,7 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
                         const char   *unique_id = NULL;
                         BzEntryGroup *group     = NULL;
                         gboolean      installed = FALSE;
+                        const char   *version   = NULL;
 
                         entry = g_value_get_object (dex_future_get_value (future, NULL));
                         id    = bz_entry_get_id (entry);
@@ -1475,6 +1715,11 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
 
                         unique_id = bz_entry_get_unique_id (entry);
                         installed = g_hash_table_contains (installed_set, unique_id);
+
+                        version = g_hash_table_lookup (installed_set, unique_id);
+                        if (installed && version != NULL && *version != '\0')
+                          bz_entry_set_installed_version (entry, version);
+
                         bz_entry_set_installed (entry, installed);
 
                         if (group != NULL)
@@ -1515,44 +1760,53 @@ respond_to_flatpak_fiber (RespondToFlatpakData *data)
         }
 
       dex_clear (&read_future);
-      if (g_timer_elapsed (timer, NULL) > reread_timeout)
-        break;
-
       read_future = dex_channel_receive (self->flatpak_notifs);
+
+      if (!dex_future_is_pending (reread_timeout))
+        break;
     }
 
   if (build_futures->len > 0)
-    dex_await (
-        dex_future_allv (
-            (DexFuture *const *) build_futures->pdata,
-            build_futures->len),
-        NULL);
-
-  if (update_filter)
     {
-      gtk_filter_changed (GTK_FILTER (self->group_filter), GTK_FILTER_CHANGE_LESS_STRICT);
-      gtk_filter_changed (GTK_FILTER (self->appid_filter), GTK_FILTER_CHANGE_LESS_STRICT);
+      g_autoptr (DexFuture) future                   = NULL;
+      g_autoptr (CacheWriteBackData) write_back_data = NULL;
+
+      future = dex_future_allv (
+          (DexFuture *const *) build_futures->pdata,
+          build_futures->len);
+
+      write_back_data                 = cache_write_back_data_new ();
+      write_back_data->self           = bz_track_weak (self);
+      write_back_data->notify_groups  = g_ptr_array_ref (build_notify_groups);
+      write_back_data->update_filters = update_filters;
+
+      future = dex_future_finally (
+          future,
+          (DexFutureCallback) cache_write_back_finally,
+          cache_write_back_data_ref (write_back_data),
+          cache_write_back_data_unref);
+      dex_future_disown (g_steal_pointer (&future));
     }
 
   if (update_labels)
     {
-      if (self->n_notifications_incoming > 0)
-        {
-          g_autofree char *label = NULL;
-
-          label = g_strdup_printf (_ ("Receiving %d entries..."), self->n_notifications_incoming);
-          bz_state_info_set_background_task_label (self->state, label);
-        }
+      if (self->n_entries_incoming > 0)
+        bz_state_info_set_background_task_label_take_printf (
+            self->state, _ ("Loading %d apps…"), self->n_entries_incoming);
       else
         {
-          bz_state_info_set_background_task_label (self->state, _ ("Checking for updates"));
           fiber_check_for_updates (self);
           finish_with_background_task_label (self);
         }
     }
 
-  if (read_future == NULL)
-    read_future = dex_channel_receive (self->flatpak_notifs);
+  if (self->n_entries_incoming == 0 &&
+      self->flathub_remote_initialized)
+    {
+      bz_state_info_set_busy (self->state, FALSE);
+      finish_with_background_task_label (self);
+    }
+
   return g_steal_pointer (&read_future);
 }
 
@@ -1576,7 +1830,6 @@ open_flatpakref_fiber (OpenFlatpakrefData *data)
   GFile *file                    = data->file;
   g_autoptr (GError) local_error = NULL;
   g_autoptr (DexFuture) future   = NULL;
-  GtkWindow    *window           = NULL;
   const GValue *value            = NULL;
 
   bz_weak_get_or_return_reject (self, data->self);
@@ -1585,52 +1838,56 @@ open_flatpakref_fiber (OpenFlatpakrefData *data)
   future = bz_backend_load_local_package (BZ_BACKEND (self->flatpak), file, NULL);
   dex_await (dex_ref (future), NULL);
 
-  window = gtk_application_get_active_window (GTK_APPLICATION (self));
-  if (window == NULL)
-    window = new_window (self);
-
   value = dex_future_get_value (future, &local_error);
-  if (value != NULL)
+  if (value == NULL)
     {
-      if (G_VALUE_HOLDS_OBJECT (value))
-        {
-          BzEntry    *entry         = NULL;
-          const char *unique_id     = NULL;
-          g_autoptr (BzEntry) equiv = NULL;
+      GtkWindow *window = get_or_create_window (self);
 
-          entry     = g_value_get_object (value);
-          unique_id = bz_entry_get_unique_id (entry);
+      bz_show_error_for_widget (
+          GTK_WIDGET (window),
+          _ ("Failed to open file"),
+          local_error->message);
 
-          equiv = dex_await_object (
-              bz_entry_cache_manager_get (self->cache, unique_id),
-              NULL);
-
-          if (equiv != NULL)
-            {
-              if (bz_entry_is_of_kinds (equiv, BZ_ENTRY_KIND_APPLICATION))
-                {
-                  const char   *generic_id = NULL;
-                  BzEntryGroup *group      = NULL;
-
-                  generic_id = bz_entry_get_id (entry);
-                  group      = g_hash_table_lookup (self->ids_to_groups, generic_id);
-
-                  if (group != NULL)
-                    bz_window_show_group (BZ_WINDOW (window), group);
-                  else
-                    bz_window_show_entry (BZ_WINDOW (window), equiv);
-                }
-              else
-                bz_window_show_entry (BZ_WINDOW (window), equiv);
-            }
-          else
-            bz_window_show_entry (BZ_WINDOW (window), entry);
-        }
-      else
-        open_generic_id (self, g_value_get_string (value));
+      return dex_future_new_for_error (g_steal_pointer (&local_error));
     }
-  else
-    bz_show_error_for_widget (GTK_WIDGET (window), local_error->message);
+
+  if (G_VALUE_HOLDS_OBJECT (value))
+    {
+      GtkWindow             *window        = NULL;
+      BzEntry               *entry         = NULL;
+      BzFlatpakRepo         *repo          = NULL;
+      BzBundleInstallDialog *dialog        = NULL;
+      BzFlatpakBundleResult *bundle_result = NULL;
+      const char            *id            = NULL;
+
+      window = get_or_create_window (self);
+
+      if (adw_application_window_get_visible_dialog (ADW_APPLICATION_WINDOW (window)) != NULL)
+        window = new_window (self);
+
+      bundle_result = BZ_FLATPAK_BUNDLE_RESULT (g_value_get_object (value));
+      entry         = BZ_ENTRY (bz_flatpak_bundle_result_get_entry (bundle_result));
+      repo          = bz_flatpak_bundle_result_get_runtime_repo (bundle_result);
+
+      id = bz_entry_get_id (entry);
+
+      if (id != NULL)
+        {
+          BzEntryGroup *group = NULL;
+
+          group = g_hash_table_lookup (self->ids_to_groups, id);
+          if (group != NULL && bz_entry_group_get_removable (group) > 0)
+            bz_entry_set_installed (entry, TRUE);
+        }
+
+      dialog = g_object_new (
+          BZ_TYPE_BUNDLE_INSTALL_DIALOG,
+          "state", self->state,
+          "entry", entry,
+          "runtime-repo", repo,
+          NULL);
+      adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (window));
+    }
 
   return dex_future_new_true ();
 }
@@ -1669,6 +1926,8 @@ init_fiber_finally (DexFuture *future,
       self->periodic_timeout_source = g_timeout_add_seconds (
           /* Check every day */
           60 * 60 * 24, (GSourceFunc) periodic_timeout_cb, self);
+
+      bz_malcontent_service_start (self->malcontent);
     }
   else
     {
@@ -1684,7 +1943,7 @@ init_fiber_finally (DexFuture *future,
           error_string = g_strdup_printf (
               "Could not initialize: %s",
               local_error->message);
-          bz_show_error_for_widget (GTK_WIDGET (window), error_string);
+          bz_show_error_for_widget (GTK_WIDGET (window), _ ("An initialization error occurred"), error_string);
         }
     }
 
@@ -1700,8 +1959,7 @@ init_sync_finally (DexFuture *future,
 
   bz_weak_get_or_return_reject (self, wr);
 
-  bz_state_info_set_busy (self->state, FALSE);
-  finish_with_background_task_label (self);
+  /* Do nothing */
 
   return dex_future_new_true ();
 }
@@ -1714,11 +1972,15 @@ backend_sync_finally (DexFuture *future,
 
   bz_weak_get_or_return_reject (self, wr);
 
-  bz_state_info_set_online (self->state, dex_future_is_resolved (future));
-  bz_state_info_set_syncing (self->state, FALSE);
-  bz_state_info_set_allow_manual_sync (self->state, TRUE);
-
-  return dex_future_new_true ();
+  if (dex_future_is_resolved (future))
+    return dex_scheduler_spawn (
+        dex_scheduler_get_default (),
+        bz_get_dex_stack_size (),
+        (DexFiberFunc) enumerate_disk_entries_fiber,
+        bz_track_weak (self),
+        bz_weak_release);
+  else
+    return dex_ref (future);
 }
 
 static DexFuture *
@@ -1751,14 +2013,48 @@ flathub_update_finally (DexFuture *future,
 }
 
 static DexFuture *
-sync_then (DexFuture *future,
-           GWeakRef  *wr)
+cache_write_back_finally (DexFuture          *future,
+                          CacheWriteBackData *data)
+{
+  g_autoptr (BzApplication) self = NULL;
+  GPtrArray *notify_groups       = data->notify_groups;
+  gboolean   update_filters      = data->update_filters;
+
+  bz_weak_get_or_return_reject (self, data->self);
+
+  for (guint i = 0; i < notify_groups->len; i++)
+    {
+      BzEntryGroup *group = NULL;
+
+      group = g_ptr_array_index (notify_groups, i);
+      g_object_notify (G_OBJECT (group), "ui-entry");
+    }
+
+  if (update_filters)
+    {
+      gtk_filter_changed (GTK_FILTER (self->group_filter), GTK_FILTER_CHANGE_LESS_STRICT);
+      gtk_filter_changed (GTK_FILTER (self->appid_filter), GTK_FILTER_CHANGE_LESS_STRICT);
+    }
+
+  return dex_future_new_true ();
+}
+
+static DexFuture *
+sync_finally (DexFuture *future,
+              GWeakRef  *wr)
 {
   g_autoptr (BzApplication) self = NULL;
 
   bz_weak_get_or_return_reject (self, wr);
 
+  bz_state_info_set_online (self->state, dex_future_is_resolved (future));
+  bz_state_info_set_allow_manual_sync (self->state, TRUE);
+  bz_state_info_set_busy (self->state, FALSE);
+  bz_state_info_set_syncing (self->state, FALSE);
+  finish_with_background_task_label (self);
+
   dex_promise_resolve_boolean (self->ready_to_open_files, TRUE);
+
   return dex_future_new_true ();
 }
 
@@ -1792,6 +2088,41 @@ watch_backend_notifs_then_loop_cb (DexFuture *future,
   return g_steal_pointer (&ret_future);
 }
 
+static BzEntryGroup *
+ensure_group_and_add (BzApplication *self,
+                      const char    *id,
+                      BzEntry       *entry,
+                      BzEntry       *eol_runtime,
+                      gboolean       ignore_eol,
+                      gboolean       installed)
+{
+  BzEntryGroup *group = NULL;
+
+  group = g_hash_table_lookup (self->ids_to_groups, id);
+  if (group != NULL)
+    bz_entry_group_add (group, entry, eol_runtime, ignore_eol);
+  else
+    {
+      g_autoptr (BzEntryGroup) new_group = NULL;
+
+      g_debug ("Creating new application group for id %s", id);
+      new_group = bz_entry_group_new (self->entry_factory);
+      bz_entry_group_add (new_group, entry, eol_runtime, ignore_eol);
+
+      g_list_store_append (self->groups, new_group);
+      g_hash_table_replace (self->ids_to_groups, g_strdup (id), g_object_ref (new_group));
+
+      group = new_group;
+    }
+
+  if (installed && !g_list_store_find (self->installed_apps, group, NULL))
+    g_list_store_insert_sorted (
+        self->installed_apps, group,
+        (GCompareDataFunc) cmp_group, NULL);
+
+  return group;
+}
+
 static void
 fiber_replace_entry (BzApplication *self,
                      BzEntry       *entry)
@@ -1802,6 +2133,8 @@ fiber_replace_entry (BzApplication *self,
   gboolean    user               = FALSE;
   gboolean    installed          = FALSE;
   const char *flatpak_id         = NULL;
+  const char *version            = NULL;
+  GHashTable *name_to_addons     = NULL;
 
   id                 = bz_entry_get_id (entry);
   unique_id          = bz_entry_get_unique_id (entry);
@@ -1810,21 +2143,23 @@ fiber_replace_entry (BzApplication *self,
       unique_id == NULL ||
       unique_id_checksum == NULL)
     return;
-  user = bz_flatpak_entry_is_user (BZ_FLATPAK_ENTRY (entry));
+
+  user           = bz_flatpak_entry_is_user (BZ_FLATPAK_ENTRY (entry));
+  name_to_addons = user ? self->usr_name_to_addons : self->sys_name_to_addons;
 
   installed = g_hash_table_contains (self->installed_set, unique_id);
   bz_entry_set_installed (entry, installed);
+
+  version = g_hash_table_lookup (self->installed_set, unique_id);
+  if (version != NULL && *version != '\0')
+    bz_entry_set_installed_version (entry, version);
 
   flatpak_id = bz_flatpak_entry_get_flatpak_id (BZ_FLATPAK_ENTRY (entry));
   if (flatpak_id != NULL)
     {
       GPtrArray *addons = NULL;
 
-      addons = g_hash_table_lookup (
-          user
-              ? self->usr_name_to_addons
-              : self->sys_name_to_addons,
-          flatpak_id);
+      addons = g_hash_table_lookup (name_to_addons, flatpak_id);
       if (addons != NULL)
         {
           g_debug ("Appending %d addons to %s", addons->len, unique_id);
@@ -1835,98 +2170,126 @@ fiber_replace_entry (BzApplication *self,
               addon_id = g_ptr_array_index (addons, i);
               bz_entry_append_addon (entry, addon_id);
             }
-          g_hash_table_remove (
-              user
-                  ? self->usr_name_to_addons
-                  : self->sys_name_to_addons,
-              flatpak_id);
+          g_hash_table_remove (name_to_addons, flatpak_id);
           addons = NULL;
         }
     }
 
   if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_APPLICATION))
     {
-      BzEntryGroup *group        = NULL;
-      const char   *runtime_name = NULL;
-      BzEntry      *eol_runtime  = NULL;
+      gboolean    ignore_eol               = FALSE;
+      const char *runtime_name             = NULL;
+      g_autoptr (BzEntry) eol_runtime      = NULL;
+      BzEntryGroup *group                  = NULL;
+      GHashTable   *ref_to_addon_group_ids = NULL;
+      GPtrArray    *pending                = NULL;
 
-      group = g_hash_table_lookup (self->ids_to_groups, id);
+      if (self->ignore_eol_set != NULL)
+        ignore_eol = g_hash_table_contains (self->ignore_eol_set, id);
 
       runtime_name = bz_flatpak_entry_get_application_runtime (BZ_FLATPAK_ENTRY (entry));
-      if (runtime_name != NULL)
-        eol_runtime = g_hash_table_lookup (self->eol_runtimes, runtime_name);
-
-      if (group != NULL)
+      if (!ignore_eol &&
+          runtime_name != NULL)
         {
-          bz_entry_group_add (group, entry, eol_runtime);
-          if (installed && !g_list_store_find (self->installed_apps, group, NULL))
-            g_list_store_insert_sorted (
-                self->installed_apps, group,
-                (GCompareDataFunc) cmp_group, NULL);
-        }
-      else
-        {
-          g_autoptr (BzEntryGroup) new_group = NULL;
+          char *runtime_checksum = NULL;
 
-          g_debug ("Creating new application group for id %s", id);
-          new_group = bz_entry_group_new (self->entry_factory);
-          bz_entry_group_add (new_group, entry, eol_runtime);
-
-          g_list_store_append (self->groups, new_group);
-          g_hash_table_replace (self->ids_to_groups, g_strdup (id), g_object_ref (new_group));
-
-          if (installed)
-            g_list_store_insert_sorted (
-                self->installed_apps, new_group,
-                (GCompareDataFunc) cmp_group, NULL);
+          runtime_checksum = g_hash_table_lookup (self->eol_runtimes, runtime_name);
+          if (runtime_checksum != NULL)
+            eol_runtime = dex_await_object (
+                bz_entry_cache_manager_get_by_checksum (
+                    self->cache,
+                    runtime_checksum),
+                NULL);
         }
 
-      if (eol_runtime != NULL)
-        g_hash_table_remove (self->eol_runtimes, runtime_name);
+      group = ensure_group_and_add (self, id, entry, eol_runtime, ignore_eol, installed);
+
+      ref_to_addon_group_ids =
+          user
+              ? self->usr_ref_to_addon_group_ids
+              : self->sys_ref_to_addon_group_ids;
+      pending = g_hash_table_lookup (ref_to_addon_group_ids, id);
+      if (pending != NULL)
+        {
+          for (guint i = 0; i < pending->len; i++)
+            bz_entry_group_append_addon_group_id (group, g_ptr_array_index (pending, i));
+          g_hash_table_remove (ref_to_addon_group_ids, id);
+        }
     }
 
   if (flatpak_id != NULL &&
       bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_RUNTIME) &&
       g_str_has_prefix (flatpak_id, "runtime/"))
     {
-      const char *eol = NULL;
+      const char *stripped = NULL;
+      const char *eol      = NULL;
+
+      stripped = flatpak_id + strlen ("runtime/");
 
       eol = bz_entry_get_eol (entry);
       if (eol != NULL)
-        {
-          g_autofree char *stripped = NULL;
-
-          stripped = g_strdup (flatpak_id + strlen ("runtime/"));
-          g_hash_table_replace (
-              self->eol_runtimes,
-              g_steal_pointer (&stripped),
-              g_object_ref (entry));
-        }
+        g_hash_table_replace (
+            self->eol_runtimes,
+            g_strdup (stripped),
+            g_strdup (unique_id_checksum));
+      else
+        g_hash_table_remove (self->eol_runtimes, stripped);
     }
 
-  if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_ADDON))
+  if (bz_entry_is_of_kinds (entry, BZ_ENTRY_KIND_ADDON) &&
+      strstr (id, ".Debug") == NULL &&
+      strstr (id, ".Locale") == NULL)
     {
       const char *extension_of_what = NULL;
 
       extension_of_what = bz_flatpak_entry_get_addon_extension_of_ref (
           BZ_FLATPAK_ENTRY (entry));
+
+      if (extension_of_what != NULL &&
+          g_str_has_prefix (extension_of_what, "app/"))
+        {
+          g_auto (GStrv) parts    = NULL;
+          BzEntryGroup *app_group = NULL;
+
+          ensure_group_and_add (self, id, entry, NULL, FALSE, installed);
+
+          parts = g_strsplit (extension_of_what, "/", -1);
+          if (parts != NULL && parts[1] != NULL)
+            {
+              app_group = g_hash_table_lookup (self->ids_to_groups, parts[1]);
+              if (app_group != NULL)
+                bz_entry_group_append_addon_group_id (app_group, id);
+              else
+                {
+                  GHashTable *ref_to_addon_group_ids =
+                      user
+                          ? self->usr_ref_to_addon_group_ids
+                          : self->sys_ref_to_addon_group_ids;
+                  GPtrArray *pending = NULL;
+
+                  pending = g_hash_table_lookup (ref_to_addon_group_ids, parts[1]);
+                  if (pending == NULL)
+                    {
+                      pending = g_ptr_array_new_with_free_func (g_free);
+                      g_hash_table_replace (ref_to_addon_group_ids,
+                                            g_strdup (parts[1]), pending);
+                    }
+                  g_ptr_array_add (pending, g_strdup (id));
+                }
+            }
+        }
+
       if (extension_of_what != NULL)
         {
           GPtrArray *addons = NULL;
 
           /* BzFlatpakInstance ensures addons come before applications */
-          addons = g_hash_table_lookup (
-              user
-                  ? self->usr_name_to_addons
-                  : self->sys_name_to_addons,
-              extension_of_what);
+          addons = g_hash_table_lookup (name_to_addons, extension_of_what);
           if (addons == NULL)
             {
               addons = g_ptr_array_new_with_free_func (g_free);
               g_hash_table_replace (
-                  user
-                      ? self->usr_name_to_addons
-                      : self->sys_name_to_addons,
+                  name_to_addons,
                   g_strdup (extension_of_what), addons);
             }
           g_ptr_array_add (addons, g_strdup (unique_id));
@@ -1946,6 +2309,7 @@ fiber_check_for_updates (BzApplication *self)
   GtkWindow *window                = NULL;
 
   g_debug ("Checking for updates...");
+  bz_state_info_set_background_task_label (self->state, _ ("Checking for updates…"));
   bz_state_info_set_checking_for_updates (self->state, TRUE);
 
   update_ids = dex_await_boxed (
@@ -2001,7 +2365,7 @@ fiber_check_for_updates (BzApplication *self)
       g_warning ("Failed to check for updates: %s", local_error->message);
 
       if (window != NULL)
-        bz_show_error_for_widget (GTK_WIDGET (window), local_error->message);
+        bz_show_error_for_widget (GTK_WIDGET (window), _ ("Failed to check for updates"), local_error->message);
     }
 
   bz_state_info_set_checking_for_updates (self->state, FALSE);
@@ -2115,6 +2479,15 @@ network_status_changed (BzApplication   *self,
 }
 
 static void
+disable_blocklists_changed (BzApplication *self,
+                            GParamSpec    *pspec,
+                            BzStateInfo   *state)
+{
+  gtk_filter_changed (GTK_FILTER (self->group_filter), GTK_FILTER_CHANGE_DIFFERENT);
+  gtk_filter_changed (GTK_FILTER (self->appid_filter), GTK_FILTER_CHANGE_DIFFERENT);
+}
+
+static void
 show_hide_app_setting_changed (BzApplication *self,
                                const char    *key,
                                GSettings     *settings)
@@ -2136,14 +2509,31 @@ static gboolean
 window_close_request (BzApplication *self,
                       GtkWidget     *window)
 {
-  int width  = 0;
-  int height = 0;
+  int      width             = 0;
+  int      height            = 0;
+  GList   *remaining_windows = NULL;
+  gboolean reap_dl_workers   = TRUE;
 
   width  = gtk_widget_get_width (window);
   height = gtk_widget_get_height (window);
 
   g_settings_set (self->settings, "window-dimensions",
                   "(ii)", width, height);
+
+  remaining_windows = gtk_application_get_windows (
+      GTK_APPLICATION (self));
+  for (GList *l = remaining_windows; l != NULL; l = l->next)
+    {
+      if (l->data != window)
+        {
+          reap_dl_workers = FALSE;
+          break;
+        }
+    }
+  if (reap_dl_workers)
+    /* If no windows are left, kill the dl-worker subprocesses to minimize idle
+       memory usage */
+    bz_reap_default_download_workers ();
 
   /* Do not stop other handlers from being invoked for the signal */
   return FALSE;
@@ -2452,15 +2842,35 @@ init_service_struct (BzApplication *self,
                      GtkStringList *txt_blocklists,
                      GtkStringList *curated_configs)
 {
-  const char *app_id = NULL;
+  g_autoptr (GError) local_error                       = NULL;
+  g_autoptr (GBytes) internal_config_bytes             = NULL;
+  g_autoptr (BzYamlParser) internal_config_parser      = NULL;
+  g_autoptr (GHashTable) internal_config_parse_results = NULL;
+  const char *app_id                                   = NULL;
 #ifdef HARDCODED_MAIN_CONFIG
-  g_autoptr (GError) local_error  = NULL;
   g_autoptr (GFile) config_file   = NULL;
   g_autoptr (GBytes) config_bytes = NULL;
 #endif
   GtkCustomFilter *filter            = NULL;
   GNetworkMonitor *network           = NULL;
   g_autoptr (BzAuthState) auth_state = NULL;
+
+  g_type_ensure (BZ_TYPE_INTERNAL_CONFIG);
+  internal_config_bytes = g_resources_lookup_data (
+      "/io/github/kolunmi/Bazaar/internal-config.yaml",
+      G_RESOURCE_LOOKUP_FLAGS_NONE,
+      NULL);
+  g_assert (internal_config_bytes != NULL);
+  internal_config_parser = bz_yaml_parser_new_for_resource_schema (
+      "/io/github/kolunmi/Bazaar/internal-config-schema.xml");
+  g_assert (internal_config_parser != NULL);
+  internal_config_parse_results = bz_parser_process_bytes (
+      BZ_PARSER (internal_config_parser), internal_config_bytes, &local_error);
+  if (internal_config_parse_results == NULL)
+    g_critical ("FATAL: unable to parse internal config resource: %s",
+                local_error->message);
+  g_assert (internal_config_parse_results != NULL);
+  self->internal_config = g_value_dup_object (g_hash_table_lookup (internal_config_parse_results, "/"));
 
   g_type_ensure (BZ_TYPE_MAIN_CONFIG);
 #ifdef HARDCODED_MAIN_CONFIG
@@ -2477,16 +2887,44 @@ init_service_struct (BzApplication *self,
       parse_results = bz_parser_process_bytes (
           BZ_PARSER (parser), config_bytes, &local_error);
       if (parse_results != NULL)
-        self->config = g_value_dup_object (g_hash_table_lookup (parse_results, "/"));
+        {
+          GListModel *override_eol_markings = NULL;
+
+          self->config = g_value_dup_object (g_hash_table_lookup (parse_results, "/"));
+
+          override_eol_markings = bz_main_config_get_override_eol_markings (self->config);
+          if (override_eol_markings != NULL)
+            {
+              guint n_appids = 0;
+
+              self->ignore_eol_set = g_hash_table_new_full (
+                  g_str_hash, g_str_equal, g_free, g_free);
+
+              n_appids = g_list_model_get_n_items (override_eol_markings);
+              for (guint i = 0; i < n_appids; i++)
+                {
+                  g_autoptr (GtkStringObject) string = NULL;
+                  const char *value                  = NULL;
+
+                  string = g_list_model_get_item (override_eol_markings, i);
+                  value  = gtk_string_object_get_string (string);
+                  g_hash_table_replace (self->ignore_eol_set, g_strdup (value), NULL);
+                }
+            }
+        }
       else
-        g_warning ("Could not load main config at %s: %s",
-                   HARDCODED_MAIN_CONFIG, local_error->message);
+        {
+          g_warning ("Could not load main config at %s: %s",
+                     HARDCODED_MAIN_CONFIG, local_error->message);
+          g_clear_error (&local_error);
+        }
     }
   g_clear_error (&local_error);
 #endif
 
   self->init_timer          = g_timer_new ();
   self->ready_to_open_files = dex_promise_new ();
+  self->first_window_opened = dex_promise_new ();
 
   if (self->config != NULL &&
       bz_main_config_get_yaml_blocklist_paths (self->config) != NULL)
@@ -2557,6 +2995,27 @@ init_service_struct (BzApplication *self,
       self->curated_configs_to_files,
       G_LIST_MODEL (self->curated_configs));
 
+  self->search_biases         = gtk_flatten_list_model_new (NULL);
+  self->search_biases_backing = g_list_store_new (G_TYPE_LIST_MODEL);
+  {
+    GListModel *main_config_search_biases     = NULL;
+    GListModel *internal_config_search_biases = NULL;
+
+    if (self->config != NULL)
+      main_config_search_biases = bz_main_config_get_search_biases (self->config);
+
+    internal_config_search_biases = bz_internal_config_get_search_biases (self->internal_config);
+
+    /* Main config biases take precedence over the hardcoded ones */
+    if (main_config_search_biases != NULL)
+      g_list_store_append (self->search_biases_backing, main_config_search_biases);
+    if (internal_config_search_biases != NULL)
+      g_list_store_append (self->search_biases_backing, internal_config_search_biases);
+  }
+  gtk_flatten_list_model_set_model (
+      self->search_biases,
+      G_LIST_MODEL (self->search_biases_backing));
+
   g_type_ensure (BZ_TYPE_ROOT_BLOCKLIST);
   g_type_ensure (BZ_TYPE_BLOCKLIST);
   g_type_ensure (BZ_TYPE_BLOCKLIST_CONDITION);
@@ -2576,6 +3035,34 @@ init_service_struct (BzApplication *self,
 
   self->state = bz_state_info_new ();
   bz_state_info_set_busy (self->state, TRUE);
+  bz_state_info_set_donation_prompt_dismissed (self->state, TRUE);
+  bz_state_info_set_parental_age_rating (self->state, -1);
+
+  state_info_set_icon_themes (self->state);
+
+  {
+    g_autoptr (GError) bus_error        = NULL;
+    g_autoptr (GDBusConnection) sys_bus = NULL;
+
+    sys_bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &bus_error);
+    if (sys_bus != NULL)
+      self->malcontent = bz_malcontent_service_new (sys_bus, self->state);
+    else
+      g_warning ("Failed to connect to system bus for malcontent: %s", bus_error->message);
+
+    if (self->malcontent != NULL)
+      g_signal_connect_swapped (
+          self->state,
+          "notify::parental-age-rating",
+          G_CALLBACK (show_hide_app_setting_changed),
+          self);
+  }
+
+  g_signal_connect_swapped (
+      self->state,
+      "notify::disable-blocklists",
+      G_CALLBACK (disable_blocklists_changed),
+      self);
 
   auth_state = bz_auth_state_new ();
   bz_state_info_set_auth_state (self->state, auth_state);
@@ -2606,6 +3093,17 @@ init_service_struct (BzApplication *self,
   g_assert (app_id != NULL);
   g_debug ("Constructing gsettings for %s ...", app_id);
   self->settings = g_settings_new (app_id);
+
+  if (g_settings_get_boolean (self->settings, "force-adwaita-icons"))
+    {
+      GtkSettings *gtk_settings = NULL;
+
+      gtk_settings = gtk_settings_get_default ();
+      g_object_set (
+          gtk_settings,
+          "gtk-icon-theme-name", "Adwaita",
+          NULL);
+    }
 
   bz_state_info_set_hide_eol (
       self->state,
@@ -2664,10 +3162,14 @@ init_service_struct (BzApplication *self,
   self->ids_to_groups  = g_hash_table_new_full (
       g_str_hash, g_str_equal, g_free, g_object_unref);
   self->eol_runtimes = g_hash_table_new_full (
-      g_str_hash, g_str_equal, g_free, g_object_unref);
+      g_str_hash, g_str_equal, g_free, g_free);
   self->sys_name_to_addons = g_hash_table_new_full (
       g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
   self->usr_name_to_addons = g_hash_table_new_full (
+      g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
+  self->sys_ref_to_addon_group_ids = g_hash_table_new_full (
+      g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
+  self->usr_ref_to_addon_group_ids = g_hash_table_new_full (
       g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
 
   self->entry_factory = bz_application_map_factory_new (
@@ -2690,6 +3192,7 @@ init_service_struct (BzApplication *self,
 
   self->search_engine = bz_search_engine_new ();
   bz_search_engine_set_model (self->search_engine, G_LIST_MODEL (self->group_filter_model));
+  bz_search_engine_set_biases (self->search_engine, G_LIST_MODEL (self->search_biases));
   bz_gnome_shell_search_provider_set_engine (self->gs_search, self->search_engine);
 
   self->curated_provider = bz_content_provider_new ();
@@ -2702,6 +3205,7 @@ init_service_struct (BzApplication *self,
 
   bz_state_info_set_all_entry_groups (self->state, G_LIST_MODEL (self->groups));
   bz_state_info_set_all_installed_entry_groups (self->state, G_LIST_MODEL (self->installed_apps));
+  bz_state_info_set_filtered_entry_groups (self->state, G_LIST_MODEL (self->group_filter_model));
   bz_state_info_set_application_factory (self->state, self->application_factory);
   bz_state_info_set_blocklists (self->state, G_LIST_MODEL (self->blocklists));
   bz_state_info_set_blocklists_provider (self->state, self->blocklists_provider);
@@ -2714,6 +3218,7 @@ init_service_struct (BzApplication *self,
   bz_state_info_set_transaction_manager (self->state, self->transactions);
   bz_state_info_set_txt_blocklists (self->state, G_LIST_MODEL (self->txt_blocklists));
   bz_state_info_set_txt_blocklists_provider (self->state, self->txt_blocklists_provider);
+  bz_state_info_set_cache_manager (self->state, self->cache);
 
   g_object_bind_property (
       self->state, "allow-manual-sync",
@@ -2724,6 +3229,32 @@ init_service_struct (BzApplication *self,
       gdk_display_get_default (),
       bz_get_pride_style_provider (),
       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+}
+
+static GtkWindow *
+get_or_create_window (BzApplication *self)
+{
+  GtkWindow *window  = NULL;
+  GList     *windows = NULL;
+
+  window = gtk_application_get_active_window (GTK_APPLICATION (self));
+  if (BZ_IS_WINDOW (window))
+    {
+      gtk_window_present (window);
+      return window;
+    }
+
+  windows = gtk_application_get_windows (GTK_APPLICATION (self));
+  for (GList *l = windows; l != NULL; l = l->next)
+    {
+      if (BZ_IS_WINDOW (l->data))
+        {
+          gtk_window_present (GTK_WINDOW (l->data));
+          return GTK_WINDOW (l->data);
+        }
+    }
+
+  return new_window (self);
 }
 
 static GtkWindow *
@@ -2759,6 +3290,9 @@ new_window (BzApplication *self)
   gtk_window_set_default_size (GTK_WINDOW (window), width, height);
   gtk_window_present (GTK_WINDOW (window));
 
+  if (dex_future_is_pending (DEX_FUTURE (self->first_window_opened)))
+    dex_promise_resolve_boolean (self->first_window_opened, TRUE);
+
   return GTK_WINDOW (window);
 }
 
@@ -2793,11 +3327,46 @@ static void
 open_flatpakref_take (BzApplication *self,
                       GFile         *file)
 {
+  g_autoptr (GError) local_error      = NULL;
+  gboolean         result             = FALSE;
   g_autofree char *path               = NULL;
   g_autoptr (OpenFlatpakrefData) data = NULL;
 
   path = g_file_get_path (file);
-  g_info ("Loading flatpakref at %s...", path);
+  if (path != NULL)
+    /* We must do this synchronously so we don't lose access to a portal file */
+    {
+      g_autofree char *basename   = NULL;
+      g_autofree char *module_dir = NULL;
+      g_autofree char *staging    = NULL;
+      g_autofree char *dest       = NULL;
+      g_autoptr (GFile) copied    = NULL;
+
+      basename   = g_file_get_basename (file);
+      module_dir = bz_dup_module_dir ();
+      staging    = g_build_filename (module_dir, "bundle-staging", NULL);
+      g_mkdir_with_parents (staging, 0755);
+      dest   = g_build_filename (staging, basename, NULL);
+      copied = g_file_new_for_path (dest);
+
+      result = g_file_copy (
+          file, copied,
+          G_FILE_COPY_OVERWRITE | G_FILE_COPY_NOFOLLOW_SYMLINKS,
+          NULL, NULL, NULL,
+          &local_error);
+      if (result)
+        {
+          g_clear_object (&file);
+          file = g_steal_pointer (&copied);
+        }
+      else
+        {
+          g_warning ("Failed to copy bundle to %s : %s",
+                     dest, local_error->message);
+          g_clear_error (&local_error);
+          g_clear_object (&copied);
+        }
+    }
 
   data       = open_flatpakref_data_new ();
   data->self = bz_track_weak (self);
@@ -2841,24 +3410,135 @@ static void
 open_generic_id (BzApplication *self,
                  const char    *generic_id)
 {
-  BzEntryGroup *group  = NULL;
-  GtkWindow    *window = NULL;
+  BzEntryGroup    *group        = NULL;
+  GtkWindow       *window       = NULL;
+  g_autofree char *corrected_id = NULL;
+  const char      *original_id  = generic_id;
+  const char      *matched_id   = generic_id;
+  gboolean         case_fixed   = FALSE;
 
   group = g_hash_table_lookup (self->ids_to_groups, generic_id);
 
-  window = gtk_application_get_active_window (GTK_APPLICATION (self));
-  if (window == NULL)
-    window = new_window (self);
+  // This is needed because KDE likes to mangle IDs just for fun...
+  if (group == NULL)
+    {
+      gsize len = 0;
+
+      len = strlen (generic_id);
+
+      // if it has more than 3 parts and end with ".desktop" then cut it off.
+      if (len > 8 && g_str_has_suffix (generic_id, ".desktop"))
+        {
+          guint       n_dots = 0;
+          const char *suffix = NULL;
+
+          for (const char *p = strchr (generic_id, '.');
+               p != NULL;
+               p = strchr (p, '.'))
+            {
+              if (++n_dots >= 3)
+                {
+                  suffix = strstr (generic_id, ".desktop");
+                  g_assert (suffix != NULL);
+                  break;
+                }
+            }
+
+          if (suffix != NULL)
+            {
+              corrected_id = g_strndup (generic_id, suffix - generic_id);
+              generic_id   = corrected_id;
+              matched_id   = corrected_id;
+              group        = g_hash_table_lookup (self->ids_to_groups, generic_id);
+            }
+        }
+
+      if (group == NULL)
+        {
+          GHashTableIter iter = { 0 };
+
+          g_hash_table_iter_init (&iter, self->ids_to_groups);
+          for (;;)
+            /* screeching sounds */
+            {
+              char         *key   = NULL;
+              BzEntryGroup *value = NULL;
+
+              if (!g_hash_table_iter_next (
+                      &iter, (gpointer *) &key, (gpointer *) &value))
+                break;
+
+              if (g_ascii_strcasecmp (key, generic_id) == 0)
+                {
+                  group      = value;
+                  matched_id = key;
+                  case_fixed = TRUE;
+                  break;
+                }
+            }
+        }
+
+      if (group == NULL)
+        matched_id = original_id;
+    }
+
+  window = get_or_create_window (self);
 
   if (group != NULL)
-    bz_window_show_group (BZ_WINDOW (window), group);
+    {
+      gtk_widget_activate_action (GTK_WIDGET (window), "window.show-group", "s", matched_id);
+
+      if (case_fixed)
+        bz_show_error_for_widget (
+            GTK_WIDGET (window),
+            _ ("Malformed Link"),
+            _ ("The link used to open this app has incorrect capitalization and may stop working in the future.\n\n"
+               "This is most likely caused by KRunner sending incorrect app IDs"));
+    }
   else
     {
       g_autofree char *message = NULL;
 
-      message = g_strdup_printf ("ID '%s' was not found", generic_id);
-      bz_show_error_for_widget (GTK_WIDGET (window), message);
+      message = g_strdup_printf ("ID '%s' was not found", original_id);
+      bz_show_error_for_widget (GTK_WIDGET (window), _ ("Could not find app"), message);
     }
+}
+
+static DexFuture *
+preview_metainfo_then (DexFuture *future,
+                       GWeakRef  *wr)
+{
+  g_autoptr (BzApplication) self = NULL;
+  g_autoptr (GError) local_error = NULL;
+  const GValue         *value    = NULL;
+  BzMetainfoPickResult *result   = NULL;
+  g_autoptr (BzEntry) entry      = NULL;
+  GtkWindow *window              = NULL;
+
+  bz_weak_get_or_return_reject (self, wr);
+
+  value = dex_future_get_value (future, &local_error);
+  if (value == NULL)
+    return dex_future_new_true ();
+
+  result = g_value_get_boxed (value);
+  window = get_or_create_window (self);
+
+  entry = bz_appstream_parser_entry_from_metainfo (
+      result->metainfo_file,
+      result->icon_file,
+      &local_error);
+  if (entry == NULL)
+    {
+      bz_show_error_for_widget (GTK_WIDGET (window),
+                                _ ("Failed to load metainfo"),
+                                local_error->message);
+      return dex_future_new_true ();
+    }
+
+  bz_window_show_entry (BZ_WINDOW (window), entry);
+
+  return dex_future_new_true ();
 }
 
 static gpointer
@@ -2944,7 +3624,7 @@ cmp_group (BzEntryGroup *a,
   if (title_b == NULL)
     return -1;
 
-  return g_strcmp0 (title_a, title_b);
+  return strcasecmp (title_a, title_b);
 }
 
 static gint
@@ -2995,6 +3675,21 @@ validate_group_for_ui (BzApplication *self,
       !bz_entry_group_get_is_verified (group))
     return FALSE;
 
+  if (self->malcontent != NULL)
+    {
+      int parental_age = -1;
+      int app_age      = 0;
+
+      parental_age = bz_state_info_get_parental_age_rating (self->state);
+      app_age      = bz_entry_group_get_content_age_rating (group);
+
+      if (app_age > parental_age && parental_age != -1)
+        return FALSE;
+    }
+
+  if (bz_state_info_get_disable_blocklists (self->state))
+    return TRUE;
+
   id = bz_entry_group_get_id (group);
   for (guint i = 0; i < self->txt_blocked_id_sets->len; i++)
     {
@@ -3032,14 +3727,28 @@ validate_group_for_ui (BzApplication *self,
 static DexFuture *
 make_sync_future (BzApplication *self)
 {
-  g_autoptr (DexFuture) backend_future = NULL;
-  g_autoptr (DexFuture) flathub_future = NULL;
-  g_autoptr (DexFuture) ret_future     = NULL;
+  g_autoptr (GError) local_error         = NULL;
+  g_autoptr (GSubprocess) refresh_worker = NULL;
+  g_autoptr (DexFuture) backend_future   = NULL;
+  g_autoptr (DexFuture) flathub_future   = NULL;
+  g_autoptr (DexFuture) ret_future       = NULL;
 
   bz_state_info_set_allow_manual_sync (self->state, FALSE);
 
   bz_state_info_set_syncing (self->state, TRUE);
-  backend_future = bz_backend_retrieve_remote_entries (BZ_BACKEND (self->flatpak), NULL);
+  finish_with_background_task_label (self);
+
+  refresh_worker = g_subprocess_new (
+      G_SUBPROCESS_FLAGS_NONE,
+      &local_error,
+      REFRESH_WORKER_BIN_NAME,
+      NULL);
+  if (refresh_worker == NULL)
+    g_critical ("FATAL!!! The refresh worker could not be spawned: %s",
+                local_error->message);
+  g_assert (refresh_worker != NULL);
+
+  backend_future = dex_subprocess_wait_check (refresh_worker);
   backend_future = dex_future_finally (
       backend_future,
       (DexFutureCallback) backend_sync_finally,
@@ -3057,9 +3766,9 @@ make_sync_future (BzApplication *self)
       dex_ref (backend_future),
       dex_ref (flathub_future),
       NULL);
-  ret_future = dex_future_then (
+  ret_future = dex_future_finally (
       ret_future,
-      (DexFutureCallback) sync_then,
+      (DexFutureCallback) sync_finally,
       bz_track_weak (self), bz_weak_release);
   return g_steal_pointer (&ret_future);
 }
@@ -3067,17 +3776,30 @@ make_sync_future (BzApplication *self)
 static void
 finish_with_background_task_label (BzApplication *self)
 {
-  if (self->n_notifications_incoming > 0)
-    {
-      g_autofree char *label = NULL;
-
-      label = g_strdup_printf (_ ("Receiving %d entries..."), self->n_notifications_incoming);
-      bz_state_info_set_background_task_label (self->state, label);
-    }
+  if (self->n_entries_incoming > 0)
+    bz_state_info_set_background_task_label_take_printf (
+        self->state, _ ("Loading %d apps…"), self->n_entries_incoming);
   else if (bz_state_info_get_syncing (self->state))
-    bz_state_info_set_background_task_label (self->state, _ ("Synchronizing..."));
+    bz_state_info_set_background_task_label (self->state, _ ("Refreshing…"));
   else if (bz_state_info_get_busy (self->state))
-    bz_state_info_set_background_task_label (self->state, _ ("Indexing Data..."));
+    bz_state_info_set_background_task_label (self->state, _ ("Writing to cache…"));
   else
     bz_state_info_set_background_task_label (self->state, NULL);
+}
+
+static void
+state_info_set_icon_themes (BzStateInfo *state)
+{
+  g_autoptr (GtkIconTheme) user_theme   = NULL;
+  g_autoptr (GtkIconTheme) system_theme = NULL;
+  g_autofree char *user_export_dir      = NULL;
+
+  user_theme      = gtk_icon_theme_new ();
+  user_export_dir = g_build_filename (g_get_home_dir (), ".local/share/flatpak/exports/share/icons", NULL);
+  gtk_icon_theme_add_search_path (user_theme, user_export_dir);
+  bz_state_info_set_user_icon_theme (state, user_theme);
+
+  system_theme = gtk_icon_theme_new ();
+  gtk_icon_theme_add_search_path (system_theme, "/var/lib/flatpak/exports/share/icons");
+  bz_state_info_set_system_icon_theme (state, system_theme);
 }
