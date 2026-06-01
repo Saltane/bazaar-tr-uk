@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE martif PUBLIC 'ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN' 'TBXcdv04.dtd'>
+<martif type="TBX" xml:lang="en_US">
+  <text>
+    <body>
+      <termEntry id="faoquad-1">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>app</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>застосунок</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-4">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>add-on</term>
+          </tig>
+          <tig>
+            <term>add-ons</term>
+          </tig>
+          <tig>
+            <term>addon</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>розширення</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-5">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>cache</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>кеш</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-0">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>release</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>випуск</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-2">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>link</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>посилання</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-3">
+        <descrip type="definition">Є файлом метаданих для пакунку на Flathub</descrip>
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>metainfo</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>метаінфо</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-6">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>Bazaar</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>Базар</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-7">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>transaction</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>операція</term>
+          </tig>
+          <tig>
+            <term>дія</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-8">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>shared component</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>компонент</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-10">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>category</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>категорія</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-11">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>eol</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>осиротілий</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-12">
+        <descrip type="definition">Поважне звертання з великої букви</descrip>
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>you</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>Ви</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-13">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>integration</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>сумісність</term>
+          </tig>
+        </langSet>
+      </termEntry>
+      <termEntry id="faoquad-14">
+        <langSet xml:lang="en-US">
+          <tig>
+            <term>remote</term>
+          </tig>
+        </langSet>
+        <langSet xml:lang="uk">
+          <tig>
+            <term>віддалене сховище</term>
+          </tig>
+        </langSet>
+      </termEntry>
+    </body>
+  </text>
+</martif>
