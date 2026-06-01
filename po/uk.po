@@ -1815,10 +1815,6 @@ msgctxt "shortcut window"
 msgid "Show Shortcuts"
 msgstr "Показати клавіатурні скорочення"
 
-#: src/gtk/shortcuts-dialog.blp:34
-msgctxt "shortcut window"
-msgid "Quit"
-msgstr "Вийти"
 
 #, c-format
 #~ msgid "Received %'d entries out of %'d (%0.1f seconds elapsed)"
@@ -2304,3 +2300,12 @@ msgstr "Вийти"
 #~ msgctxt "shortcut window"
 #~ msgid "Refresh"
 #~ msgstr "Освіжити"
+#: src/shortcuts-dialog.blp:46
+msgctxt "shortcut window"
+msgid "Close Window"
+msgstr "Закрити вікно"
+
+#: src/shortcuts-dialog.blp:52
+msgctxt "shortcut window"
+msgid "Quit Bazaar"
+msgstr "Вийти з Базару"
