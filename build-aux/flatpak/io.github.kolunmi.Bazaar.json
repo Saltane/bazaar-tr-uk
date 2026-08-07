@@ -146,8 +146,8 @@
                         {
                             "type": "git",
                             "url": "https://github.com/flatpak/flatpak",
-                            "commit": "b4c53a4cfffd5dd471589249e35be6ab9e08b6a5",
-                            "tag": "1.17.7",
+                            "commit": "5de2b58bdafde88515d9d6b9189bd1cfd3b88c46",
+                            "tag": "1.18.0",
                             "x-checker-data": {
                                 "type": "git",
                                 "url-template": "$version",
@@ -177,8 +177,8 @@
                                 },
                                 {
                                     "type": "file",
-                                    "url": "https://files.pythonhosted.org/packages/69/59/b6fc2188dfc7ea4f936cd12b49d707f66a1cb7a1d2c16172963534db741b/flit_core-3.12.0.tar.gz",
-                                    "sha256": "18f63100d6f94385c6ed57a72073443e1a71a4acb4339491615d0f16d6ff01b2",
+                                    "url": "https://files.pythonhosted.org/packages/46/ef/34533186e76c526d9ec17a1ad9a10c7354cbfb20f51583cc36dfe4bdccd0/flit_core-4.0.2.tar.gz",
+                                    "sha256": "b6929defd93884b584d7c87829e0e7b5c26ed6be17b0b873979019314aa841c8",
                                     "x-checker-data": {
                                         "type": "pypi",
                                         "name": "flit_core"
@@ -268,8 +268,8 @@
                                         {
                                             "type": "git",
                                             "url": "https://github.com/ostreedev/ostree",
-                                            "tag": "v2026.1",
-                                            "commit": "84fcfe17adcc69b926e8205782c1f735c09bfdd9",
+                                            "tag": "v2026.3",
+                                            "commit": "867d4e000137d466e06c5173691458e0b4a38a26",
                                             "x-checker-data": {
                                                 "type": "anitya",
                                                 "project-id": 10899,
