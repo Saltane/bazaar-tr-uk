@@ -146,8 +146,8 @@
                         {
                             "type": "git",
                             "url": "https://github.com/flatpak/flatpak",
-                            "commit": "b4c53a4cfffd5dd471589249e35be6ab9e08b6a5",
-                            "tag": "1.17.7",
+                            "commit": "10b5972dfeff08f516ca571c8438c2e284cd60ce",
+                            "tag": "1.19.2",
                             "x-checker-data": {
                                 "type": "git",
                                 "url-template": "$version",
@@ -168,8 +168,8 @@
                             "sources": [
                                 {
                                     "type": "file",
-                                    "url": "https://files.pythonhosted.org/packages/f3/91/9c6ee907786a473bf81c5f53cf703ba0957b23ab84c264080fb5a450416f/pyparsing-3.3.2.tar.gz",
-                                    "sha256": "c777f4d763f140633dcb6d8a3eda953bf7a214dc4eff598413c070bcdc117cbc",
+                                    "url": "https://files.pythonhosted.org/packages/e4/11/b213bebff182584360cb8d17c72c1677fec5c5c228de439e63bcf8ab1c8f/pyparsing-3.3.3.tar.gz",
+                                    "sha256": "928ae7e20211f3b6f3915a72f06a0cfd29ab9d24279dd6346b6b1a7146397d36",
                                     "x-checker-data": {
                                         "type": "pypi",
                                         "name": "pyparsing"
@@ -177,8 +177,8 @@
                                 },
                                 {
                                     "type": "file",
-                                    "url": "https://files.pythonhosted.org/packages/69/59/b6fc2188dfc7ea4f936cd12b49d707f66a1cb7a1d2c16172963534db741b/flit_core-3.12.0.tar.gz",
-                                    "sha256": "18f63100d6f94385c6ed57a72073443e1a71a4acb4339491615d0f16d6ff01b2",
+                                    "url": "https://files.pythonhosted.org/packages/e7/91/add211b38c357bf1b94900b4f79c34661a92be65c0243d2b0a3393c5092d/flit_core-4.1.0.tar.gz",
+                                    "sha256": "62e12b63ead8335b37f59fabb977c7167fe476dafb5e41785dfa8c9aff843bc6",
                                     "x-checker-data": {
                                         "type": "pypi",
                                         "name": "flit_core"
@@ -235,8 +235,8 @@
                                 {
                                     "type": "git",
                                     "url": "https://github.com/polkit-org/polkit",
-                                    "commit": "9e4894c969eecf26a3ba762f4f7a268aa0fb3e51",
-                                    "tag": "127",
+                                    "commit": "e6373dc19975d8583568c6cd7025d03e682ca956",
+                                    "tag": "128",
                                     "x-checker-data": {
                                         "type": "git",
                                         "tag-pattern": "^([\\d.]+)$"
@@ -268,8 +268,8 @@
                                         {
                                             "type": "git",
                                             "url": "https://github.com/ostreedev/ostree",
-                                            "tag": "v2026.1",
-                                            "commit": "84fcfe17adcc69b926e8205782c1f735c09bfdd9",
+                                            "tag": "v2026.4",
+                                            "commit": "4f4445a8912f70c604fa84a057a8f4e904e35a24",
                                             "x-checker-data": {
                                                 "type": "anitya",
                                                 "project-id": 10899,
@@ -334,8 +334,8 @@
                                         {
                                             "type": "git",
                                             "url": "https://github.com/flatpak/xdg-dbus-proxy",
-                                            "commit": "6a170fa77e3cbecb48f9dd2478fe5c0a119eb467",
-                                            "tag": "0.1.7",
+                                            "commit": "72b40c8f6d9d585cfbdb249690724f740d207087",
+                                            "tag": "0.1.9",
                                             "x-checker-data": {
                                                 "type": "git",
                                                 "url-template": "$version"
@@ -361,8 +361,8 @@
                 {
                     "type": "git",
                     "url": "https://github.com/containers/bubblewrap",
-                    "commit": "1b80120ef26a28e065e67f89bfef873f13bdd317",
-                    "tag": "v0.11.2",
+                    "commit": "362936aea0d5c6e70f7af75d2d44b5a914cb4ba2",
+                    "tag": "v0.13.1",
                     "x-checker-data": {
                         "type": "git",
                         "url-template": "$version"
